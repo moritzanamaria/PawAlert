@@ -1,4 +1,8 @@
 function DetaljiSlucaja() {
-    return <h1>Detalji slučaja</h1>
+    return  (
+    <>
+    Detalji slučaja
+    </>
+    )
 }
 export default DetaljiSlucaja

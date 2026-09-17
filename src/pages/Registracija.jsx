@@ -1,5 +1,9 @@
 function Registracija() {
-    return <h1>Registracija</h1>
+    return (
+    <>
+    Registracija
+    </>
+    )
 }
 
 export default Registracija

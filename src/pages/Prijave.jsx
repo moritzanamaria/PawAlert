@@ -1,4 +1,8 @@
 function Prijave() {
-    return <h1>Prijave</h1>
+    return  (
+    <>
+    Prijave
+    </>
+    )
 }
 export default Prijave

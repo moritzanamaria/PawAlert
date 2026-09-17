@@ -1,4 +1,8 @@
 function PrijaviSlucaj() {
-    return <h1>Prijavi slučaj</h1>
+  return  (
+    <>
+    Prijavi slučaj
+    </>
+    )
 }
 export default PrijaviSlucaj
