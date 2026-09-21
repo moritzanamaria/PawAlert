@@ -7,19 +7,20 @@ import Profil from "./pages/Profil"
 import Registracija from "./pages/Registracija"
 import Dashboard from "./pages/Dashboard"
 import Navbar from "./components/Navbar"
+import { RouteNames } from "./components/Constants"
 
 function App() {
   return (
     <BrowserRouter>
       <Navbar />
       <Routes>
-        <Route path="/" element={<Pocetna />} />
-        <Route path="/prijave" element={<Prijave />} />
-        <Route path="/prijave/ :id" element={<DetaljiSlucaja />} />
-        <Route path="/prijavi-slucaj" element={<PrijaviSlucaj />} />
-        <Route path="/profil" element={<Profil />} />
-        <Route path="/registracija" element={<Registracija />} />
-        <Route path="/dashboard" element={<Dashboard />} />
+        <Route path={RouteNames.HOME} element={<Pocetna />} />
+        <Route path={RouteNames.PRIJAVE} element={<Prijave />} />
+        <Route path={RouteNames.DETALJI_SLUCAJA} element={<DetaljiSlucaja />} />
+        <Route path={RouteNames.PRIJAVI_SLUCAJ} element={<PrijaviSlucaj />} />
+        <Route path={RouteNames.DASHBOARD} element={<Dashboard />} />
+        <Route path={RouteNames.PROFIL} element={<Profil />} />
+        <Route path={RouteNames.REGISTRACIJA} element={<Registracija />} />
       </Routes>
     </BrowserRouter>
   )

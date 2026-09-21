@@ -1,17 +1,33 @@
+import { Container, Nav, Navbar as BsNavbar, Row, Col } from "react-bootstrap"
 import { Link } from "react-router-dom"
+import { RouteNames } from "./Constants"
+import { Image } from "react-bootstrap"
 
 function Navbar() {
-    return (
-        <nav>
-            <Link to="/">Početna</Link>
-            <Link to="/prijave">Katalog</Link>
-            <Link to="/prijavi-slucaj">Prijavi slučaj</Link>
-            <Link to="/profil">Profil</Link>
-            <Link to="/registracija">Registracija</Link>
-            <Link to="/dashboard">Dashboard</Link>
-            <button>Prijava</button>
-        </nav>
-    )
+  return (
+    <BsNavbar expand="lg" className="bg-light" role="navigation" aria-label="Glavni izbornik">
+      <Container>
+        <BsNavbar.Brand as={Link} to={RouteNames.HOME}>
+          PawAlert
+        </BsNavbar.Brand>
+        <BsNavbar.Toggle aria-controls="glavni-navbar" />
+        <BsNavbar.Collapse id="glavni-navbar">
+          <Nav className="me-auto">
+            <Nav.Link as={Link} to={RouteNames.HOME}>Početna</Nav.Link>
+            <Nav.Link as={Link} to={RouteNames.PRIJAVE}>Katalog</Nav.Link>
+            <Nav.Link as={Link} to={RouteNames.PRIJAVI_SLUCAJ}>Prijavi slučaj</Nav.Link>
+            <Nav.Link as={Link} to={RouteNames.DASHBOARD}>Dashboard</Nav.Link>
+            <Nav.Link as={Link} to={RouteNames.PROFIL}>Profil</Nav.Link>
+          </Nav>
+          <Nav>
+            <Nav.Link as={Link} to={RouteNames.REGISTRACIJA}>Registracija</Nav.Link>
+            <button className="btn btn-success btn-sm">Prijava</button>
+          </Nav>
+
+        </BsNavbar.Collapse>
+      </Container>
+    </BsNavbar>
+  )
 }
 
 export default Navbar
