@@ -1,6 +1,6 @@
 import { Container, Nav, Navbar as BsNavbar, Row, Col } from "react-bootstrap"
 import { Link } from "react-router-dom"
-import { RouteNames } from "./Constants"
+import { RouteNames } from "../constants"
 import { Image } from "react-bootstrap"
 
 function Navbar() {
