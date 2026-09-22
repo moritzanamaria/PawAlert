@@ -15,8 +15,8 @@ const  kreirajIkonu = (emoji, bojaKlasa) =>
 
 export const  VrstaIkone = {
   pas: kreirajIkonu("🐶", "bg-primary text-white"),
-  mačka: kreirajIkonu("🐱", "bg-warning text-dark"),
-  macka: kreirajIkonu("🐱", "bg-warning text-dark"),
+  mačka: kreirajIkonu("🐱", "bg-secondary text-dark"),
+  macka: kreirajIkonu("🐱", "bg-secondary text-dark"),
   ptica: kreirajIkonu("🦜", "bg-info text-white"),
-  ostalo: kreirajIkonu("🐾", "bg-secondary text-white"),
+  ostalo: kreirajIkonu("🐾", "bg-warning text-white"),
 };

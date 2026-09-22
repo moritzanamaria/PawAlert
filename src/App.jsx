@@ -12,6 +12,7 @@ import { RouteNames } from "./constants"
 function App() {
   return (
     <>
+    <div className="container my-4">
       <Navbar />
       <Routes>
         <Route path={RouteNames.HOME} element={<Pocetna />} />
@@ -22,6 +23,8 @@ function App() {
         <Route path={RouteNames.PROFIL} element={<Profil />} />
         <Route path={RouteNames.REGISTRACIJA} element={<Registracija />} />
       </Routes>
+
+  </div>
     </>
   )
 }
