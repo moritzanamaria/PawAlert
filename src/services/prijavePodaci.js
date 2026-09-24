@@ -1,7 +1,7 @@
 export const prijavePodaci = [
   {
     id: "1",
-    zivotinja: { ime: "Reks", vrsta: "Pas", pasmina: "Njemački ovčar", opis: "Crno-smeđi, ima crvenu ogrlicu" },
+   zivotinja: "Reks", //{ ime: "Reks", vrsta: "Pas", pasmina: "Njemački ovčar", opis: "Crno-smeđi, ima crvenu ogrlicu" },
     tip_prijave: "nestanak",
     status: "aktivna",
     lokacija_opis: "Tvrđa, Osijek",
@@ -11,7 +11,7 @@ export const prijavePodaci = [
   },
   {
     id: "2",
-    zivotinja: { ime: "Nepoznato", vrsta: "Mačka", pasmina: "Domaća", opis: "Viđena u blizini parka" },
+    zivotinja: "Nepoznato",//{ ime: "Nepoznato", vrsta: "Mačka", pasmina: "Domaća", opis: "Viđena u blizini parka" },
     tip_prijave: "vidjenje",
     status: "aktivna",
     lokacija_opis: "Gornji grad, Osijek",
@@ -21,7 +21,7 @@ export const prijavePodaci = [
   },
   {
     id: "3",
-    zivotinja: { ime: "Luna", vrsta: "Pas", pasmina: "Mješanac", opis: "Sretno vraćena vlasniku" },
+    zivotinja: "Luna", // { ime: "Luna", vrsta: "Pas", pasmina: "Mješanac", opis: "Sretno vraćena vlasniku" },
     tip_prijave: "nestanak",
     status: "pronađena",
     lokacija_opis: "Jug 2, Osijek",
