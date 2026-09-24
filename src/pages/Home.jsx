@@ -1,23 +1,40 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { mockPrijave } from "../mockData";
+import prijaveService from "../services/prijaveService";
 import { RouteNames } from "../constants";
 import FilterBar from "../components/FilterBar";
 import MapView from "../components/MapView";
 
 function Home() {
-    const [odabranaVrsta, setOdabranaVrsta] = useState("sve");
-    const [pretraga, setPretraga] = useState("");
-    const filtriranePrijave = mockPrijave.filter((p) => {
-        const vrsta = p.zivotinja?.vrsta?.toLowerCase() || "";
-        const ime = p.zivotinja?.ime?.toLowerCase() || "";
-        const tip = p.tip_prijave?.toLowerCase() || "";
+  const [prijave, setPrijave] = useState([]);
+  const [odabranaVrsta, setOdabranaVrsta] = useState("sve");
+  const [pretraga, setPretraga] = useState("");
 
-        return (
-            (odabranaVrsta === "sve" || vrsta === odabranaVrsta) &&
-            (ime.includes(pretraga.toLowerCase()) || tip.includes(pretraga.toLowerCase()))
-        );
+  useEffect(() => {
+    ucitajPrijave();
+  }, []);
+
+  async function ucitajPrijave() {
+    await prijaveService.get().then((odgovor) => {
+      setPrijave(odgovor.data);
     });
+  }
+const normPretraga = pretraga.toLowerCase();
+
+  const filtriranePrijave = (prijave || []).filter((p) => {
+    const vrsta = p.zivotinja?.vrsta?.toLowerCase() || "";
+    const ime = p.zivotinja?.ime?.toLowerCase() || "";
+    const tip = p.tip_prijave?.toLowerCase() || "";
+
+    const odgovaraVrsti = odabranaVrsta === "sve" || vrsta === odabranaVrsta;
+    const odgovaraPretrazi = ime.includes(normPretraga) || tip.includes(normPretraga);
+
+    return odgovaraVrsti && odgovaraPretrazi;
+  });
+
+  const najnovijeDojave = [...filtriranePrijave].sort(
+    (a, b) => new Date(b.datum) - new Date(a.datum)
+  );
 
     return (
         <div className="container my-4">
@@ -26,8 +43,8 @@ function Home() {
                     <h1 className="h3 fw-bold text-dark mb-1">Početna karta prijava</h1>
                     <p className="text-muted mb-0">Pregled svih prijava na području Osijeka</p>
                 </div>
-                <Link to={RouteNames.PRIJAVI_SLUCAJ} className="btn btn-primary shadow-sm">
-                    ➕ Prijavi slučaj
+                <Link to={RouteNames.PRIJAVI_SLUCAJ} className="btn btn-warning shadow-sm">
+                    Prijavi slučaj
                 </Link>
             </div>
 
@@ -38,7 +55,7 @@ function Home() {
                 setOdabranaVrsta={setOdabranaVrsta}
             />
 
-            <MapView prijave={filtriranePrijave} />
+            <MapView prijave={filtriranePrijave} najnovije={najnovijeDojave}/>
         </div>
     );
 }
