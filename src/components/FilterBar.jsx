@@ -1,5 +1,10 @@
 function FilterBar({ pretraga, setPretraga, odabranaVrsta, setOdabranaVrsta }) {
-  const vrste = ["sve", "pas", "mačka", "ptica", "ostalo"];
+  const vrste = [   { vrijednost: "sve", naziv: "Sve" },
+    { vrijednost: "pas", naziv: "Pas" },
+    { vrijednost: "macka", naziv: "Mačka" },
+    { vrijednost: "ptica", naziv: "Ptica" },
+    { vrijednost: "ostalo", naziv: "Ostalo" }
+  ];
 
   return (
     <div className="card shadow-sm border-0 p-3 mb-3 bg-light rounded-3">
@@ -14,15 +19,15 @@ function FilterBar({ pretraga, setPretraga, odabranaVrsta, setOdabranaVrsta }) {
           />
         </div>
         <div className="col-md-7 d-flex gap-1 flex-wrap justify-content-md-end">
-          {vrste.map((vrsta) => (
+          {vrste.map((v) => (
             <button
-              key={vrsta}
+             key={v.vrijednost}
               className={`btn btn-sm ${
-                odabranaVrsta === vrsta ? "btn-dark" : "btn-outline-secondary"
-              } text-capitalize`}
-              onClick={() => setOdabranaVrsta(vrsta)}
+                odabranaVrsta === v.vrijednost ? "btn-dark" : "btn-outline-secondary"
+              }`}
+              onClick={() => setOdabranaVrsta(v.vrijednost)}
             >
-              {vrsta}
+              {v.naziv}
             </button>
           ))}
         </div>

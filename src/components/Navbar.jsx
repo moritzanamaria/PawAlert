@@ -1,5 +1,6 @@
 import { useState } from "react"
-import { Container, Nav, Navbar as BsNavbar, Offcanvas } from "react-bootstrap"
+import { Container, Nav, Navbar as BsNavbar, Offcanvas, Button } from "react-bootstrap"
+import { FaSignInAlt } from "react-icons/fa";
 import { Link } from "react-router-dom"
 import { RouteNames } from "../constants"
 
@@ -41,8 +42,9 @@ function Navbar() {
           </Nav>
           <Nav>
             <Nav.Link as={Link} to={RouteNames.REGISTRACIJA} onClick={handleClose}>Registracija</Nav.Link>
-              <button 
-                className="btn btn-success btn-sm w-100 w-lg-auto" onClick={handleClose}>Prijava</button>
+      <Button className="btn btn-success btn-sm">
+  <FaSignInAlt className="me-1" /> Prijava
+</Button>
             </Nav>
           </Offcanvas.Body>
         </BsNavbar.Offcanvas>

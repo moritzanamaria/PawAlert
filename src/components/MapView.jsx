@@ -14,21 +14,21 @@ function MapView({ prijave }) {
             attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
           />
           {prijave.map((prijava) => {
-            const vrsta = prijava.zivotinja?.vrsta?.toLowerCase();
+            const vrsta = prijava.zivotinja_vrsta?.toLowerCase();
             const status = prijava.status?.toLowerCase();
 
             return (
               <Marker
                 key={prijava.id}
-                position={[prijava.lokacija_geo.lat, prijava.lokacija_geo.lng]}
+                position={[prijava.lokacija_lat, prijava.lokacija_lng]}
                 icon={VrstaIkone[vrsta] || VrstaIkone.ostalo}
               >
                 <Popup>
                   <div className="p-1" style={{ minWidth: "180px" }}>
                     <div className="d-flex align-items-center justify-content-between mb-2">
-                      <h6 className="fw-bold m-0 text-primary">{prijava.zivotinja.ime}</h6>
+                      <h6 className="fw-bold m-0 text-primary">{prijava.zivotinja_ime}</h6>
                       <span className="badge bg-light text-dark border ms-1">
-                        {prijava.zivotinja.vrsta}
+                        {prijava.zivotinja_vrsta}
                       </span>
                     </div>
                     <hr className="my-2" />
