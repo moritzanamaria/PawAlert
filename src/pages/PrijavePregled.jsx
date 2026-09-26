@@ -1,22 +1,23 @@
 import { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
 import prijaveService from "../services/prijaveService";
-import { RouteNames, BojeStatusa } from "../constants";
+import { BojeStatusa } from "../constants";
 import { Badge, Table } from "react-bootstrap";
-import { FaExclamationTriangle } from "react-icons/fa"
+import FormatDatuma from "../components/FormatDatuma";
+import { GrAlert } from "react-icons/gr";
 
 function PrijavePregled() {
   const [prijave, setPrijave] = useState([])
-
-  useEffect(() => {
-    ucitajPrijave()
-  }, [])
-
   async function ucitajPrijave() {
     await prijaveService.get().then((odgovor) => {
       setPrijave(odgovor.data)
-    })
+    })    
   }
+
+   useEffect(() => {
+    ucitajPrijave()
+  }, [])
+
+  
   const getStatusBadge = (status) => BojeStatusa[status] || "bg-secondary";
   return (
     <div className="container my-4">
@@ -28,24 +29,28 @@ function PrijavePregled() {
             <th>Lokacija</th>
             <th>Vrijeme prijave</th>
             <th>Status</th>
+             <th>Hitno</th>
           </tr>
         </thead>
         <tbody>
           {prijave && prijave.map((prijava) => (
-            <tr key={prijava.id}
-              className={prijava.hitno ? "table-danger" : ""}
-            >
-              <td>
-                {prijava.hitno && (
-                  <FaExclamationTriangle className="text-danger me-1" title="Hitno" />
-                )}
-                {prijava.zivotinja_ime}</td>
-              <td>{prijava.zivotinja_vrsta}</td>
-              <td>{prijava.lokacija_opis}</td>
-              <td>{prijava.datum}</td>
+            <tr key={prijava.id}>
+              <td>{prijava.zivotinja_ime}</td>
+              <td className="text-end">{prijava.zivotinja_vrsta}</td>
+              <td className="desno">{prijava.lokacija_opis}</td>
+              <td style={{textAlign: "center"}}>
+                 <FormatDatuma datum={prijava.datum} prikazDatuma="Nepoznato" />
+                 </td>
               <td>
                 <span className={`badge ${getStatusBadge(prijava.status)}`}>{prijava.status}</span>
               </td>
+              <td>
+              <GrAlert
+        size={25}
+        color={prijava.hitno ? 'red' : 'grey'}
+        title={prijava.hitno ? 'Hitno' : 'Nije hitno'}
+    />
+    </td>
             </tr>
           ))}
         </tbody>

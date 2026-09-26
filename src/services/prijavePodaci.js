@@ -18,7 +18,7 @@ export const prijavePodaci = [
   {
     id: "2",
     zivotinja_ime: "Nepoznato",
-    zivotinja_vrsta: "macka",
+    zivotinja_vrsta: "mačka",
     zivotinja_pasmina: "Domaća",
     zivotinja_opis: "Viđena u blizini parka",
     zivotinja_godine: null,
@@ -85,7 +85,7 @@ export const prijavePodaci = [
   {
     id: "6",
     zivotinja_ime: "Fifi",
-    zivotinja_vrsta: "macka",
+    zivotinja_vrsta: "mačka",
     zivotinja_pasmina: "Perzijska",
     zivotinja_opis: "Bijela, duga dlaka, plave oči, nosi ružičastu ogrlicu",
     zivotinja_godine: 4,
