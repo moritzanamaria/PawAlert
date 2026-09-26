@@ -34,10 +34,9 @@ function Navbar() {
           <Offcanvas.Body className="d-flex flex-column flex-lg-row justify-content-between align-items-lg-center">
             <Nav className="me-auto gap-lg-2">
             <Nav.Link as={Link} to={RouteNames.HOME} onClick={handleClose}>Početna</Nav.Link>
-            <Nav.Link as={Link} to={RouteNames.PRIJAVE_PREGLED} onClick={handleClose}>Katalog</Nav.Link>
-             <Nav.Link as={Link} to={RouteNames.DETALJI_SLUCAJA} onClick={handleClose}>Detalji slučaja</Nav.Link>
+            <Nav.Link as={Link} to={RouteNames.PRIJAVE_PREGLED} onClick={handleClose}>Pregled prijava</Nav.Link>
             <Nav.Link as={Link} to={RouteNames.PRIJAVI_SLUCAJ} onClick={handleClose}>Prijavi slučaj</Nav.Link>
-            <Nav.Link as={Link} to={RouteNames.DASHBOARD} onClick={handleClose}>Dashboard</Nav.Link>
+            <Nav.Link as={Link} to={RouteNames.KATALOG_PRIJAVA} onClick={handleClose}>Katalog prijava </Nav.Link>
             <Nav.Link as={Link} to={RouteNames.PROFIL} onClick={handleClose}>Profil</Nav.Link>
           </Nav>
           <Nav>
