@@ -1,12 +1,14 @@
 import { useState, useEffect } from "react";
 import prijaveService from "../services/prijaveService";
-import { BojeStatusa } from "../constants";
+import { BojeStatusa, RouteNames } from "../constants";
 import { Badge, Table } from "react-bootstrap";
 import FormatDatuma from "../components/FormatDatuma";
 import { GrAlert } from "react-icons/gr";
+import { Link } from "react-router-dom";
 
-function PrijavePregled() {
+export default function PrijavePregled() {
   const [prijave, setPrijave] = useState([])
+
   async function ucitajPrijave() {
     await prijaveService.get().then((odgovor) => {
       setPrijave(odgovor.data)
@@ -18,9 +20,14 @@ function PrijavePregled() {
   }, [])
 
   
-  const getStatusBadge = (status) => BojeStatusa[status] || "bg-secondary";
+  
   return (
-    <div className="container my-4">
+    <>
+    <Link to={RouteNames.PRIJAVA_NOVA}
+    className="btn btn-secondary w-100">
+      Dodaj novu prijavu
+    </Link>
+    
       <Table hover bordered responsive="sm">
         <thead>
           <tr>
@@ -34,16 +41,14 @@ function PrijavePregled() {
         </thead>
         <tbody>
           {prijave && prijave.map((prijava) => (
-            <tr key={prijava.id}  className={prijava.hitno ? "table-danger" : ""}>
+            <tr key={prijava.id}>
               <td>{prijava.zivotinja_ime}</td>
               <td className="text-end">{prijava.zivotinja_vrsta}</td>
-              <td className="desno">{prijava.lokacija_opis}</td>
+              <td>{prijava.lokacija_opis}</td>
               <td style={{textAlign: "center"}}>
                  <FormatDatuma datum={prijava.datum} prikazDatuma="Nepoznato" />
                  </td>
-              <td>
-                <span className={`badge ${getStatusBadge(prijava.status)}`}>{prijava.status}</span>
-              </td>
+              <td>{prijava.status}</td>
               <td>
               <GrAlert
         size={25}
@@ -59,8 +64,6 @@ function PrijavePregled() {
       <Badge pill bg="secondary">
         {prijave && prijave.length}
       </Badge> &nbsp; prijava
-    </div>
-
+    </>
   )
 }
-export default PrijavePregled;

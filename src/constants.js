@@ -1,7 +1,7 @@
 export const RouteNames = {
   HOME: "/",
   PRIJAVE_PREGLED: "/prijave-pregled",
-  PRIJAVI_SLUCAJ: "/prijavi-slucaj",
+  PRIJAVA_NOVA: "/prijava/nova",
   DETALJI_SLUCAJA: "/prijava-id",
   DASHBOARD: "/dashboard",
   PROFIL: "/profil",

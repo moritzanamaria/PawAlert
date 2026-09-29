@@ -35,7 +35,6 @@ function Navbar() {
             <Nav className="me-auto gap-lg-2">
             <Nav.Link as={Link} to={RouteNames.HOME} onClick={handleClose}>Početna</Nav.Link>
             <Nav.Link as={Link} to={RouteNames.PRIJAVE_PREGLED} onClick={handleClose}>Pregled prijava</Nav.Link>
-            <Nav.Link as={Link} to={RouteNames.PRIJAVI_SLUCAJ} onClick={handleClose}>Prijavi slučaj</Nav.Link>
             <Nav.Link as={Link} to={RouteNames.KATALOG_PRIJAVA} onClick={handleClose}>Katalog prijava </Nav.Link>
             <Nav.Link as={Link} to={RouteNames.PROFIL} onClick={handleClose}>Profil</Nav.Link>
           </Nav>
