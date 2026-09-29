@@ -2,14 +2,11 @@ import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import prijaveService from "../services/prijaveService";
 import { RouteNames } from "../constants";
-import FilterBar from "../components/FilterBar";
 import MapView from "../components/MapView";
 
 function Home() {
-  const [prijave, setPrijave] = useState([]);
-  const [odabranaVrsta, setOdabranaVrsta] = useState("sve");
-  const [pretraga, setPretraga] = useState("");
-
+ const [prijave, setPrijave] = useState([]);
+ 
   useEffect(() => {
     ucitajPrijave();
   }, []);
@@ -18,23 +15,8 @@ function Home() {
     await prijaveService.get().then((odgovor) => {
       setPrijave(odgovor.data);
     });
-  }
-  const normPretraga = pretraga.toLowerCase();
-
-  const filtriranePrijave = (prijave || []).filter((p) => {
-    const vrsta = p.zivotinja_vrsta?.toLowerCase() || "";
-    const ime = p.zivotinja_ime?.toLowerCase() || "";
-    const tip = p.tip_prijave?.toLowerCase() || "";
-
-    const odgovaraVrsti = odabranaVrsta === "sve" || vrsta === odabranaVrsta;
-    const odgovaraPretrazi = ime.includes(normPretraga) || tip.includes(normPretraga);
-
-    return odgovaraVrsti && odgovaraPretrazi;
-  });
-
-  const najnovijeDojave = [...filtriranePrijave].sort(
-    (a, b) => new Date(b.datum) - new Date(a.datum)
-  );
+  };
+ 
 
   return (
     <div className="container my-4">
@@ -48,16 +30,11 @@ function Home() {
         </Link>
       </div>
 
-      <FilterBar
-        pretraga={pretraga}
-        setPretraga={setPretraga}
-        odabranaVrsta={odabranaVrsta}
-        setOdabranaVrsta={setOdabranaVrsta}
-      />
 
-      <MapView prijave={filtriranePrijave} najnovije={najnovijeDojave} />
-    </div>
+      <MapView prijave={prijave} />
+      </div>
   );
-}
+};
+
 
 export default Home

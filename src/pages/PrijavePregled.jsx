@@ -34,7 +34,7 @@ function PrijavePregled() {
         </thead>
         <tbody>
           {prijave && prijave.map((prijava) => (
-            <tr key={prijava.id}>
+            <tr key={prijava.id}  className={prijava.hitno ? "table-danger" : ""}>
               <td>{prijava.zivotinja_ime}</td>
               <td className="text-end">{prijava.zivotinja_vrsta}</td>
               <td className="desno">{prijava.lokacija_opis}</td>
