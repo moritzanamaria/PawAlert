@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import prijaveService from "../services/prijaveService";
-import { BojeStatusa, RouteNames } from "../constants";
+import { RouteNames } from "../constants";
 import { Badge, Table } from "react-bootstrap";
 import FormatDatuma from "../components/FormatDatuma";
 import { GrAlert } from "react-icons/gr";
@@ -22,7 +22,7 @@ export default function PrijavePregled() {
   
   
   return (
-    <>
+    <div className="container my-4">
     <Link to={RouteNames.PRIJAVA_NOVA}
     className="btn btn-secondary w-100">
       Dodaj novu prijavu
@@ -64,6 +64,6 @@ export default function PrijavePregled() {
       <Badge pill bg="secondary">
         {prijave && prijave.length}
       </Badge> &nbsp; prijava
-    </>
+    </div>
   )
 }

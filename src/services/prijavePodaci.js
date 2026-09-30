@@ -34,12 +34,10 @@ export const prijavePodaci = [
   {
     id: "3",
     zivotinja_ime: "Luna",
-    zivotinja_vrsta: "pas",
     zivotinja_pasmina: "Mješanac",
     zivotinja_opis: "Sretno vraćena vlasniku",
     zivotinja_godine: 5,
     cipirana: true,
-    tip_prijave: "nestanak",
     status: "pronađena",
     hitno: false,
     lokacija_opis: "Jug 2, Osijek",
@@ -51,12 +49,10 @@ export const prijavePodaci = [
   {
     id: "4",
     zivotinja_ime: "Miki",
-    zivotinja_vrsta: "ptica",
     zivotinja_pasmina: "Papiga (žuto-zelena)",
     zivotinja_opis: "Pobjegao iz kaveza na balkonu, prepoznaje ime",
     zivotinja_godine: 2,
     cipirana: false,
-    tip_prijave: "nestanak",
     status: "aktivna",
     hitno: false,
     lokacija_opis: "Retfala, Osijek",
@@ -68,12 +64,10 @@ export const prijavePodaci = [
   {
     id: "5",
     zivotinja_ime: "Nepoznato",
-    zivotinja_vrsta: "pas",
     zivotinja_pasmina: "Nepoznata, srednje veličine",
     zivotinja_opis: "Lutalica, mršav, bez ogrlice, plašljiv",
     zivotinja_godine: null,
     cipirana: false,
-    tip_prijave: "vidjenje",
     status: "aktivna",
     hitno: true,
     lokacija_opis: "Industrijska zona, Osijek",
@@ -85,12 +79,10 @@ export const prijavePodaci = [
   {
     id: "6",
     zivotinja_ime: "Fifi",
-    zivotinja_vrsta: "mačka",
     zivotinja_pasmina: "Perzijska",
     zivotinja_opis: "Bijela, duga dlaka, plave oči, nosi ružičastu ogrlicu",
     zivotinja_godine: 4,
     cipirana: true,
-    tip_prijave: "nestanak",
     status: "zatvorena",
     hitno: false,
     lokacija_opis: "Sjenjak, Osijek",
@@ -99,4 +91,27 @@ export const prijavePodaci = [
     datum: "2026-09-23T10:05:00",
     slika: "https://images.unsplash.com/photo-1533738363-b7f9aef128ce?w=500"
   },
+];
+
+const tipPrijave  = [
+  {
+    id: "1",
+    naziv: "Viđenje",
+   },
+  {
+    id: "2",
+    zivotinja_ime: "Nestanak",
+  },
+];
+
+const vrstaZivotinje = [
+{
+  id: "1",
+  naziv: "Pas"
+},
+{
+  id:"2",
+  naziv: "Mačka"
+},
+
 ];

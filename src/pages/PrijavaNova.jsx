@@ -1,6 +1,6 @@
 import { Link, useNavigate } from "react-router-dom";
 import { RouteNames } from "../constants";
-import { Button, Col, Form, Row } from "react-bootstrap";
+import { Button, Col, Container, Form, Row } from "react-bootstrap";
 import prijaveService from "../services/prijaveService";
 
 export default function PrijavaNova() {
@@ -14,27 +14,47 @@ export default function PrijavaNova() {
     function obradiSubmit(e) {
         e.preventDefault()
         const podaci = new FormData(e.target)
+       
+  const [tipPrijave, setTipPrijave] = useState([]);
+  const [vrstaZivotinje, setVrstaZivotinje] = useState([]);
+
+  const [noviTip, setNoviTip] = useState("");
+  const [novaVrsta, setNovaVrsta] = useState("");
+
+  const dodajTipPrijave = () => {
+    if (noviTip.trim()) {
+      setTipPrijave([...tipPrijave, { id: Date.now(), naziv: noviTip }]);
+      setNoviTip("");
+    }
+  };
+
+  const dodajVrstuZivotinje = () => {
+    if (novaVrsta.trim()) {
+      setVrstaZivotinje([...vrstaZivotinje, { id: Date.now(), naziv: novaVrsta }]);
+      setNovaVrsta("");
+    }
+  };
+
+        
         nova({
             zivotinja_ime: podaci.get('zivotinja_ime'),
-            zivotinja_vrsta: podaci.get('zivotinja_vrsta'),
+            zivotinja_vrsta: dodajVrstuZivotinje.get("naziv"),
             zivotinja_opis: podaci.get('zivotinja_opis'),
             cipirana: podaci.get('cipirana') === 'on',
             tip_prijave: podaci.get('tip_prijave'),
             status: podaci.get('status') || 'aktivna',
             lokacija_opis: podaci.get('lokacija_opis'),
-            lokacija_lat: parseFloat(podaci.get('lokacija_lat')),
-            lokacija_lng: parseFloat(podaci.get('lokacija_lng')),
             datum: new Date(podaci.get('datum')).toISOString(),
             slika: podaci.get('slika')
         })
     }
 
     return (
-        <>
+        <Container>
             <h3>
                 Prijava novog slučaja
             </h3>
-            <Form onSubmit={obradiSubmit}>
+            <Form className="" onSubmit={obradiSubmit}>
                 <Form.Group controlId="zivotinja_ime">
                     <Form.Label>Ime životinje</Form.Label>
                     <Form.Control type="text" name="zivotinja_ime" placeholder="Nepoznato" />
@@ -49,7 +69,7 @@ export default function PrijavaNova() {
                     </Form.Select>
                 </Form.Group>
 
-                <Form.Group controlId="zivotinja_opis">
+                <Form.Group className="mb-3" controlId="zivotinja_opis">
                     <Form.Label>Opis</Form.Label>
                     <Form.Control as="textarea" rows={3} name="zivotinja_opis" />
                 </Form.Group>
@@ -76,15 +96,6 @@ export default function PrijavaNova() {
                     <Form.Control type="text" name="lokacija_opis" placeholder="Gornji grad, Osijek" />
                 </Form.Group>
 
-                <Form.Group controlId="lokacija_lat">
-                    <Form.Label>Geografska širina</Form.Label>
-                    <Form.Control type="number" name="lokacija_lat" step="any" />
-                </Form.Group>
-
-                <Form.Group controlId="lokacija_lng">
-                    <Form.Label>Geografska dužina</Form.Label>
-                    <Form.Control type="number" name="lokacija_lng" step="any" />
-                </Form.Group>
 
                 <Form.Group controlId="datum">
                     <Form.Label>Datum i vrijeme</Form.Label>
@@ -96,7 +107,11 @@ export default function PrijavaNova() {
                     <Form.Control type="url" name="slika" />
                 </Form.Group>
 
-                <Row className="mt-4">
+                <Form.Group controlId="hitno" className="mt-3">
+                    <Form.Check label="Hitno" name="hitno" />
+                </Form.Group>
+
+                <Row className="mt-4" >
                     <Col>
                         <Link to={RouteNames.PRIJAVE_PREGLED} className="btn btn-danger">
                             Odustani
@@ -109,7 +124,7 @@ export default function PrijavaNova() {
                     </Col>
                 </Row>
             </Form>
-        </>
+        </Container>
 
     )
 }

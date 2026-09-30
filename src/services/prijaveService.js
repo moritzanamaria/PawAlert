@@ -2,6 +2,7 @@ import {prijavePodaci} from "./prijavePodaci";
 
   async function get() {
     return {data: [...prijavePodaci]}
+
   }
 async function nova(prijava) {
   if(prijavePodaci.length===0){
