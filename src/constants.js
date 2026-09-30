@@ -6,6 +6,7 @@ export const RouteNames = {
   DASHBOARD: "/dashboard",
   PROFIL: "/profil",
   REGISTRACIJA: "/registracija",
+  
 };
 
 export const CENTAR_OSIJEK = [45.5550, 18.6955];

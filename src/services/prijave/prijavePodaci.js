@@ -2,7 +2,7 @@ export const prijavePodaci = [
   {
     id: "1",
     zivotinja_ime: "Reks",
-    zivotinja_vrsta: "pas",
+    zivotinja_vrsta_id: "1",
     zivotinja_pasmina: "Njemački ovčar",
     zivotinja_opis: "Crno-smeđi, ima crvenu ogrlicu",
     zivotinja_godine: 3,
@@ -18,12 +18,12 @@ export const prijavePodaci = [
   {
     id: "2",
     zivotinja_ime: "Nepoznato",
-    zivotinja_vrsta: "mačka",
+    zivotinja_vrsta_id: "2",
     zivotinja_pasmina: "Domaća",
     zivotinja_opis: "Viđena u blizini parka",
     zivotinja_godine: null,
     cipirana: false,
-    tip_prijave: "vidjenje",
+    tip_prijave_id: "1",
     status: "aktivna",
     lokacija_opis: "Gornji grad, Osijek",
     lokacija_lat: 45.5610,
@@ -34,10 +34,12 @@ export const prijavePodaci = [
   {
     id: "3",
     zivotinja_ime: "Luna",
+    zivotinja_vrsta_id: "2",
     zivotinja_pasmina: "Mješanac",
     zivotinja_opis: "Sretno vraćena vlasniku",
     zivotinja_godine: 5,
     cipirana: true,
+    tip_prijave_id: "1",
     status: "pronađena",
     hitno: false,
     lokacija_opis: "Jug 2, Osijek",
@@ -48,26 +50,13 @@ export const prijavePodaci = [
   },
   {
     id: "4",
-    zivotinja_ime: "Miki",
-    zivotinja_pasmina: "Papiga (žuto-zelena)",
-    zivotinja_opis: "Pobjegao iz kaveza na balkonu, prepoznaje ime",
-    zivotinja_godine: 2,
-    cipirana: false,
-    status: "aktivna",
-    hitno: false,
-    lokacija_opis: "Retfala, Osijek",
-    lokacija_lat: 45.5690,
-    lokacija_lng: 18.6600,
-    datum: "2026-09-22T08:10:00",
-    slika: "https://images.unsplash.com/photo-1552728089-57bdde30beb3?w=500"
-  },
-  {
-    id: "5",
     zivotinja_ime: "Nepoznato",
+    zivotinja_vrsta_id: "2",
     zivotinja_pasmina: "Nepoznata, srednje veličine",
     zivotinja_opis: "Lutalica, mršav, bez ogrlice, plašljiv",
     zivotinja_godine: null,
     cipirana: false,
+    tip_prijave_id: "1",
     status: "aktivna",
     hitno: true,
     lokacija_opis: "Industrijska zona, Osijek",
@@ -77,12 +66,14 @@ export const prijavePodaci = [
     slika: "https://images.unsplash.com/photo-1517849845537-4d257902861a?w=500"
   },
   {
-    id: "6",
+    id: "5",
     zivotinja_ime: "Fifi",
+    vrstaZivotinje_id: "2",
     zivotinja_pasmina: "Perzijska",
     zivotinja_opis: "Bijela, duga dlaka, plave oči, nosi ružičastu ogrlicu",
     zivotinja_godine: 4,
     cipirana: true,
+    tip_prijave_id: "1",
     status: "zatvorena",
     hitno: false,
     lokacija_opis: "Sjenjak, Osijek",
@@ -104,6 +95,9 @@ const tipPrijave  = [
   },
 ];
 
+
+export default function dohvatiVrstu(vrsta){
+  
 const vrstaZivotinje = [
 {
   id: "1",
@@ -115,3 +109,5 @@ const vrstaZivotinje = [
 },
 
 ];
+return vrstaZivotinje.find((v)=> v.id=== id)
+}

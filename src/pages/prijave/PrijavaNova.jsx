@@ -1,7 +1,7 @@
 import { Link, useNavigate } from "react-router-dom";
-import { RouteNames } from "../constants";
+import { RouteNames } from "../../constants";
 import { Button, Col, Container, Form, Row } from "react-bootstrap";
-import prijaveService from "../services/prijaveService";
+import prijaveService from "../../services/prijave/prijaveService";
 
 export default function PrijavaNova() {
     const navigate = useNavigate()
@@ -14,28 +14,6 @@ export default function PrijavaNova() {
     function obradiSubmit(e) {
         e.preventDefault()
         const podaci = new FormData(e.target)
-       
-  const [tipPrijave, setTipPrijave] = useState([]);
-  const [vrstaZivotinje, setVrstaZivotinje] = useState([]);
-
-  const [noviTip, setNoviTip] = useState("");
-  const [novaVrsta, setNovaVrsta] = useState("");
-
-  const dodajTipPrijave = () => {
-    if (noviTip.trim()) {
-      setTipPrijave([...tipPrijave, { id: Date.now(), naziv: noviTip }]);
-      setNoviTip("");
-    }
-  };
-
-  const dodajVrstuZivotinje = () => {
-    if (novaVrsta.trim()) {
-      setVrstaZivotinje([...vrstaZivotinje, { id: Date.now(), naziv: novaVrsta }]);
-      setNovaVrsta("");
-    }
-  };
-
-        
         nova({
             zivotinja_ime: podaci.get('zivotinja_ime'),
             zivotinja_vrsta: dodajVrstuZivotinje.get("naziv"),

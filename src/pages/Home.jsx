@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import prijaveService from "../services/prijaveService";
+import prijaveService from "../services/prijave/prijaveService";
 import MapView from "../components/MapView";
 
 function Home() {
