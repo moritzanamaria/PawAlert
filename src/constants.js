@@ -11,12 +11,6 @@ export const RouteNames = {
   VRSTE_PREGLED: "/vrste",
   VRSTA_NOVA: "/vrste/dodaj",
   VRSTA_PROMJENA: "/vrste/:id",
-
-  DETALJI_SLUCAJA: "/prijave",
-  DASHBOARD: "/dashboard",
-  PROFIL: "/profil",
-  REGISTRACIJA: "/registracija",
-
 };
 
 export const CENTAR_OSIJEK = [45.5550, 18.6955];

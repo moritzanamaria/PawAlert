@@ -9,9 +9,6 @@ import TipPromjena from "./pages/tipovi/TipPromjena"
 import VrstePregled from "./pages/vrste/VrstePregled"
 import VrstaNova from "./pages/vrste/VrstaNova"
 import VrstaPromjena from "./pages/vrste/VrstaPromjena"
-import KatalogPrijava from "./pages/KatalogPrijava"
-import Profil from "./pages/Profil"
-import Registracija from "./pages/Registracija"
 import Navbar from "./components/Navbar"
 import { RouteNames } from "./constants"
 
@@ -31,9 +28,6 @@ export default function App() {
         <Route path={RouteNames.VRSTE_PREGLED} element={<VrstePregled />} />
         <Route path={RouteNames.VRSTA_NOVA} element={<VrstaNova />} />
         <Route path={RouteNames.VRSTA_PROMJENA} element={<VrstaPromjena />} />
-        <Route path={RouteNames.KATALOG_PRIJAVA} element={<KatalogPrijava />} />
-        <Route path={RouteNames.PROFIL} element={<Profil />} />
-        <Route path={RouteNames.REGISTRACIJA} element={<Registracija />} />
       </Routes>
     </>
   )
