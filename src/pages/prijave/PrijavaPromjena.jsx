@@ -112,7 +112,7 @@ export default function PrijavaPromjena() {
 
                 <Form.Group controlId="datum">
                     <Form.Label>Datum i vrijeme</Form.Label>
-                    <Form.Control type="date" name="datum" defaultValue={prijava.datum} />
+                    <Form.Control type="datetime-local" name="datum" required defaultValue={prijava.datum} />
                 </Form.Group>
 
                 <Form.Group controlId="slika">
