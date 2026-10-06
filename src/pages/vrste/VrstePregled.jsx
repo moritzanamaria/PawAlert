@@ -19,6 +19,16 @@ export default function VrstePregled() {
     ucitajVrste()
   }, [])
 
+  
+async function obrisi(id){
+          if(!confirm('Sigurno obrisati?')){
+              return
+          }
+  
+          await VrsteService.obrisi(id)
+          ucitajVrste()
+      }
+
   return (
     <div className="container my-4">
       <Link to={RouteNames.VRSTA_NOVA}
@@ -41,6 +51,9 @@ export default function VrstePregled() {
                 <Button onClick={() => {navigate(`/vrste/${vrsta.id}`) }}>
                   Promjena
                 </Button>
+                 <Button variant="danger" onClick={()=>obrisi(vrsta.id)}>
+                                    Obriši
+                                </Button>
               </td>
             </tr>
           ))}

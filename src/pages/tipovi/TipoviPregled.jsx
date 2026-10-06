@@ -6,7 +6,7 @@ import { Link, useNavigate } from "react-router-dom";
 
 export default function TipoviPregled() {
   const [tipovi, setTipovi] = useState([])
-  const navigate = useNavigate()  
+  const navigate = useNavigate()
 
   async function ucitajTipove() {
     await TipService.get().then((odgovor) => {
@@ -17,6 +17,15 @@ export default function TipoviPregled() {
   useEffect(() => {
     ucitajTipove()
   }, [])
+
+   async function obrisi(id){
+        if(!confirm('Sigurno obrisati?')){
+            return
+        }
+
+        await TipService.obrisi(id)
+        ucitajTipove()
+    }
 
   return (
     <div className="container my-4">
@@ -37,8 +46,11 @@ export default function TipoviPregled() {
             <tr key={tip.id}>
               <td>{tip.naziv}</td>
               <td>
-                <Button onClick={() => {navigate(`/tip/${tip.id}`) }}>
+                <Button onClick={() => { navigate(`/tip/${tip.id}`) }}>
                   Promjena
+                </Button>
+                <Button variant="danger" onClick={() => obrisi(tip.id)}>
+                  Obriši
                 </Button>
               </td>
             </tr>

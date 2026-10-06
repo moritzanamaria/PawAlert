@@ -19,6 +19,16 @@ const navigate = useNavigate()
     ucitajPrijave()
   }, [])
 
+  
+     async function obrisi(id){
+          if(!confirm('Sigurno obrisati?')){
+              return
+          }
+  
+          await prijaveService.obrisi(id)
+          ucitajPrijave()
+      }
+
 
   return (
     <Container>
@@ -62,6 +72,9 @@ const navigate = useNavigate()
                 <Button onClick={()=>{navigate(`/prijave/${prijava.id}`)}}>
                   Promjena
                 </Button>
+                 <Button variant="danger" onClick={()=>obrisi(prijava.id)}>
+                                    Obriši
+                                </Button>
               </td>
             </tr>
           ))}

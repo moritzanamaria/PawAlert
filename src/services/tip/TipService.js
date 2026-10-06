@@ -19,18 +19,20 @@ async function dodaj(tip) {
   }
 
   async function promjeni(id, tip) {
-    const index = TipPodaci.findIndex(p => p.id === parseInt(id))
-    if(index !== -1){
-        TipPodaci[index] = { ...TipPodaci[index], ...tip, id: parseInt(sifra) }
-    }
-}
-  
-async function obrisi(id){
-    const index = TipPodaci.findIndex(p => p.id === parseInt(id))
-    if(index !== -1){
-        TipPodaci.splice(index, 1)
-    }
-}
+     const index = nadiIndex(id)
+     TipPodaci[index] = { ...TipPodaci[index], ...tip, id: parseInt(id) }
+     }
+ 
+     function nadiIndex(id){
+    return TipPodaci.findIndex(t => t.id === parseInt(id))
+} 
+
+   
+ async function obrisi(id){
+     const index = nadiIndex(id)
+         TipPodaci.splice(index, 1)
+     }
+ 
 
 export default {
   get,

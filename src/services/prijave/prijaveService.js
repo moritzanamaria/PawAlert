@@ -19,18 +19,20 @@ async function dodaj(prijava) {
   }
 
   async function promjeni(id, prijava) {
-    const index = prijavePodaci.findIndex(p => p.id === parseInt(id))
-    if(index !== -1){
-        prijavePodaci[index] = { ...prijavePodaci[index], ...prijava, id: parseInt(sifra) }
+    const index = nadiIndex(id)
+    prijavePodaci[index] = { ...prijavePodaci[index], ...prijava, id: parseInt(id) }
     }
-}
+
+    
+     function nadiIndex(id){
+    return prijavePodaci.findIndex(p => p.id === parseInt(id))
+} 
   
 async function obrisi(id){
-    const index = prijavePodaci.findIndex(p => p.id === parseInt(id))
-    if(index !== -1){
+    const index = nadiIndex(id)
         prijavePodaci.splice(index, 1)
     }
-}
+
 
 export default {
   get,

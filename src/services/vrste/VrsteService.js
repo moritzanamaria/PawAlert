@@ -18,19 +18,21 @@ async function dodaj(vrsta) {
   VrstePodaci.push(vrsta)
   }
 
+ 
   async function promjeni(id, vrsta) {
-    const index = VrstePodaci.findIndex(p => p.id === parseInt(id))
-    if(index !== -1){
-        VrstePodaci[index] = { ...VrstePodaci[index], ...vrsta, id: parseInt(sifra) }
-    }
-}
-  
-async function obrisi(id){
-    const index = VrstePodaci.findIndex(p => p.id === parseInt(id))
-    if(index !== -1){
-        VrstePodaci.splice(index, 1)
-    }
-}
+     const index = nadiIndex(id)
+     VrstePodaci[index] = { ...VrstePodaci[index], ...vrsta, id: parseInt(id) }
+     }
+ 
+     function nadiIndex(id){
+    return VrstePodaci.findIndex(v => v.id === parseInt(id))
+} 
+
+   
+ async function obrisi(id){
+     const index = nadiIndex(id)
+         VrstePodaci.splice(index, 1)
+     }
 
 export default {
   get,
