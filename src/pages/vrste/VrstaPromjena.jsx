@@ -35,7 +35,7 @@ export default function VrstaPromjena() {
     }
 
     return (
-        <Container className="my-4">
+        <div className="container my-4">
             <h3>Promjena Vrste</h3>
             <Form key={vrsta.id} onSubmit={obradiSubmit}>
                 <Form.Group className="mb-3" controlId="naziv">
@@ -51,6 +51,6 @@ export default function VrstaPromjena() {
                     </Col>
                 </Row>
             </Form>
-        </Container>
+        </div>
     )
 }

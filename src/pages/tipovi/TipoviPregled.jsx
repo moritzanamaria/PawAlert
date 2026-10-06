@@ -18,19 +18,19 @@ export default function TipoviPregled() {
     ucitajTipove()
   }, [])
 
-   async function obrisi(id){
-        if(!confirm('Sigurno obrisati?')){
-            return
-        }
-
-        await TipService.obrisi(id)
-        ucitajTipove()
+  async function obrisi(id) {
+    if (!confirm('Sigurno obrisati?')) {
+      return
     }
+
+    await TipService.obrisi(id)
+    ucitajTipove()
+  }
 
   return (
     <div className="container my-4">
       <Link to={RouteNames.TIP_NOVI}
-        className="btn btn-secondary w-100">
+        className="btn btn-secondary w-100 my-2">
         Dodaj novi tip
       </Link>
 
@@ -49,6 +49,7 @@ export default function TipoviPregled() {
                 <Button onClick={() => { navigate(`/tip/${tip.id}`) }}>
                   Promjena
                 </Button>
+                &nbsp; &nbsp;
                 <Button variant="danger" onClick={() => obrisi(tip.id)}>
                   Obriši
                 </Button>

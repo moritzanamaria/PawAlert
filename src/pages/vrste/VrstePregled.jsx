@@ -7,7 +7,7 @@ import VrstePodaci from "../../services/vrste/VrstePodaci";
 
 export default function VrstePregled() {
   const [vrste, setVrste] = useState([])
-  const navigate = useNavigate()  
+  const navigate = useNavigate()
 
   async function ucitajVrste() {
     await VrsteService.get().then((odgovor) => {
@@ -19,20 +19,20 @@ export default function VrstePregled() {
     ucitajVrste()
   }, [])
 
-  
-async function obrisi(id){
-          if(!confirm('Sigurno obrisati?')){
-              return
-          }
-  
-          await VrsteService.obrisi(id)
-          ucitajVrste()
-      }
+
+  async function obrisi(id) {
+    if (!confirm('Sigurno obrisati?')) {
+      return
+    }
+
+    await VrsteService.obrisi(id)
+    ucitajVrste()
+  }
 
   return (
     <div className="container my-4">
       <Link to={RouteNames.VRSTA_NOVA}
-        className="btn btn-secondary w-100">
+        className="btn btn-secondary w-100 my-2">
         Dodaj novu vrstu
       </Link>
 
@@ -48,12 +48,13 @@ async function obrisi(id){
             <tr key={vrsta.id}>
               <td>{vrsta.naziv}</td>
               <td>
-                <Button onClick={() => {navigate(`/vrste/${vrsta.id}`) }}>
+                <Button onClick={() => { navigate(`/vrste/${vrsta.id}`) }}>
                   Promjena
                 </Button>
-                 <Button variant="danger" onClick={()=>obrisi(vrsta.id)}>
-                                    Obriši
-                                </Button>
+                &nbsp; &nbsp;
+                <Button variant="danger" onClick={() => obrisi(vrsta.id)}>
+                  Obriši
+                </Button>
               </td>
             </tr>
           ))}

@@ -15,8 +15,8 @@ export default function PrijavaPromjena() {
 
     async function ucitajPrijavu() {
         await prijaveService.getById(params.id).then((odgovor) => {
-                const p = odgovor.data
-           p.datum = p.datum.substring(0,10)
+            const p = odgovor.data
+            p.datum = p.datum.substring(0, 10)
 
             setPrijava(p)
             setCipirana(Boolean(p.cipirana))
@@ -53,7 +53,7 @@ export default function PrijavaPromjena() {
     }
 
     return (
-        <>
+        <div className="container my-4">
             <h3>
                 Promjena slučaja
             </h3>
@@ -147,7 +147,7 @@ export default function PrijavaPromjena() {
                     </Col>
                 </Row>
             </Form>
-        </>
+        </div>
 
     )
 }

@@ -35,7 +35,7 @@ export default function TipPromjena() {
     }
 
     return (
-        <Container className="my-4">
+        <div className="container my-4">
             <h3>Promjena tipa</h3>
             <Form key={tip.id} onSubmit={obradiSubmit}>
                 <Form.Group className="mb-3" controlId="naziv">
@@ -51,6 +51,6 @@ export default function TipPromjena() {
                     </Col>
                 </Row>
             </Form>
-        </Container>
+        </div>
     )
 }
