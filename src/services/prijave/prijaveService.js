@@ -4,7 +4,12 @@ import {prijavePodaci} from "./prijavePodaci";
     return {data: [...prijavePodaci]}
 
   }
-async function nova(prijava) {
+
+  async function getById(id) {
+    return{data: prijavePodaci.find(p => p.id===parseInt(id))}
+  }
+
+async function dodaj(prijava) {
   if(prijavePodaci.length===0){
     prijava.id = 1
   }else{
@@ -12,10 +17,25 @@ async function nova(prijava) {
   }
   prijavePodaci.push(prijava)
   }
-  
 
+  async function promjeni(id, prijava) {
+    const index = prijavePodaci.findIndex(p => p.id === parseInt(id))
+    if(index !== -1){
+        prijavePodaci[index] = { ...prijavePodaci[index], ...prijava, id: parseInt(sifra) }
+    }
+}
+  
+async function obrisi(id){
+    const index = prijavePodaci.findIndex(p => p.id === parseInt(id))
+    if(index !== -1){
+        prijavePodaci.splice(index, 1)
+    }
+}
 
 export default {
   get,
-  nova
+  getById,
+  dodaj,
+  promjeni,
+  obrisi
 }

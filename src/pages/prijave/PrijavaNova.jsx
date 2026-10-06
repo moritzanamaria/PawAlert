@@ -2,37 +2,43 @@ import { Link, useNavigate } from "react-router-dom";
 import { RouteNames } from "../../constants";
 import { Button, Col, Container, Form, Row } from "react-bootstrap";
 import prijaveService from "../../services/prijave/prijaveService";
+import TipPodaci from "../../services/tip/TipPodaci";
+import VrstePodaci from "../../services/vrste/VrstePodaci";
 
 export default function PrijavaNova() {
     const navigate = useNavigate()
-    async function nova(prijava) {
-        await prijaveService.nova(prijava).then(() => {
+
+    async function dodaj(prijava) {
+        await prijaveService.dodaj(prijava).then(() => {
             navigate(RouteNames.PRIJAVE_PREGLED)
         })
     }
 
+
     function obradiSubmit(e) {
         e.preventDefault()
         const podaci = new FormData(e.target)
-        nova({
+        dodaj({
             zivotinja_ime: podaci.get('zivotinja_ime'),
-            zivotinja_vrsta: dodajVrstuZivotinje.get("naziv"),
+            zivotinja_vrsta: podaci.get("zivotinja_vrsta"),
             zivotinja_opis: podaci.get('zivotinja_opis'),
+            zivotinja_godine: podaci.get('zivotinja_godine') ? parseInt(podaci.get('zivotinja_godine')): null,
             cipirana: podaci.get('cipirana') === 'on',
             tip_prijave: podaci.get('tip_prijave'),
-            status: podaci.get('status') || 'aktivna',
+            status: podaci.get('status') || 'otvorena',
             lokacija_opis: podaci.get('lokacija_opis'),
             datum: new Date(podaci.get('datum')).toISOString(),
-            slika: podaci.get('slika')
+            slika: podaci.get('slika'),
+            hitno: podaci.get('hitno') === 'on'
         })
     }
 
     return (
-        <Container>
+        <Container className="my-4">
             <h3>
                 Prijava novog slučaja
             </h3>
-            <Form className="" onSubmit={obradiSubmit}>
+            <Form onSubmit={obradiSubmit}>
                 <Form.Group controlId="zivotinja_ime">
                     <Form.Label>Ime životinje</Form.Label>
                     <Form.Control type="text" name="zivotinja_ime" placeholder="Nepoznato" />
@@ -40,10 +46,13 @@ export default function PrijavaNova() {
 
                 <Form.Group controlId="zivotinja_vrsta">
                     <Form.Label>Vrsta</Form.Label>
-                    <Form.Select name="zivotinja_vrsta" required>
-                        <option value="pas">Pas</option>
-                        <option value="mačka">Mačka</option>
-                        <option value="ostalo">Ostalo</option>
+                    <Form.Select name="zivotinja_vrsta" defaultValue="" required>
+                        <option value="" disabled>Odaberi vrstu...</option>
+                    {VrstePodaci && VrstePodaci.map(v => 
+                        <option key={v.id} value={v.naziv}>
+                            {v.naziv}
+                        </option>
+                    )}
                     </Form.Select>
                 </Form.Group>
 
@@ -63,11 +72,23 @@ export default function PrijavaNova() {
 
                 <Form.Group controlId="tip_prijave">
                     <Form.Label>Tip prijave</Form.Label>
-                    <Form.Select name="tip_prijave" required>
-                        <option value="vidjenje">Viđenje</option>
-                        <option value="nestanak">Nestanak</option>
+                    <Form.Select name="tip_prijave" defaultValue=""required>
+                        <option value="" disabled>Odaberi tip...</option>
+                        {TipPodaci && TipPodaci.map(t => 
+                        <option key={t.id} value={t.naziv}>
+                            {t.naziv}
+                        </option>
+                    )}
                     </Form.Select>
                 </Form.Group>
+
+                <Form.Group controlId="status">
+    <Form.Label>Status</Form.Label>
+    <Form.Select name="status" required>
+        <option value="otvorena">Otvorena</option>
+        <option value="zatvorena">Zatvorena</option>
+    </Form.Select>
+</Form.Group>
 
                 <Form.Group controlId="lokacija_opis">
                     <Form.Label>Opis lokacije</Form.Label>
@@ -95,7 +116,7 @@ export default function PrijavaNova() {
                             Odustani
                         </Link>
                     </Col>
-                    <Col>
+                    <Col className="text-end">
                         <Button type="submit" variant="success">
                             Dodaj
                         </Button>
