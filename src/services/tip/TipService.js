@@ -1,21 +1,41 @@
-import {tip} from "./TipPodaci";
+import TipPodaci from "./TipPodaci";
 
   async function get() {
-    return {data: [...tipovi]}
+    return {data: [...TipPodaci]}
 
   }
-async function novi(tip) {
-  if(tipovi.length===0){
+
+  async function getById(id) {
+    return{data: TipPodaci.find(p => p.id===parseInt(id))}
+  }
+
+async function dodaj(tip) {
+  if(TipPodaci.length===0){
     tip.id = 1
   }else{
-    tip.id= tipovi[tipovi.length -1].id + 1
+    tip.id= TipPodaci[TipPodaci.length -1].id + 1
   }
-  tipovi.push(tip)
+  TipPodaci.push(tip)
   }
-  
 
+  async function promjeni(id, tip) {
+    const index = TipPodaci.findIndex(p => p.id === parseInt(id))
+    if(index !== -1){
+        TipPodaci[index] = { ...TipPodaci[index], ...tip, id: parseInt(sifra) }
+    }
+}
+  
+async function obrisi(id){
+    const index = TipPodaci.findIndex(p => p.id === parseInt(id))
+    if(index !== -1){
+        TipPodaci.splice(index, 1)
+    }
+}
 
 export default {
   get,
-  novi
+  getById,
+  dodaj,
+  promjeni,
+  obrisi
 }

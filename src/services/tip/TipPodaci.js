@@ -1,7 +1,7 @@
 
 
 
-export const tip = [
+const TipPodaci= [
 {
   id: 1,
   naziv: "Viđenje"
@@ -12,3 +12,5 @@ export const tip = [
 },
 
 ];
+
+export default TipPodaci

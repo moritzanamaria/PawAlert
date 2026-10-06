@@ -1,5 +1,5 @@
 import { useState } from "react"
-import { Container, Nav, Navbar as BsNavbar, Offcanvas, Button } from "react-bootstrap"
+import { Container, Nav, Navbar as BsNavbar, Offcanvas, Button, NavDropdown } from "react-bootstrap"
 import { FaSignInAlt } from "react-icons/fa";
 import { Link } from "react-router-dom"
 import { RouteNames } from "../constants"
@@ -10,7 +10,7 @@ function Navbar() {
   const handleShow = () => setShow(true)
   
   return (
-    <BsNavbar expand="lg" className="bg-light shadow-sm sticky-top" role="navigation" aria-label="Glavni izbornik">
+    <BsNavbar expand="lg" collapseOnSelect className="bg-light shadow-sm sticky-top" role="navigation" aria-label="Glavni izbornik">
       <Container>
         <BsNavbar.Brand as={Link} to={RouteNames.HOME} onClick={handleClose} className="fw-bold">
           PawAlert
@@ -37,6 +37,10 @@ function Navbar() {
             <Nav.Link as={Link} to={RouteNames.PRIJAVE_PREGLED} onClick={handleClose}>Pregled prijava</Nav.Link>
             <Nav.Link as={Link} to={RouteNames.KATALOG_PRIJAVA} onClick={handleClose}>Katalog prijava </Nav.Link>
             <Nav.Link as={Link} to={RouteNames.PROFIL} onClick={handleClose}>Profil</Nav.Link>
+            <NavDropdown title="Šifrarnici" id="sifrarnici">
+    <NavDropdown.Item as={Link} to={RouteNames.VRSTE_PREGLED}>Vrste</NavDropdown.Item>
+    <NavDropdown.Item as={Link} to={RouteNames.TIPOVI_PREGLED}>Tipovi</NavDropdown.Item>
+</NavDropdown>
           </Nav>
           <Nav>
             <Nav.Link as={Link} to={RouteNames.REGISTRACIJA} onClick={handleClose}>Registracija</Nav.Link>

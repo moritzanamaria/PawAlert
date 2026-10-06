@@ -1,14 +1,14 @@
 
-
-
-export const vrste = [
+const VrstePodaci = [
 {
-  id: "1",
+  id: 1,
   naziv: "Pas"
 },
 {
-  id:"2",
+  id: 2,
   naziv: "Mačka"
 },
 
 ];
+
+export default VrstePodaci
