@@ -1,7 +1,7 @@
 
 
 
-const TipPodaci= [
+export const tipovi= [
 {
   id: 1,
   naziv: "Viđenje"
@@ -13,4 +13,3 @@ const TipPodaci= [
 
 ];
 
-export default TipPodaci

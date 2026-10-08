@@ -10,7 +10,7 @@ import VrstePregled from "./pages/vrste/VrstePregled"
 import VrstaNova from "./pages/vrste/VrstaNova"
 import VrstaPromjena from "./pages/vrste/VrstaPromjena"
 import Navbar from "./components/Navbar"
-import { RouteNames } from "./constants"
+import { DATA_SOURCE, IME_APLIKACIJE, RouteNames } from "./constants"
 
 
 export default function App() {
@@ -29,6 +29,7 @@ export default function App() {
         <Route path={RouteNames.VRSTA_NOVA} element={<VrstaNova />} />
         <Route path={RouteNames.VRSTA_PROMJENA} element={<VrstaPromjena />} />
       </Routes>
+      &copy; {IME_APLIKACIJE} ({DATA_SOURCE})
     </>
   )
 }

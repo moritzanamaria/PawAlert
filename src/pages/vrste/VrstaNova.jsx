@@ -1,13 +1,13 @@
 import { Link, useNavigate } from "react-router-dom";
 import { RouteNames } from "../../constants";
 import { Button, Col, Container, Form, Row } from "react-bootstrap";
-import vrsteService from "../../services/vrste/vrsteService";
+import VrsteService from "../../services/vrste/VrsteService";
 
 export default function VrstaNova() {
     const navigate = useNavigate()
 
     async function dodaj(vrsta) {
-        await vrsteService.dodaj(vrsta).then(() => {
+        await VrsteService.dodaj(vrsta).then(() => {
             navigate(RouteNames.VRSTE_PREGLED)
         })
     }

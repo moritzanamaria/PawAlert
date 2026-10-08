@@ -15,8 +15,11 @@ export const RouteNames = {
 
 export const CENTAR_OSIJEK = [45.5550, 18.6955];
 
+export const IME_APLIKACIJE = 'PawAlert'
+
 export const BojeStatusa = {
   otvorena: "bg-success",
   zatvorena: "bg-secondary",
 };
 
+export const DATA_SOURCE = 'localStorage'

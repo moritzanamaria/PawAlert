@@ -1,43 +1,33 @@
-import {prijavePodaci} from "./prijavePodaci";
+import { DATA_SOURCE } from "../../constants";
+import prijaveServiceLocalStorage from "./prijaveServiceLocalStorage";
+import prijaveServiceMemorija from "./prijaveServiceMemorija";
 
-  async function get() {
-    return {data: [...prijavePodaci]}
+let Servis = null
+switch(DATA_SOURCE){
+  case 'memorija':
+    Servis = prijaveServiceMemorija
+    break
+    case 'localStorage':
+      Servis = prijaveServiceLocalStorage
+      break
+      default:
+        Servis = null
+}
 
-  }
+const PrazanServis = {
+  get: async ()=>({data:[]}),
+  getById: async (id)=>({data:{}}),
+  dodaj: async (prijava)=>{console.error('Servis nije implementiran')},
+  promjeni: async (id, prijava)=>{console.error('Servis nije implementiran')},
+  obrisi: async (id)=>{console.error('Servis nije implementiran')},
+}
 
-  async function getById(id) {
-    return{data: prijavePodaci.find(p => p.id===parseInt(id))}
-  }
+const AktivniServis = Servis||PrazanServis
 
-async function dodaj(prijava) {
-  if(prijavePodaci.length===0){
-    prijava.id = 1
-  }else{
-    prijava.id= prijavePodaci[prijavePodaci.length -1].id + 1
-  }
-  prijavePodaci.push(prijava)
-  }
-
-  async function promjeni(id, prijava) {
-    const index = nadiIndex(id)
-    prijavePodaci[index] = { ...prijavePodaci[index], ...prijava, id: parseInt(id) }
-    }
-
-    
-     function nadiIndex(id){
-    return prijavePodaci.findIndex(p => p.id === parseInt(id))
-} 
-  
-async function obrisi(id){
-    const index = nadiIndex(id)
-        prijavePodaci.splice(index, 1)
-    }
-
-
-export default {
-  get,
-  getById,
-  dodaj,
-  promjeni,
-  obrisi
+export default{
+  get: ()=> AktivniServis.get(),
+  getById: (id)=> AktivniServis.getById(id),
+  dodaj: (prijava)=>AktivniServis.dodaj(prijava),
+  promjeni: (id, prijava)=>AktivniServis.promjeni(id, prijava),
+  obrisi: (id)=> AktivniServis.obrisi(id)
 }

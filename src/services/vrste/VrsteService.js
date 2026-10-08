@@ -1,43 +1,33 @@
-import VrstePodaci from "./VrstePodaci";
+import { DATA_SOURCE } from "../../constants";
+import VrsteServiceLocalStorage from "./VrsteServiceLocalStorage";
+import VrsteServiceMemorija from "./VrsteServiceMemorija";
 
-  async function get() {
-    return {data: [...VrstePodaci]}
+let Servis = null
+switch(DATA_SOURCE){
+  case 'memorija':
+    Servis = VrsteServiceMemorija
+    break
+    case 'localStorage':
+      Servis = VrsteServiceLocalStorage
+      break
+      default:
+        Servis = null
+}
 
-  }
+const PrazanServis = {
+  get: async ()=>({data:[]}),
+  getById: async (id)=>({data:{}}),
+  dodaj: async (vrsta)=>{console.error('Servis nije implementiran')},
+  promjeni: async (id, vrsta)=>{console.error('Servis nije implementiran')},
+  obrisi: async (id)=>{console.error('Servis nije implementiran')},
+}
 
-  async function getById(id) {
-    return{data: VrstePodaci.find(p => p.id===parseInt(id))}
-  }
+const AktivniServis = Servis||PrazanServis
 
-async function dodaj(vrsta) {
-  if(VrstePodaci.length===0){
-    vrsta.id = 1
-  }else{
-    vrsta.id= VrstePodaci[VrstePodaci.length -1].id + 1
-  }
-  VrstePodaci.push(vrsta)
-  }
-
- 
-  async function promjeni(id, vrsta) {
-     const index = nadiIndex(id)
-     VrstePodaci[index] = { ...VrstePodaci[index], ...vrsta, id: parseInt(id) }
-     }
- 
-     function nadiIndex(id){
-    return VrstePodaci.findIndex(v => v.id === parseInt(id))
-} 
-
-   
- async function obrisi(id){
-     const index = nadiIndex(id)
-         VrstePodaci.splice(index, 1)
-     }
-
-export default {
-  get,
-  getById,
-  dodaj,
-  promjeni,
-  obrisi
+export default{
+  get: ()=> AktivniServis.get(),
+  getById: (id)=> AktivniServis.getById(id),
+  dodaj: (vrsta)=>AktivniServis.dodaj(vrsta),
+  promjeni: (id, vrsta)=>AktivniServis.promjeni(id, vrsta),
+  obrisi: (id)=> AktivniServis.obrisi(id)
 }

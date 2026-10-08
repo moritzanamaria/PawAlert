@@ -1,4 +1,4 @@
-export const prijavePodaci = [
+export const prijave = [
   {
     id: 1,
     zivotinja_ime: "Reks",

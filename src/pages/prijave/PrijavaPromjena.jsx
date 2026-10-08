@@ -3,8 +3,8 @@ import { Link, useNavigate, useParams } from "react-router-dom";
 import { RouteNames } from "../../constants";
 import { Button, Col, Form, Row } from "react-bootstrap";
 import prijaveService from "../../services/prijave/prijaveService";
-import TipPodaci from "../../services/tip/TipPodaci";
-import VrstePodaci from "../../services/vrste/VrstePodaci";
+import {tipovi} from "../../services/tip/TipPodaci";
+import {vrste} from "../../services/vrste/VrstePodaci";
 
 export default function PrijavaPromjena() {
     const navigate = useNavigate()
@@ -69,7 +69,7 @@ export default function PrijavaPromjena() {
                     <Form.Select name="zivotinja_vrsta" defaultValue={prijava.zivotinja_vrsta} required>
                         <option value="" disabled
                         >Odaberi vrstu...</option>
-                        {VrstePodaci && VrstePodaci.map((v) => (
+                        {vrste && vrste.map((v) => (
                             <option key={v.id} value={v.naziv}>{v.naziv}</option>
                         ))}
                     </Form.Select>
@@ -98,7 +98,7 @@ export default function PrijavaPromjena() {
                     <Form.Select name="tip_prijave" required
                         defaultValue={prijava.tip_prijave}>
                         <option value="" disabled>Odaberi tip...</option>
-                        {TipPodaci && TipPodaci.map((t) => (
+                        {tipovi && tipovi.map((t) => (
                             <option key={t.id} value={t.naziv}>{t.naziv}</option>
                         ))}
                     </Form.Select>

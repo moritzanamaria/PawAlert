@@ -3,7 +3,7 @@ import VrsteService from "../../services/vrste/VrsteService";
 import { RouteNames } from "../../constants";
 import { Badge, Button, Table } from "react-bootstrap";
 import { Link, useNavigate } from "react-router-dom";
-import VrstePodaci from "../../services/vrste/VrstePodaci";
+import {vrste} from "../../services/vrste/VrstePodaci";
 
 export default function VrstePregled() {
   const [vrste, setVrste] = useState([])

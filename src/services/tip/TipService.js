@@ -1,43 +1,33 @@
-import TipPodaci from "./TipPodaci";
+import { DATA_SOURCE } from "../../constants";
+import TipServiceLocalStorage from "./TipServiceLocalStorage";
+import TipServiceMemorija from "./TipServiceMemorija";
 
-  async function get() {
-    return {data: [...TipPodaci]}
+let Servis = null
+switch(DATA_SOURCE){
+  case 'memorija':
+    Servis = TipServiceMemorija
+    break
+    case 'localStorage':
+      Servis = TipServiceLocalStorage
+      break
+      default:
+        Servis = null
+}
 
-  }
+const PrazanServis = {
+  get: async ()=>({data:[]}),
+  getById: async (id)=>({data:{}}),
+  dodaj: async (tip)=>{console.error('Servis nije implementiran')},
+  promjeni: async (id, tip)=>{console.error('Servis nije implementiran')},
+  obrisi: async (id)=>{console.error('Servis nije implementiran')},
+}
 
-  async function getById(id) {
-    return{data: TipPodaci.find(p => p.id===parseInt(id))}
-  }
+const AktivniServis = Servis||PrazanServis
 
-async function dodaj(tip) {
-  if(TipPodaci.length===0){
-    tip.id = 1
-  }else{
-    tip.id= TipPodaci[TipPodaci.length -1].id + 1
-  }
-  TipPodaci.push(tip)
-  }
-
-  async function promjeni(id, tip) {
-     const index = nadiIndex(id)
-     TipPodaci[index] = { ...TipPodaci[index], ...tip, id: parseInt(id) }
-     }
- 
-     function nadiIndex(id){
-    return TipPodaci.findIndex(t => t.id === parseInt(id))
-} 
-
-   
- async function obrisi(id){
-     const index = nadiIndex(id)
-         TipPodaci.splice(index, 1)
-     }
- 
-
-export default {
-  get,
-  getById,
-  dodaj,
-  promjeni,
-  obrisi
+export default{
+  get: ()=> AktivniServis.get(),
+  getById: (id)=> AktivniServis.getById(id),
+  dodaj: (tip)=>AktivniServis.dodaj(tip),
+  promjeni: (id, tip)=>AktivniServis.promjeni(id, tip),
+  obrisi: (id)=> AktivniServis.obrisi(id)
 }

@@ -1,5 +1,5 @@
 
-const VrstePodaci = [
+export const vrste = [
 {
   id: 1,
   naziv: "Pas"
@@ -10,5 +10,3 @@ const VrstePodaci = [
 },
 
 ];
-
-export default VrstePodaci
