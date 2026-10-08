@@ -15,7 +15,7 @@ import { DATA_SOURCE, IME_APLIKACIJE, RouteNames } from "./constants"
 
 export default function App() {
   return (
-    <>
+    <div>
       <Navbar />
       <Routes>
         <Route path={RouteNames.HOME} element={<Pocetna />} />
@@ -29,7 +29,9 @@ export default function App() {
         <Route path={RouteNames.VRSTA_NOVA} element={<VrstaNova />} />
         <Route path={RouteNames.VRSTA_PROMJENA} element={<VrstaPromjena />} />
       </Routes>
-      &copy; {IME_APLIKACIJE} ({DATA_SOURCE})
-    </>
+      <hr className="m-5" />
+      <div className="m-5"> &copy; {IME_APLIKACIJE} ({DATA_SOURCE})
+        </div>
+    </div>
   )
 }
