@@ -10,7 +10,7 @@ import VrstePregled from "./pages/vrste/VrstePregled"
 import VrstaNova from "./pages/vrste/VrstaNova"
 import VrstaPromjena from "./pages/vrste/VrstaPromjena"
 import Navbar from "./components/Navbar"
-import { DATA_SOURCE, IME_APLIKACIJE, RouteNames } from "./constants"
+import { IME_APLIKACIJE, RouteNames } from "./constants"
 import Katalog from "./pages/Katalog"
 
 
@@ -33,9 +33,8 @@ export default function App() {
       </Routes>
     
       <hr/>
-      <div className="mx-5"> &copy; {IME_APLIKACIJE} ({DATA_SOURCE})
-        
-        </div>
+      <div className="mx-5"> &copy; {IME_APLIKACIJE} 
+      </div>
     </div>
   )
 }

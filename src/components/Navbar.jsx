@@ -2,7 +2,7 @@ import { useState } from "react"
 import { Container, Nav, Navbar as BsNavbar, Offcanvas, Button, NavDropdown } from "react-bootstrap"
 import { FaSignInAlt } from "react-icons/fa";
 import { Link } from "react-router-dom"
-import { RouteNames } from "../constants"
+import { DATA_SOURCE, RouteNames } from "../constants"
 
 function Navbar() {  
   const [show, setShow] = useState(false)
@@ -13,7 +13,9 @@ function Navbar() {
     <BsNavbar expand="lg" collapseOnSelect className="bg-light shadow-sm sticky-top" role="navigation" aria-label="Glavni izbornik">
       <Container>
         <BsNavbar.Brand as={Link} to={RouteNames.HOME} onClick={handleClose} className="fw-bold">
-          PawAlert
+         <span>
+      {DATA_SOURCE === "localStorage" ? "💾" : "🧠"} 
+    </span> PawAlert
         </BsNavbar.Brand>
         
         <BsNavbar.Toggle aria-controls="offcanvas-navbar" onClick={handleShow} className="border-0 shadow-none" />
