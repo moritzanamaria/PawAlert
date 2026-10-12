@@ -1,7 +1,6 @@
-// src/components/Sidebar.jsx
+import FormatDatuma from "./FormatDatuma";
 
 function Sidebar({ prijave = [] }) {
-  // Izračun 3 najnovije prijave iz primljenih podataka
   const najnovije = [...prijave]
     .sort((a, b) => new Date(b.datum || 0) - new Date(a.datum || 0))
     .slice(0, 3);
@@ -19,7 +18,6 @@ function Sidebar({ prijave = [] }) {
         }
       `}</style>
 
-      {/* 1. Animirana kartica sa sažetkom */}
       <div className="card shadow-sm border-0 p-4 text-center animirani-sidebar">
         <div style={{ fontSize: "3rem" }}>🐾</div>
         <h5 className="fw-bold mt-2 mb-1">Aktivni sustav prijava</h5>
@@ -31,7 +29,6 @@ function Sidebar({ prijave = [] }) {
         </div>
       </div>
 
-      {/* 2. Kartica s listom najnovijih dojava */}
       <div className="card shadow-sm border-0 p-3 flex-grow-1">
         <div className="d-flex justify-content-between align-items-center mb-3">
           <h6 className="fw-bold mb-0">Najnovije dojave</h6>
@@ -40,22 +37,24 @@ function Sidebar({ prijave = [] }) {
 
         <div className="list-group list-group-flush">
           {najnovije.length > 0 ? (
-            najnovije.map((p) => (
-              <div key={p.id || Math.random()} className="list-group-item px-0 py-2 border-0 border-bottom">
+            najnovije.map((prijava) => (
+              <div key={prijava.id || Math.random()} className="list-group-item px-0 py-2 border-0 border-bottom">
                 <div className="d-flex justify-content-between align-items-start">
                   <div>
                     <strong className="d-block text-dark small">
-                      {p.zivotinja_ime || "Prijava bez naziva"}
+                      {prijava.zivotinja_ime || "Prijava bez naziva"}
                     </strong>
                     <span className="text-muted small">
-                      📍 {p.lokacija_opis || "Nepoznata lokacija"}
+                      📍 {prijava.lokacija_opis || "Nepoznata lokacija"}
                     </span>
                   </div>
-                  {p.datum && (
-                    <span className="badge bg-light text-dark border small">
-                      {p.datum}
-                    </span>
-                  )}
+                 {prijava.datum && (
+  <span className="badge bg-light text-dark border small">
+    <span className="datum">
+      <FormatDatuma datum={prijava.datum} />
+    </span>
+  </span>
+)}
                 </div>
               </div>
             ))
