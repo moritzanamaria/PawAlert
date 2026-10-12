@@ -11,14 +11,16 @@ import VrstaNova from "./pages/vrste/VrstaNova"
 import VrstaPromjena from "./pages/vrste/VrstaPromjena"
 import Navbar from "./components/Navbar"
 import { DATA_SOURCE, IME_APLIKACIJE, RouteNames } from "./constants"
+import Katalog from "./pages/Katalog"
 
 
 export default function App() {
   return (
-    <div>
+    <div className="container my-4">
       <Navbar />
       <Routes>
         <Route path={RouteNames.HOME} element={<Pocetna />} />
+        <Route path={RouteNames.KATALOG} element={<Katalog />} />
         <Route path={RouteNames.PRIJAVE_PREGLED} element={<PrijavePregled />} />
         <Route path={RouteNames.PRIJAVA_NOVA} element={<PrijavaNova />} />
         <Route path={RouteNames.PRIJAVA_PROMJENA} element={<PrijavaPromjena />} />
@@ -29,8 +31,10 @@ export default function App() {
         <Route path={RouteNames.VRSTA_NOVA} element={<VrstaNova />} />
         <Route path={RouteNames.VRSTA_PROMJENA} element={<VrstaPromjena />} />
       </Routes>
-      <hr className="m-5" />
-      <div className="m-5"> &copy; {IME_APLIKACIJE} ({DATA_SOURCE})
+    
+      <hr/>
+      <div className="mx-5"> &copy; {IME_APLIKACIJE} ({DATA_SOURCE})
+        
         </div>
     </div>
   )

@@ -11,6 +11,8 @@ export const RouteNames = {
   VRSTE_PREGLED: "/vrste",
   VRSTA_NOVA: "/vrste/dodaj",
   VRSTA_PROMJENA: "/vrste/:id",
+
+  KATALOG: "/katalog"
 };
 
 export const CENTAR_OSIJEK = [45.5550, 18.6955];

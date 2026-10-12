@@ -34,6 +34,7 @@ function Navbar() {
           <Offcanvas.Body className="d-flex flex-column flex-lg-row justify-content-between align-items-lg-center">
             <Nav className="me-auto gap-lg-2">
             <Nav.Link as={Link} to={RouteNames.HOME} onClick={handleClose}>Početna</Nav.Link>
+            <Nav.Link as={Link} to={RouteNames.KATALOG} onClick={handleClose}>Katalog</Nav.Link>
             <Nav.Link as={Link} to={RouteNames.PRIJAVE_PREGLED} onClick={handleClose}>Pregled prijava</Nav.Link>
             <NavDropdown title="Šifrarnici" id="sifrarnici">
     <NavDropdown.Item as={Link} to={RouteNames.VRSTE_PREGLED} onClick={handleClose}>Vrste</NavDropdown.Item>

@@ -8,14 +8,14 @@ function Sidebar({ prijave = [] }) {
   return (
     <div className="d-flex flex-column gap-3 h-100">
       <style>{`
-        @keyframes laganoPulsiranje {
-          0% { transform: scale(1); }
-          50% { transform: scale(1.02); }
-          100% { transform: scale(1); }
-        }
-        .animirani-sidebar {
-          animation: laganoPulsiranje 2.5s infinite ease-in-out;
-        }
+        @keyframes glowPulse {
+      0% { box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075); }
+      50% { box-shadow: 0 0.5rem 1.5rem rgba(13, 110, 253, 0.25); }
+      100% { box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075); }
+    }
+    .animirani-sidebar {
+      animation: glowPulse 3s infinite ease-in-out;
+    }
       `}</style>
 
       <div className="card shadow-sm border-0 p-4 text-center animirani-sidebar">
