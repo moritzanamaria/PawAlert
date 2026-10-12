@@ -1,4 +1,4 @@
-function FilterBar({ pretraga, setPretraga, vrsta, setVrsta, odabraneVrste = [] }) {
+function FilterBar({ pretraga, setPretraga, vrsta, setVrsta, vrste = [] }) {
   return (
     <div className="card shadow-sm border-0 p-3 mb-4">
       <div className="row g-3 align-items-center">
@@ -26,9 +26,9 @@ function FilterBar({ pretraga, setPretraga, vrsta, setVrsta, odabraneVrste = [] 
             onChange={(e) => setVrsta(e.target.value)}
           >
             <option value="">Sve vrste</option>
-            {odabraneVrste.map((v, index) => (
-              <option key={index} value={v}>
-                {v}
+            {vrste.map((v,) => (            
+              <option key={v.id} value={v.id}>
+                {v.naziv}
               </option>
             ))}
           </select>
