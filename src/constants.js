@@ -12,7 +12,12 @@ export const RouteNames = {
   VRSTA_NOVA: "/vrste/dodaj",
   VRSTA_PROMJENA: "/vrste/:id",
 
-  KATALOG: "/katalog"
+  TRAG_PREGLED: "/tragovi",
+  TRAG_NOVI: "/tragovi/dodaj",
+  TRAG_PROMJENA: "/tragovi/:id",
+
+  KATALOG: "/katalog",
+  DETALJI_SLUCAJA: '/detalji-slucaja/:id',
 };
 
 export const CENTAR_OSIJEK = [45.5550, 18.6955];

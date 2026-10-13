@@ -1,105 +1,67 @@
-import { useState, useEffect } from "react";
-import { useParams, Link } from "react-router-dom";
-import { Container, Row, Col, Card, Badge, ListGroup } from "react-bootstrap";
-import { GrAlert } from "react-icons/gr";
-import prijaveService from "../../services/prijave/prijaveService";
-import tragoviService from "../../services/tragovi/tragoviService";
-import FormatDatuma from "../../components/FormatDatuma";
+import { useEffect, useState } from "react"
+import { Link, useParams } from "react-router-dom"
+import { Container, Card, ListGroup, Row, Col } from "react-bootstrap"
+import { RouteNames } from "../constants"
+import PrijaveService from "../services/prijave/prijaveService"
+import TragoviService from "../services/tragovi/TragoviService"
 
-export default function PrijavaDetalji() {
-  const { id } = useParams();
-  const [prijava, setPrijava] = useState(null);
-  const [tragovi, setTragovi] = useState([]);
+export default function DetaljiSlucaja() {
+    const { id } = useParams()
+    const [prijava, setPrijava] = useState(null)
+    const [tragovi, setTragovi] = useState([])
 
-  useEffect(() => {
-    async function ucitaj() {
-      const resPrijava = await prijaveService.getById(id);
-      setPrijava(resPrijava.data || resPrijava);
+    useEffect(() => {
+        async function ucitaj() {
+            const odgovor = await PrijaveService.getById(id)
+            setPrijava(odgovor.data ?? null)
+            const t = await TragoviService.getById(id)
+            setTragovi(t.data ?? [])
+        }
+        ucitaj()
+    }, [id])
 
-      const resTragovi = await tragoviService.getByPrijavaId(id);
-      setTragovi(resTragovi.data || resTragovi || []);
+
+    if (!prijava) {
+        return (
+            <Container className="my-4">
+                <p>Slučaj nije pronađen.</p>
+                <Link to={RouteNames.PRIJAVE_PREGLED}>Natrag na katalog</Link>
+            </Container>
+        )
     }
-    ucitaj();
-  }, [id]);
 
-  if (!prijava) {
     return (
-      <Container className="my-5 text-center">
-        <p>Učitavanje detalja prijave...</p>
-      </Container>
-    );
-  }
-
-  return (
-    <Container className="my-4">
-      <Link to={-1} className="btn btn-outline-secondary mb-3">
-        ← Natrag
-      </Link>
-
-      <Row className="g-4">
-        <Col md={5}>
-          <Card className="border-0 shadow-sm">
-            <Card.Img
-              variant="top"
-              src={prijava.slika || "https://via.placeholder.com/400x250"}
-              style={{ height: "280px", objectFit: "cover" }}
-            />
-            <Card.Body>
-              <div className="d-flex justify-content-between mb-2">
-                <Badge bg={prijava.tip_prijave === "Nestanak" ? "danger" : "info"}>
-                  {prijava.tip_prijave}
-                </Badge>
-                <Badge bg={prijava.status === "otvorena" ? "warning" : "secondary"}>
-                  {prijava.status}
-                </Badge>
-              </div>
-
-              {prijava.hitno && (
-                <Badge bg="danger" className="w-100 mb-2">
-                  <GrAlert /> HITNO
-                </Badge>
-              )}
-
-              <h3 className="fw-bold">{prijava.zivotinja_ime || "Nepoznato"}</h3>
-              <p className="text-muted small mb-3">
-                {prijava.zivotinja_vrsta} • {prijava.zivotinja_pasmina || "Nepoznata pasmina"}
-              </p>
-
-              <p className="mb-1">📍 <strong>Lokacija:</strong> {prijava.lokacija_opis}</p>
-              <p className="text-muted small">
-                🕒 <FormatDatuma datum={prijava.datum} prikazDatuma="Nepoznato" />
-              </p>
-
-              {prijava.zivotinja_opis && (
-                <p className="bg-light p-2 rounded small mt-2">
-                  {prijava.zivotinja_opis}
-                </p>
-              )}
-            </Card.Body>
-          </Card>
-        </Col>
-
-        <Col md={7}>
-          <Card className="border-0 shadow-sm p-3">
-            <h4 className="fw-bold mb-3">Dojavljeni tragovi 🐾 ({tragovi.length})</h4>
+       <div className="container my-4">
+  <Row className="g-4">
+    <Col xs={12} md={5}>
+      <img
+        src={prijava.slika}
+        alt={prijava.zivotinja_ime}
+        className="rounded shadow-sm"
+        style={{ width: "100%", maxHeight: "400px", objectFit: "cover" }}
+      />
+    </Col>
+    <Col xs={12} md={7} className="card-body">
+        <h1 className="card-title">{prijava.zivotinja_ime}</h1>
+        <h1 className="card-text ">{prijava.zivotinja_opis}</h1>
+        <h1 className="card-text fw-bold">{prijava.loacija_opis}</h1>
+              
+<hr />
+            <h4 className="card-title">Tragovi</h4>
             {tragovi.length === 0 ? (
-              <p className="text-muted">Nema zabilježenih tragova.</p>
+                <p className="card-text">Još nema tragova.</p>
             ) : (
-              <ListGroup variant="flush">
-                {tragovi.map((t) => (
-                  <ListGroup.Item key={t.id} className="px-0 py-2">
-                    <div className="d-flex justify-content-between small text-muted">
-                      <span>📍 {t.lokacija_opis}</span>
-                      <FormatDatuma datum={t.datum} prikazDatuma="Nepoznato" />
-                    </div>
-                    <p className="mb-0 mt-1">{t.opis}</p>
-                  </ListGroup.Item>
-                ))}
-              </ListGroup>
+                <ListGroup>
+                    {tragovi.map((t) => (
+                        <ListGroup.Item key={t.id}>
+                            {t.opis}
+                            {t.lokacija_opis && <div className="text-muted">{t.lokacija_opis}</div>}
+                        </ListGroup.Item>
+                    ))}
+                </ListGroup>
             )}
-          </Card>
-        </Col>
-      </Row>
-    </Container>
-  );
+    </Col>
+  </Row>
+</div>
+    )
 }

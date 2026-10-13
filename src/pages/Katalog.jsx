@@ -91,13 +91,12 @@ export default function Katalog() {
                   🕒 <strong>Vrijeme:</strong> <FormatDatuma datum={prijava.datum} prikazDatuma="Nepoznato" />
                 </Card.Text>
 
-                <Button
-                  variant="outline-primary"
-                  className="w-100 mt-auto"
-                  onClick={() => navigate(`/prijave/${prijava.id}`)}
+                <Link
+                  to={RouteNames.DETALJI_SLUCAJA.replace(':id', prijava.id)}
+                  className="btn btn-primary"
                 >
                   Detalji i tragovi
-                </Button>
+                </Link>
               </Card.Body>
             </Card>
           </Col>

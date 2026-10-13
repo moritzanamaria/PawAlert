@@ -9,9 +9,14 @@ import TipPromjena from "./pages/tipovi/TipPromjena"
 import VrstePregled from "./pages/vrste/VrstePregled"
 import VrstaNova from "./pages/vrste/VrstaNova"
 import VrstaPromjena from "./pages/vrste/VrstaPromjena"
+import TragPregled from "./pages/tragovi/TragPregled"
+import TragNovi from "./pages/tragovi/TragNovi"
+import TragPromjena from "./pages/tragovi/TragPromjena"
+
 import Navbar from "./components/Navbar"
 import { IME_APLIKACIJE, RouteNames } from "./constants"
 import Katalog from "./pages/Katalog"
+import DetaljiSlucaja from "./pages/DetaljiSlucaja"
 
 
 export default function App() {
@@ -21,6 +26,7 @@ export default function App() {
       <Routes>
         <Route path={RouteNames.HOME} element={<Pocetna />} />
         <Route path={RouteNames.KATALOG} element={<Katalog />} />
+        <Route path={RouteNames.DETALJI_SLUCAJA} element={<DetaljiSlucaja />} />
         <Route path={RouteNames.PRIJAVE_PREGLED} element={<PrijavePregled />} />
         <Route path={RouteNames.PRIJAVA_NOVA} element={<PrijavaNova />} />
         <Route path={RouteNames.PRIJAVA_PROMJENA} element={<PrijavaPromjena />} />
@@ -30,10 +36,13 @@ export default function App() {
         <Route path={RouteNames.VRSTE_PREGLED} element={<VrstePregled />} />
         <Route path={RouteNames.VRSTA_NOVA} element={<VrstaNova />} />
         <Route path={RouteNames.VRSTA_PROMJENA} element={<VrstaPromjena />} />
+        <Route path={RouteNames.TRAG_PREGLED} element={<TragPregled />} />
+        <Route path={RouteNames.TRAG_NOVI} element={<TragNovi />} />
+        <Route path={RouteNames.TRAG_PROMJENA} element={<TragPromjena />} />
       </Routes>
-    
-      <hr/>
-      <div className="mx-5"> &copy; {IME_APLIKACIJE} 
+
+      <hr />
+      <div> &copy; {IME_APLIKACIJE}
       </div>
     </div>
   )
