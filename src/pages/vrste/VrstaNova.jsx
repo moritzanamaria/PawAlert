@@ -28,7 +28,7 @@ export default function VrstaNova() {
             <Form onSubmit={obradiSubmit}>
                 <Form.Group controlId="naziv" className="mb-3">
                     <Form.Label>Naziv vrste</Form.Label>
-                    <Form.Control type="text" name="naziv" placeholder="Unesite naziv vrste" required />
+                    <Form.Control type="text" name="naziv" placeholder="Unesite naziv vrste (Npr. Ptica)" required />
                 </Form.Group>
 
                 <Row className="mt-4">

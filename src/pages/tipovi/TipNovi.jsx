@@ -28,7 +28,7 @@ export default function TipNovi() {
             <Form onSubmit={obradiSubmit}>
                 <Form.Group controlId="naziv" className="mb-3">
                     <Form.Label>Naziv tipa</Form.Label>
-                    <Form.Control type="text" name="naziv" placeholder="Unesite naziv tipa" required />
+                    <Form.Control type="text" name="naziv" placeholder="Unesite naziv tipa (Npr. Pronalazak)" required />
                 </Form.Group>
 
                 <Row className="mt-4">
