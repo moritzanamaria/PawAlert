@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react"
 import { Link, useParams } from "react-router-dom"
-import { Container, Card, ListGroup, Row, Col } from "react-bootstrap"
+import { Container, ListGroup, Row, Col } from "react-bootstrap"
 import { RouteNames } from "../constants"
-import PrijaveService from "../services/prijave/prijaveService"
+import prijaveService from "../services/prijave/prijaveService"
 import TragoviService from "../services/tragovi/TragoviService"
 
 export default function DetaljiSlucaja() {
@@ -12,10 +12,10 @@ export default function DetaljiSlucaja() {
 
     useEffect(() => {
         async function ucitaj() {
-            const odgovor = await PrijaveService.getById(id)
+            const odgovor = await prijaveService.getById(id)
             setPrijava(odgovor.data ?? null)
-            const t = await TragoviService.getById(id)
-            setTragovi(t.data ?? [])
+            const t = await TragoviService.getByPrijava(id)
+            setTragovi(t.data)
         }
         ucitaj()
     }, [id])
@@ -44,7 +44,7 @@ export default function DetaljiSlucaja() {
     <Col xs={12} md={7} className="card-body">
         <h1 className="card-title">{prijava.zivotinja_ime}</h1>
         <h1 className="card-text ">{prijava.zivotinja_opis}</h1>
-        <h1 className="card-text fw-bold">{prijava.loacija_opis}</h1>
+        <h1 className="card-text fw-bold">{prijava.lokacija_opis}</h1>
               
 <hr />
             <h4 className="card-title">Tragovi</h4>

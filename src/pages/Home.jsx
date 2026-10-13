@@ -10,7 +10,7 @@ function Home() {
   const [prijave, setPrijave] = useState([]);
   const [vrste, setVrste] = useState([]);
   const [pretraga, setPretraga] = useState("");
-  const [odabranaVrsta, setOdabranaVrsta] = useState("");
+  const [vrsta, setVrsta] = useState("");
 
   useEffect(() => {
    dohvatiPrijave();
@@ -27,7 +27,7 @@ async function dohvatiPrijave() {
     setVrste(rez.data || rez);
   };
 
-  const filtriranePrijave = filtrirajPrijave(prijave, pretraga, odabranaVrsta)
+  const filtriranePrijave = filtrirajPrijave(prijave, pretraga, vrsta, vrste)
 
   return (
     <div className="container my-4">
@@ -43,8 +43,8 @@ async function dohvatiPrijave() {
       <FilterBar
         pretraga={pretraga}
         setPretraga={setPretraga}
-        vrsta={odabranaVrsta}
-        setVrsta={setOdabranaVrsta}
+        vrsta={vrsta}
+        setVrsta={setVrsta}
         vrste= {vrste}
       />
 

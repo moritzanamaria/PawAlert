@@ -17,7 +17,8 @@ async function get() {
 
 async function getById(id) {
     const prijave = dohvatiSveIzStorage()
-    return{data: prijave.find(p => p.id===parseInt(id))}
+    return{
+      data: prijave.find(p => p.id===parseInt(id))}
   }
 
 async function dodaj(prijava) {

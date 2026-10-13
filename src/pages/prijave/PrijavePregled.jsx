@@ -47,6 +47,7 @@ export default function PrijavePregled() {
             <th>Tip prijave</th>
             <th>Status</th>
             <th>Hitno</th>
+            <th>Tragovi</th>
             <th>Akcija</th>
           </tr>
         </thead>
@@ -67,6 +68,13 @@ export default function PrijavePregled() {
                   color={prijava.hitno ? 'red' : 'grey'}
                   title={prijava.hitno ? 'Hitno' : 'Nije hitno'}
                 />
+              </td>
+              <td> <Link
+                to={`/prijave/${prijava.id}/tragovi`}
+                className="btn btn-primary btn-sm me-2"
+              >
+                Tragovi
+              </Link>
               </td>
               <td>
                 <Button onClick={() => { navigate(`/prijave/${prijava.id}`) }}>

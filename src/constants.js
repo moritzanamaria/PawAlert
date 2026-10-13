@@ -12,8 +12,8 @@ export const RouteNames = {
   VRSTA_NOVA: "/vrste/dodaj",
   VRSTA_PROMJENA: "/vrste/:id",
 
-  TRAG_PREGLED: "/tragovi",
-  TRAG_NOVI: "/tragovi/dodaj",
+  TRAG_PREGLED: "/prijave/:id/tragovi",
+  TRAG_NOVI: "/prijave/:id/tragovi/dodaj",
   TRAG_PROMJENA: "/tragovi/:id",
 
   KATALOG: "/katalog",

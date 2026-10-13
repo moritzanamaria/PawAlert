@@ -1,14 +1,16 @@
-import { Link, useNavigate } from "react-router-dom";
-import { RouteNames } from "../../constants";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { Button, Col, Container, Form, Row } from "react-bootstrap";
 import TragoviService from "../../services/tragovi/TragoviService";
+import { useState } from "react";
 
 export default function TragNovi() {
     const navigate = useNavigate()
+    const { id } = useParams()
+      const [trag, setTrag] = useState({})
 
     async function dodaj(trag) {
         await TragoviService.dodaj(trag).then(() => {
-            navigate(RouteNames.TRAG_PREGLED)
+            navigate(`/prijave/${id}/tragovi`)
         })
     }
 
@@ -16,7 +18,7 @@ export default function TragNovi() {
         e.preventDefault()
         const podaci = new FormData(e.target)
         dodaj({
-            prijava: parseInt(podaci.get('prijava')) || 0,
+            prijava: parseInt(id),
             korisnik: parseInt(podaci.get('korisnik')) || 0,
             opis: podaci.get('opis'),
             lokacija_opis: podaci.get('lokacija_opis'),
@@ -29,18 +31,17 @@ export default function TragNovi() {
     return (
         <Container className="my-4">
             <h3>
-                Dodaj novi trag
+                Dodaj novi trag za prijavu {id}
             </h3>
             <Form onSubmit={obradiSubmit}>
-                <Form.Group controlId="naziv" className="mb-3">
-                    <Form.Label>Prijava(ID)</Form.Label>
-                    <Form.Control type="text" name="prijava" placeholder="Unesite broj prijave" required />
+               <Form.Group className="mb-3" controlId="naziv">
+                    <Form.Label>Prijava (ID)</Form.Label>
+                    <Form.Control type="text" name="prijava" defaultValue={trag.prijava} />
                 </Form.Group>
                 <Form.Group controlId="korisnik" className="mb-3">
                     <Form.Label>Korisnik (ID)</Form.Label>
-                    <Form.Control type="number" name="korisnik" placeholder="Unesite ID korisnika" required />
+                    <Form.Control type="number" name="korisnik" defaultValue={trag.korisnik} required />
                 </Form.Group>
-
                 <Form.Group controlId="opis" className="mb-3">
                     <Form.Label>Opis traga</Form.Label>
                     <Form.Control as="textarea" rows={3} name="opis" placeholder="Unesite opis traga" required />
@@ -50,6 +51,21 @@ export default function TragNovi() {
                     <Form.Label>Opis lokacije</Form.Label>
                     <Form.Control type="text" name="lokacija_opis" placeholder="Unesite opis lokacije (npr. Promenada, Osijek)" required />
                 </Form.Group>
+                
+                <Row>
+                    <Col md={6}>
+                        <Form.Group controlId="lokacija_lat" className="mb-3">
+                            <Form.Label>Geografska širina (Latitude)</Form.Label>
+                            <Form.Control type="number" step="any" name="lokacija_lat" defaultValue={trag.lokacija_lat} required />
+                        </Form.Group>
+                    </Col>
+                    <Col md={6}>
+                        <Form.Group controlId="lokacija_lng" className="mb-3">
+                            <Form.Label>Geografska dužina (Longitude)</Form.Label>
+                            <Form.Control type="number" step="any" name="lokacija_lng" defaultValue={trag.lokacija_lng} required />
+                        </Form.Group>
+                    </Col>
+                </Row>
 
 
                 <Form.Group controlId="datum" className="mb-3">
@@ -59,7 +75,7 @@ export default function TragNovi() {
 
                 <Row className="mt-4">
                     <Col>
-                        <Link to={RouteNames.TRAG_PREGLED} className="btn btn-danger">
+                        <Link to={`/prijave/${id}/tragovi`} className="btn btn-danger">
                             Odustani
                         </Link>
                     </Col>

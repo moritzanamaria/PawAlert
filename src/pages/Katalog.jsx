@@ -13,7 +13,7 @@ export default function Katalog() {
   const [prijave, setPrijave] = useState([]);
   const [vrste, setVrste] = useState([]);
   const [pretraga, setPretraga] = useState("");
-  const [odabranaVrsta, setOdabranaVrsta] = useState("");
+  const [vrsta, setVrsta] = useState("");
 
   const navigate = useNavigate();
 
@@ -22,7 +22,7 @@ export default function Katalog() {
     VrsteService.get().then((res) => setVrste(res.data || res));
   }, []);
 
-  const filtriranePrijave = filtrirajPrijave(prijave, pretraga, odabranaVrsta);
+  const filtriranePrijave = filtrirajPrijave(prijave, pretraga, vrsta, vrste);
 
   return (
     <Container className="my-4">
@@ -36,8 +36,8 @@ export default function Katalog() {
       <FilterBar
         pretraga={pretraga}
         setPretraga={setPretraga}
-        vrsta={odabranaVrsta}
-        setVrsta={setOdabranaVrsta}
+        vrsta={vrsta}
+        setVrsta={setVrsta}
         vrste={vrste}
       />
 
@@ -61,7 +61,7 @@ export default function Katalog() {
                   {prijava.status?.toUpperCase()}
                 </Badge>
               </div>
-
+{prijava.slika && (
               <div style={{ height: "200px", overflow: "hidden", backgroundColor: "#f8f9fa" }}>
                 <Card.Img
                   variant="top"
@@ -70,11 +70,11 @@ export default function Katalog() {
                   style={{ objectFit: "cover", width: "100%", height: "100%" }}
                 />
               </div>
-
+)}
               <Card.Body className="d-flex flex-column">
                 <div className="d-flex justify-content-between align-items-start mb-2">
                   <Card.Title className="mb-0 fw-bold fs-4">
-                    {prijava.zivotinja_ime || "Nepoznato"}
+                    {prijava.zivotinja_ime}
                   </Card.Title>
                   <Badge bg={prijava.tip_prijave === "Nestanak" ? "danger" : "info"} className="fs-6">
                     {prijava.tip_prijave}
@@ -82,7 +82,7 @@ export default function Katalog() {
                 </div>
 
                 <Card.Subtitle className="mb-3 text-muted">
-                  {prijava.zivotinja_vrsta} {prijava.zivotinja_pasmina && `• ${prijava.zivotinja_pasmina}`}
+                  {prijava.zivotinja_vrsta}
                 </Card.Subtitle>
 
                 <Card.Text className="small text-secondary mb-3 flex-grow-1">

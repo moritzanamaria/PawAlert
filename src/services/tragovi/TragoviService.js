@@ -27,6 +27,7 @@ const AktivniServis = Servis||PrazanServis
 export default{
   get: ()=> AktivniServis.get(),
   getById: (id)=> AktivniServis.getById(id),
+ getByPrijava: (prijavaId)=> AktivniServis.getByPrijava(prijavaId),
   dodaj: (trag)=>AktivniServis.dodaj(trag),
   promjeni: (id, trag)=>AktivniServis.promjeni(id, trag),
   obrisi: (id)=> AktivniServis.obrisi(id)

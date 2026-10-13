@@ -1,16 +1,24 @@
 import { useEffect, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { RouteNames } from "../../constants";
-import { Button, Col, Container, Form, Row } from "react-bootstrap";
+import { Button, Col, Form, Row } from "react-bootstrap";
 import TragoviService from "../../services/tragovi/TragoviService";
 
 export default function TragPromjena() {
     const navigate = useNavigate()
-    const params = useParams()
-    const [trag, setTrag] = useState({})
+    const { id } = useParams()
+    const [trag, setTrag] = useState({
+        prijava: "",
+        korisnik: "",
+        opis: "",
+        lokacija_opis: "",
+        lokacija_lat: 0,
+        lokacija_lng: 0,
+        datum: ""
+    })
 
     async function ucitajTrag() {
-        await TragoviService.getById(params.id).then((odgovor) => {
+        await TragoviService.getById(id).then((odgovor) => {
             setTrag(odgovor.data)
         })
     }
@@ -20,8 +28,8 @@ export default function TragPromjena() {
     }, [])
 
     async function promjeni(podaci) {
-        await TragoviService.promjeni(params.id, podaci).then(() => {
-            navigate(RouteNames.TRAG_PREGLED)
+        await TragoviService.promjeni(id, podaci).then(() => {
+            navigate(`/prijave/${trag.prijava}/tragovi`)
         })
     }
 
@@ -30,8 +38,8 @@ export default function TragPromjena() {
         const podaci = new FormData(e.target)
         promjeni({
             ...trag,
-            prijava: parseInt(podaci.get('prijava')) || 0,
-            korisnik: parseInt(podaci.get('korisnik')) || 0,
+            prijava: parseInt(podaci.get('prijava')),
+            korisnik: parseInt(podaci.get('korisnik')),
             opis: podaci.get('opis'),
             lokacija_opis: podaci.get('lokacija_opis'),
             lokacija_lat: parseFloat(podaci.get('lokacija_lat')) || 0,
@@ -42,7 +50,7 @@ export default function TragPromjena() {
 
     return (
         <div className="container my-4">
-            <h3>Promjena tragova</h3>
+            <h3>Promjena traga {id}</h3>
             <Form key={trag.id} onSubmit={obradiSubmit}>
                 <Form.Group className="mb-3" controlId="naziv">
                     <Form.Label>Prijava (ID)</Form.Label>
@@ -80,16 +88,16 @@ export default function TragPromjena() {
 
                 <Form.Group controlId="datum" className="mb-3">
                     <Form.Label>Datum i vrijeme</Form.Label>
-                    <Form.Control 
-                        type="datetime-local" 
-                        name="datum" 
-                        defaultValue={trag.datum ? trag.datum.slice(0, 16) : ""} 
-                        required 
+                    <Form.Control
+                        type="datetime-local"
+                        name="datum"
+                        defaultValue={trag.datum ? trag.datum.slice(0, 16) : ""}
+                        required
                     />
                 </Form.Group>
                 <Row className="mt-4">
                     <Col>
-                        <Link to={RouteNames.TRAG_PREGLED} className="btn btn-danger">Odustani</Link>
+                        <Link to={`/prijave/${trag.prijava}/tragovi`} className="btn btn-danger">Odustani</Link>
                     </Col>
                     <Col className="text-end">
                         <Button type="submit" variant="success">Spremi</Button>
