@@ -58,7 +58,7 @@ export default function PrijavePregled() {
               <td>{prijava.zivotinja_vrsta}</td>
               <td>{prijava.lokacija_opis}</td>
               <td style={{ textAlign: "center" }}>
-                <FormatDatuma datum={prijava.datum} prikazDatuma="Nepoznato" />
+                <FormatDatuma datum={prijava.datum}  prikazDatuma="Nepoznato" />
               </td>
               <td>{prijava.tip_prijave}</td>
               <td>{prijava.status}</td>

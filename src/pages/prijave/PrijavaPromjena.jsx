@@ -16,8 +16,7 @@ export default function PrijavaPromjena() {
     async function ucitajPrijavu() {
         await prijaveService.getById(params.id).then((odgovor) => {
             const p = odgovor.data
-            p.datum = p.datum.substring(0, 10)
-
+          
             setPrijava(p)
             setCipirana(Boolean(p.cipirana))
             setHitno(Boolean(p.hitno))
@@ -112,7 +111,11 @@ export default function PrijavaPromjena() {
 
                 <Form.Group controlId="datum">
                     <Form.Label>Datum i vrijeme</Form.Label>
-                    <Form.Control type="datetime-local" name="datum" required defaultValue={prijava.datum} />
+                    <Form.Control   
+                        type="datetime-local"
+                        name="datum"
+                        defaultValue={prijava.datum}
+                        required />
                 </Form.Group>
 
                 <Form.Group controlId="slika">

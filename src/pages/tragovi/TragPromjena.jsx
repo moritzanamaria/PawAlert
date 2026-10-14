@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
-import { RouteNames } from "../../constants";
 import { Button, Col, Form, Row } from "react-bootstrap";
 import TragoviService from "../../services/tragovi/TragoviService";
 
