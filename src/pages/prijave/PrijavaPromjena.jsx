@@ -38,11 +38,11 @@ export default function PrijavaPromjena() {
         promjeni({
             ...prijava,
             zivotinja_ime: podaci.get('zivotinja_ime'),
-            zivotinja_vrsta: podaci.get("zivotinja_vrsta"),
+            zivotinja_vrsta: parseInt(podaci.get("zivotinja_vrsta")),
             zivotinja_opis: podaci.get('zivotinja_opis'),
             zivotinja_godine: parseInt(podaci.get('zivotinja_godine')),
             cipirana: podaci.get('cipirana') === 'on',
-            tip_prijave: podaci.get('tip_prijave'),
+            tip_prijave: parseInt(podaci.get('tip_prijave')),
             status: podaci.get('status') || prijava.status || 'aktivna',
             lokacija_opis: podaci.get('lokacija_opis'),
             datum: new Date(podaci.get('datum')).toISOString(),
@@ -69,7 +69,9 @@ export default function PrijavaPromjena() {
                         <option value="" disabled
                         >Odaberi vrstu...</option>
                         {vrste && vrste.map((v) => (
-                            <option key={v.id} value={v.naziv}>{v.naziv}</option>
+                            <option key={v.id} value={v.id}>
+                                {v.naziv}
+                                </option>
                         ))}
                     </Form.Select>
                 </Form.Group>
@@ -98,7 +100,9 @@ export default function PrijavaPromjena() {
                         defaultValue={prijava.tip_prijave}>
                         <option value="" disabled>Odaberi tip...</option>
                         {tipovi && tipovi.map((t) => (
-                            <option key={t.id} value={t.naziv}>{t.naziv}</option>
+                            <option key={t.id} value={t.id}>
+                                {t.naziv}
+                                </option>
                         ))}
                     </Form.Select>
                 </Form.Group>

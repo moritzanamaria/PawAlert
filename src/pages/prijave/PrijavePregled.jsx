@@ -5,6 +5,8 @@ import { Badge, Button, Container, Table } from "react-bootstrap";
 import FormatDatuma from "../../components/FormatDatuma";
 import { GrAlert } from "react-icons/gr";
 import { Link, useNavigate } from "react-router-dom";
+import { vrste } from "../../services/vrste/VrstePodaci";
+import { tipovi } from "../../services/tip/TipPodaci";
 
 export default function PrijavePregled() {
   const [prijave, setPrijave] = useState([])
@@ -28,6 +30,16 @@ export default function PrijavePregled() {
     await prijaveService.obrisi(id)
     ucitajPrijave()
   }
+
+  const getNazivVrste = (id) => {
+    const vrsta = vrste.find(v => v.id === id);
+    return vrsta ? vrsta.naziv : id;
+  };
+
+  const getNazivTipa = (id) => {
+    const tip = tipovi.find(t => t.id === id);
+    return tip ? tip.naziv : id;
+  };
 
 
   return (
@@ -55,12 +67,12 @@ export default function PrijavePregled() {
           {prijave && prijave.map((prijava) => (
             <tr key={prijava.id}>
               <td>{prijava.zivotinja_ime}</td>
-              <td>{prijava.zivotinja_vrsta}</td>
+              <td>{getNazivVrste(prijava.zivotinja_vrsta)}</td>
               <td>{prijava.lokacija_opis}</td>
               <td style={{ textAlign: "center" }}>
                 <FormatDatuma datum={prijava.datum}  prikazDatuma="Nepoznato" />
               </td>
-              <td>{prijava.tip_prijave}</td>
+              <td>{getNazivTipa(prijava.tip_prijave)}</td>
               <td>{prijava.status}</td>
               <td>
                 <GrAlert

@@ -6,7 +6,7 @@ import { useState } from "react";
 export default function TragNovi() {
     const navigate = useNavigate()
     const { id } = useParams()
-      const [trag, setTrag] = useState({})
+    const [trag, setTrag] = useState({})
 
     async function dodaj(trag) {
         await TragoviService.dodaj(trag).then(() => {

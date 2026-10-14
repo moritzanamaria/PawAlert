@@ -20,11 +20,11 @@ export default function PrijavaNova() {
         const podaci = new FormData(e.target)
         dodaj({
             zivotinja_ime: podaci.get('zivotinja_ime'),
-            zivotinja_vrsta: podaci.get("zivotinja_vrsta"),
+            zivotinja_vrsta: parseInt(podaci.get("zivotinja_vrsta")),
             zivotinja_opis: podaci.get('zivotinja_opis'),
             zivotinja_godine: podaci.get('zivotinja_godine') ? parseInt(podaci.get('zivotinja_godine')): null,
             cipirana: podaci.get('cipirana') === 'on',
-            tip_prijave: podaci.get('tip_prijave'),
+            tip_prijave: parseInt(podaci.get('tip_prijave')),
             status: podaci.get('status') || 'otvorena',
             lokacija_opis: podaci.get('lokacija_opis'),
             datum: new Date(podaci.get('datum')).toISOString(),
@@ -49,7 +49,7 @@ export default function PrijavaNova() {
                     <Form.Select name="zivotinja_vrsta" defaultValue="" required>
                         <option value="" disabled>Odaberi vrstu...</option>
                     {vrste && vrste.map(v => 
-                        <option key={v.id} value={v.naziv}>
+                        <option key={v.id} value={v.id}>
                             {v.naziv}
                         </option>
                     )}
@@ -75,7 +75,7 @@ export default function PrijavaNova() {
                     <Form.Select name="tip_prijave" defaultValue=""required>
                         <option value="" disabled>Odaberi tip...</option>
                         {tipovi && tipovi.map(t => 
-                        <option key={t.id} value={t.naziv}>
+                        <option key={t.id} value={t.id}>
                             {t.naziv}
                         </option>
                     )}
