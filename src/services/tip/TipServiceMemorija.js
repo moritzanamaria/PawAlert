@@ -13,7 +13,7 @@ async function dodaj(tip) {
   if(tipovi.length===0){
     tip.id = 1
   }else{
-    tip.id= tipovi[tipoviPodaci.length -1].id + 1
+    tip.id= tipovi[tipovi.length -1].id + 1
   }
   tipovi.push(tip)
   }

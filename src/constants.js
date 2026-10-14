@@ -29,4 +29,4 @@ export const BojeStatusa = {
   zatvorena: "bg-secondary",
 };
 
-export const DATA_SOURCE = 'localStorage'
+export const DATA_SOURCE = 'memorija'

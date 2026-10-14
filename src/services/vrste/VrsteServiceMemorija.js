@@ -13,7 +13,7 @@ async function dodaj(vrsta) {
   if(vrste.length===0){
     vrsta.id = 1
   }else{
-    vrsta.id= vrste[vrstePodaci.length -1].id + 1
+    vrsta.id= vrste[vrste.length -1].id + 1
   }
   vrste.push(vrsta)
   }

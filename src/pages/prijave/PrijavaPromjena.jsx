@@ -45,7 +45,7 @@ export default function PrijavaPromjena() {
             tip_prijave: parseInt(podaci.get('tip_prijave')),
             status: podaci.get('status') || prijava.status || 'aktivna',
             lokacija_opis: podaci.get('lokacija_opis'),
-            datum: new Date(podaci.get('datum')).toISOString(),
+            datum: podaci.get('datum'),
             slika: podaci.get('slika'),
             hitno: podaci.get('hitno') === 'on'
         })

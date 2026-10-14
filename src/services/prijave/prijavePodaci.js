@@ -1,8 +1,8 @@
 export const prijave = [
   {
     id: 1,
-    zivotinja_ime: 1,
-    zivotinja_vrsta: "Pas",
+    zivotinja_ime: "Reks",
+    zivotinja_vrsta: 1,
     zivotinja_pasmina: "Njemački ovčar",
     zivotinja_opis: "Crno-smeđi, ima crvenu ogrlicu",
     zivotinja_godine: 3,
