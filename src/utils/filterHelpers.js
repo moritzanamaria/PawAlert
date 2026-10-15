@@ -11,19 +11,10 @@ export function filtrirajPrijave(prijave = [], pretraga = "", odabranaVrsta = ""
 
     let zadovoljavaVrstu = true;
     if (odabranaVrsta !== "") {
-      const vrstaIdPrijave = p.vrsta_id || p.zivotinja_vrsta_id;
-      const vrstaNazivPrijave = p.zivotinja_vrsta || p.vrsta;
 
-      const odabraniObjekt = vrste.find((v) => String(v.id) === String(odabranaVrsta));
-
-      if (odabraniObjekt) {
-        zadovoljavaVrstu =
-          String(vrstaIdPrijave) === String(odabraniObjekt.id) ||
-          String(vrstaNazivPrijave).toLowerCase() === String(odabraniObjekt.naziv).toLowerCase();
-      } else {
-        zadovoljavaVrstu = String(vrstaIdPrijave) === String(odabranaVrsta);
+        zadovoljavaVrstu = String(p.zivotinja_vrsta) === String(odabranaVrsta);
       }
-    }
+    
     return zadovoljavaPretragu && zadovoljavaVrstu;
   });
 }
