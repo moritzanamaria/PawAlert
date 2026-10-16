@@ -63,7 +63,7 @@ export const prijave = [
     lokacija_lat: 45.5390,
     lokacija_lng: 18.6450,
     datum: "2026-09-15T19:50:00",
-    slika: "https://images.unsplash.com/photo-1517849845537-4d257902861a?w=500"
+    slika: ""
   },
   {
     id: 5,

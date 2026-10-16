@@ -4,6 +4,7 @@ import { Container, Row, Col, Card, Badge, Button } from "react-bootstrap";
 import { GrAlert } from "react-icons/gr";
 import prijaveService from "../services/prijave/prijaveService";
 import VrsteService from "../services/vrste/VrsteService";
+import TipService from "../services/tip/TipService"
 import FilterBar from "../components/FilterBar";
 import FormatDatuma from "../components/FormatDatuma";
 import { filtrirajPrijave } from "../utils/filterHelpers";
@@ -12,6 +13,7 @@ import { RouteNames } from "../constants";
 export default function Katalog() {
   const [prijave, setPrijave] = useState([]);
   const [vrste, setVrste] = useState([]);
+  const [tipovi, setTipovi]= useState([]);
   const [pretraga, setPretraga] = useState("");
   const [vrsta, setVrsta] = useState("");
 
@@ -20,9 +22,12 @@ export default function Katalog() {
   useEffect(() => {
     prijaveService.get().then((res) => setPrijave(res.data || res));
     VrsteService.get().then((res) => setVrste(res.data || res));
+    TipService.get().then((res) => setTipovi(res.data || res));
   }, []);
 
   const filtriranePrijave = filtrirajPrijave(prijave, pretraga, vrsta, vrste);
+const getNazivVrste = (id) => vrste.find((v) => v.id === id)?.naziv ?? "";
+const getNazivTipa = (id) => tipovi.find((t) => t.id === id)?.naziv ?? "";
 
   return (
     <Container className="my-4">
@@ -61,28 +66,27 @@ export default function Katalog() {
                   {prijava.status?.toUpperCase()}
                 </Badge>
               </div>
-{prijava.slika && (
               <div style={{ height: "200px", overflow: "hidden", backgroundColor: "#f8f9fa" }}>
                 <Card.Img
                   variant="top"
-                  src={prijava.slika || "https://via.placeholder.com/400x200?text=Nema+slike"}
+                  src={prijava.slika || `${import.meta.env.BASE_URL}nemaSlike.svg`}
                   alt={prijava.zivotinja_ime}
                   style={{ objectFit: "cover", width: "100%", height: "100%" }}
                 />
               </div>
-)}
+              
               <Card.Body className="d-flex flex-column">
                 <div className="d-flex justify-content-between align-items-start mb-2">
                   <Card.Title className="mb-0 fw-bold fs-4">
                     {prijava.zivotinja_ime}
                   </Card.Title>
-                  <Badge bg={prijava.tip_prijave === "Nestanak" ? "danger" : "info"} className="fs-6">
-                    {prijava.tip_prijave}
+                  <Badge bg={getNazivTipa(prijava.tip_prijave) === "Nestanak" ? "danger" : "info"} className="fs-6">
+                    {getNazivTipa(prijava.tip_prijave)}
                   </Badge>
                 </div>
 
                 <Card.Subtitle className="mb-3 text-muted">
-                  {prijava.zivotinja_vrsta}
+                  {getNazivVrste(prijava.zivotinja_vrsta)}
                 </Card.Subtitle>
 
                 <Card.Text className="small text-secondary mb-3 flex-grow-1">
