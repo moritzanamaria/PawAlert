@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { RouteNames } from "../../constants";
-import { Button, Col, Container, Form, Row } from "react-bootstrap";
+import { Button, Card, Col, Container, Form, Row } from "react-bootstrap";
 import TipService from "../../services/tip/TipService";
 
 export default function TipPromjena() {
@@ -35,22 +35,31 @@ export default function TipPromjena() {
     }
 
     return (
-        <div className="container my-4">
-            <h3>Promjena tipa</h3>
+       <Container className="my-5" style={{ maxWidth: "850px" }}>
+            <Card className="shadow-sm border-0 rounded-3">
+                <Card.Header className="bg-warning text-dark p-4 rounded-top-3">
+                    <h3 className="mb-0 fw-bold fs-4">✏️ Promjena tipa #{params.id}</h3>
+                    <p className="mb-0 text-dark-50 small">
+                        Ažurirajte naziv tipa prijave.
+                    </p>
+                </Card.Header>
+
+                <Card.Body className="p-4">
             <Form key={tip.id} onSubmit={obradiSubmit}>
-                <Form.Group className="mb-3" controlId="naziv">
-                    <Form.Label>Naziv</Form.Label>
-                    <Form.Control type="text" name="naziv" defaultValue={tip.naziv} />
+                <Form.Group className="mb-4" controlId="naziv">
+                    <Form.Label className="fw-medium">Naziv</Form.Label>
+                    <Form.Control type="text" name="naziv" defaultValue={tip.naziv} required
+                    placeholder="Unesite naziv tipa..." />
                 </Form.Group>
-                <Row className="mt-4">
-                    <Col>
-                        <Link to={RouteNames.TIPOVI_PREGLED} className="btn btn-danger">Odustani</Link>
-                    </Col>
-                    <Col className="text-end">
-                        <Button type="submit" variant="success">Spremi</Button>
-                    </Col>
-                </Row>
+                <div className="d-flex justify-content-between align-items-center pt-2">
+                    
+                        <Link to={RouteNames.TIPOVI_PREGLED} className="btn btn-outline-secondary px-4 fw-medium">Odustani</Link>
+        
+                        <Button type="submit" variant="success" className="px-5 fw-bold">Spremi</Button>
+                        </div>
             </Form>
-        </div>
+        </Card.Body>
+        </Card>
+        </Container>
     )
 }

@@ -1,6 +1,6 @@
 import { Link, useNavigate } from "react-router-dom";
 import { RouteNames } from "../../constants";
-import { Button, Col, Container, Form, Row } from "react-bootstrap";
+import { Button, Card, Col, Container, Form, Row } from "react-bootstrap";
 import TipService from "../../services/tip/TipService";
 
 export default function TipNovi() {
@@ -21,29 +21,34 @@ export default function TipNovi() {
     }
 
     return (
-        <Container className="my-4">
-            <h3>
-                Dodaj novi tip
-            </h3>
+        <Container className="my-5" style={{ maxWidth: "850px" }}>
+            <Card className="shadow-sm border-0 rounded-3">
+                <Card.Header className="bg-success text-white p-4 rounded-top-3">
+            <h3 className="mb-0 fw-bold fs-4">🏷️Dodaj novi tip</h3>
+            <p className="mb-0 text-white-50 small">
+                        Unesite naziv za novi tip prijave.
+                    </p>
+            </Card.Header>
+
+           <Card.Body className="p-4"> 
             <Form onSubmit={obradiSubmit}>
-                <Form.Group controlId="naziv" className="mb-3">
-                    <Form.Label>Naziv tipa</Form.Label>
+                <Form.Group controlId="naziv" className="mb-4">
+                    <Form.Label className="fw-medium">Naziv tipa</Form.Label>
                     <Form.Control type="text" name="naziv" placeholder="Unesite naziv tipa (Npr. Pronalazak)" required />
                 </Form.Group>
 
-                <Row className="mt-4">
-                    <Col>
-                        <Link to={RouteNames.TIPOVI_PREGLED} className="btn btn-danger">
+             <div className="d-flex justify-content-between align-items-center pt-2">
+                        <Link to={RouteNames.TIPOVI_PREGLED} className="btn btn-outline-secondary px-4 fw-medium">
                             Odustani
                         </Link>
-                    </Col>
-                    <Col className="text-end">
-                        <Button type="submit" variant="success">
+                 
+                        <Button type="submit" variant="success" className="px-5 fw-bold">
                             Dodaj
                         </Button>
-                    </Col>
-                </Row>
+                        </div>
             </Form>
+            </Card.Body>
+            </Card>
         </Container>
     )
 }
