@@ -2,10 +2,17 @@ import { useEffect, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { Button, Col, Form, Row } from "react-bootstrap";
 import TragoviService from "../../services/tragovi/TragoviService";
+import "react-datepicker/dist/react-datepicker.css";
+import hr from "date-fns/locale/hr";
+import DatePicker, { registerLocale } from "react-datepicker";
+
+registerLocale("hr", hr);
 
 export default function TragPromjena() {
     const navigate = useNavigate()
     const { id } = useParams()
+    const [datum, setDatum] = useState(new Date());
+
     const [trag, setTrag] = useState({
         prijava: "",
         korisnik: "",
@@ -43,7 +50,7 @@ export default function TragPromjena() {
             lokacija_opis: podaci.get('lokacija_opis'),
             lokacija_lat: parseFloat(podaci.get('lokacija_lat')) || 0,
             lokacija_lng: parseFloat(podaci.get('lokacija_lng')) || 0,
-            datum: podaci.get('datum')
+            datum: new Date(podaci.get('datum')).toISOString(),
         })
     }
 
@@ -86,12 +93,16 @@ export default function TragPromjena() {
                 </Row>
 
                 <Form.Group controlId="datum" className="mb-3">
-                    <Form.Label>Datum i vrijeme</Form.Label>
-                    <Form.Control
-                        type="datetime-local"
-                        name="datum"
-                        defaultValue={trag.datum ? trag.datum.slice(0, 16) : ""}
-                        required
+                    <Form.Label className="p-4">Datum i vrijeme</Form.Label>
+                    <DatePicker
+                        selected={datum}
+                        onChange={(date) => setDatum(date)}
+                        showTimeSelect
+                        timeFormat="HH:mm"
+                        timeIntervals={15}
+                        dateFormat="dd.MM.yyyy. HH:mm"
+                        locale="hr"
+                        customInput={<Form.Control required />}
                     />
                 </Form.Group>
                 <Row className="mt-4">

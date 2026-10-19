@@ -4,15 +4,16 @@ import { Button, Card, Col, Container, Form, Row } from "react-bootstrap";
 import prijaveService from "../../services/prijave/prijaveService";
 import { tipovi } from "../../services/tip/TipPodaci";
 import { vrste } from "../../services/vrste/VrstePodaci";
+import DatePicker, { registerLocale } from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
+import { hr } from "date-fns/locale";
+import { useState } from "react";
+
+registerLocale("hr", hr);
 
 export default function PrijavaNova() {
     const navigate = useNavigate()
-
-    const getDanasnjiDatumVrijeme = () => {
-        const now = new Date();
-        now.setMinutes(now.getMinutes() - now.getTimezoneOffset());
-        return now.toISOString().slice(0, 16);
-    };
+    const [datum, setDatum] = useState(new Date());
 
     async function dodaj(prijava) {
         await prijaveService.dodaj(prijava).then(() => {
@@ -45,7 +46,7 @@ export default function PrijavaNova() {
                     <h3 className="mb-0 fw-bold fs-4">
                         🐾 Prijava novog slučaja
                     </h3>
-                    
+
                     <p className="mb-0 text-white-50 small px-4">
                         Unesite sve potrebne podatke o uočenoj životinji i lokaciji.
                     </p>
@@ -129,8 +130,17 @@ export default function PrijavaNova() {
                             </Form.Group>
 
                             <Form.Group as={Col} md={6} controlId="datum">
-                                <Form.Label className="fw-medium">Datum i vrijeme</Form.Label>
-                                <Form.Control type="datetime-local" name="datum" defaultValue={getDanasnjiDatumVrijeme} required />
+                                <Form.Label className="fw-medium p-4">Datum i vrijeme</Form.Label>
+                                <DatePicker
+                                    selected={datum}
+                                    onChange={(date) => setDatum(date)}
+                                    showTimeSelect
+                                    timeFormat="HH:mm"
+                                    timeIntervals={15}
+                                    dateFormat="dd.MM.yyyy. HH:mm"
+                                    locale="hr"
+                                    customInput={<Form.Control required />}
+                                />
                             </Form.Group>
                         </Row>
 

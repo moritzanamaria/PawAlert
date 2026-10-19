@@ -5,13 +5,20 @@ import { Button, Card, Col, Container, Form, Row } from "react-bootstrap";
 import prijaveService from "../../services/prijave/prijaveService";
 import { tipovi } from "../../services/tip/TipPodaci";
 import { vrste } from "../../services/vrste/VrstePodaci";
+import "react-datepicker/dist/react-datepicker.css";
+import hr from "date-fns/locale/hr";
+import DatePicker, { registerLocale } from "react-datepicker";
 
+registerLocale("hr", hr);
 export default function PrijavaPromjena() {
     const navigate = useNavigate()
     const params = useParams()
     const [prijava, setPrijava] = useState({})
     const [cipirana, setCipirana] = useState(false);
     const [hitno, setHitno] = useState(false);
+    const handleDateChange = (date) => {
+        setPrijava({ ...prijava, datum: date });
+    };
 
     async function ucitajPrijavu() {
         await prijaveService.getById(params.id).then((odgovor) => {
@@ -186,15 +193,19 @@ export default function PrijavaPromjena() {
                             </Form.Group>
 
                             <Form.Group as={Col} md={6} controlId="datum">
-                                <Form.Label className="fw-medium">
+                                <Form.Label className="fw-medium p-4">
                                     Datum i vrijeme <span className="text-danger">*</span>
                                 </Form.Label>
-                                <Form.Control
-                                    type="datetime-local"
-                                    name="datum"
+                                <DatePicker
+                                    selected={prijava.datum ? new Date(prijava.datum) : null}
+                                    onChange={handleDateChange}
+                                    showTimeSelect
+                                    timeFormat="HH:mm"
+                                    timeIntervals={15}
+                                    dateFormat="dd.MM.yyyy. HH:mm"
+                                    locale="hr"
+                                    customInput={<Form.Control required />}
                                     key={prijava.datum}
-                                    defaultValue={prijava.datum}
-                                    required
                                 />
                             </Form.Group>
                         </Row>
