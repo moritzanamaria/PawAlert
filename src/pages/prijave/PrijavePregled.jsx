@@ -3,7 +3,6 @@ import prijaveService from "../../services/prijave/prijaveService";
 import { RouteNames } from "../../constants";
 import { Badge, Button, Card, Container, Table, Spinner, ButtonGroup } from "react-bootstrap";
 import FormatDatuma from "../../components/FormatDatuma";
-import { GrAlert } from "react-icons/gr";
 import { Link, useNavigate } from "react-router-dom";
 import { vrste } from "../../services/vrste/VrstePodaci";
 import { tipovi } from "../../services/tip/TipPodaci";
@@ -61,39 +60,29 @@ export default function PrijavePregled() {
               <thead className="table-light">
                 <tr>
                   <th className="ps-4">Ime životinje</th>
-                  <th>Vrsta</th>
-                  <th>Lokacija</th>
-                  <th>Tip prijave</th>
-                  <th className="text-center">Vrijeme prijave</th>
-                  <th className="text-center">Hitno</th>
+                  <th className="d-none d-md-table-cell">Vrsta</th>
+                  <th className="d-none d-lg-table-cell">Lokacija</th>
+                  <th className="d-none d-lg-table-cell">Tip prijave</th>
+                  <th className="text-center d-none d-md-table-cell">Vrijeme prijave</th>
                   <th className="text-center">Status</th>
                   <th className="text-center pe-4" style={{ minWidth: "220px" }}>Akcije</th>
                 </tr>
               </thead>
               <tbody>
                 {prijave.map((prijava) => (
-                  <tr key={prijava.id}>
+                  <tr key={prijava.id} className={prijava.hitno ? "table-danger" : ""}>
                     <td className="ps-4 fw-semibold text-dark">
                       {prijava.zivotinja_ime || <span className="text-muted fst-italic">Nepoznato</span>}
                     </td>
-                    <td>
+                    <td className="d-none d-md-table-cell">
                       <Badge bg="info" className="text-dark bg-opacity-10 border border-info px-2 py-1">
                         {getNazivVrste(prijava.zivotinja_vrsta)}
                       </Badge>
                     </td>
-                    <td className="text-muted">{prijava.lokacija_opis || "-"}</td>
-                    <td>{getNazivTipa(prijava.tip_prijave)}</td>
-                    <td className="text-center text-secondary small">
+                    <td className="text-muted d-none d-lg-table-cell">{prijava.lokacija_opis || "-"}</td>
+                    <td className="d-none d-lg-table-cell">{getNazivTipa(prijava.tip_prijave)}</td>
+                    <td className="text-center text-secondary small d-none d-md-table-cell">
                       <FormatDatuma datum={prijava.datum} prikazDatuma="Nepoznato" />
-                    </td>
-                    <td className="text-center">
-                      {prijava.hitno ? (
-                        <Badge bg="danger" className="d-inline-flex align-items-center gap-1 px-2 py-1">
-                          <GrAlert size={14} /> Hitno
-                        </Badge>
-                      ) : (
-                        <span className="text-muted small">-</span>
-                      )}
                     </td>
                     <td className="text-center">
                       <Badge bg={prijava.status === "otvorena" ? "success" : "secondary"} className="text-capitalize px-2 py-1">
