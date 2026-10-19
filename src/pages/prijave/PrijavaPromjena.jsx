@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { RouteNames } from "../../constants";
-import { Button, Col, Form, Row } from "react-bootstrap";
+import { Button, Card, Col, Container, Form, Row } from "react-bootstrap";
 import prijaveService from "../../services/prijave/prijaveService";
-import {tipovi} from "../../services/tip/TipPodaci";
-import {vrste} from "../../services/vrste/VrstePodaci";
+import { tipovi } from "../../services/tip/TipPodaci";
+import { vrste } from "../../services/vrste/VrstePodaci";
 
 export default function PrijavaPromjena() {
     const navigate = useNavigate()
@@ -16,7 +16,7 @@ export default function PrijavaPromjena() {
     async function ucitajPrijavu() {
         await prijaveService.getById(params.id).then((odgovor) => {
             const p = odgovor.data
-          
+
             setPrijava(p)
             setCipirana(Boolean(p.cipirana))
             setHitno(Boolean(p.hitno))
@@ -52,109 +52,196 @@ export default function PrijavaPromjena() {
     }
 
     return (
-        <div className="container my-4">
-            <h3>
-                Promjena slučaja
-            </h3>
-            <Form onSubmit={obradiSubmit}>
-                <Form.Group controlId="zivotinja_ime">
-                    <Form.Label>Ime životinje</Form.Label>
-                    <Form.Control type="text" name="zivotinja_ime"
-                        defaultValue={prijava.zivotinja_ime} />
-                </Form.Group>
+        <Container className="my-5" style={{ maxWidth: "850px" }}>
+            <Card className="shadow-sm border-0 rounded-3">
+                <Card.Header className="bg-warning text-dark p-4 rounded-top-3">
+                    <h3 className="mb-0 fw-bold fs-4">✏️ Promjena slučaja</h3>
+                    <p className="mb-0 text-dark-50 small">
+                        Uredite podatke za odabranu prijavu.
+                    </p>
+                </Card.Header>
 
-                <Form.Group controlId="zivotinja_vrsta">
-                    <Form.Label>Vrsta</Form.Label>
-                    <Form.Select name="zivotinja_vrsta" defaultValue={prijava.zivotinja_vrsta} required>
-                        <option value="" disabled
-                        >Odaberi vrstu...</option>
-                        {vrste && vrste.map((v) => (
-                            <option key={v.id} value={v.id}>
-                                {v.naziv}
-                                </option>
-                        ))}
-                    </Form.Select>
-                </Form.Group>
+                <Card.Body className="p-4">
+                    <Form onSubmit={obradiSubmit}>
+                        <h5 className="text-secondary fw-bold mb-3 border-bottom pb-2">
+                            1. Podaci o životinji
+                        </h5>
 
-                <Form.Group className="mb-3" controlId="zivotinja_opis">
-                    <Form.Label>Opis</Form.Label>
-                    <Form.Control as="textarea" rows={3} name="zivotinja_opis"
-                        defaultValue={prijava.zivotinja_opis} />
-                </Form.Group>
+                        <Row className="mb-3">
+                            <Form.Group as={Col} md={6} controlId="zivotinja_ime">
+                                <Form.Label className="fw-medium">Ime životinje</Form.Label>
+                                <Form.Control
+                                    type="text"
+                                    name="zivotinja_ime"
+                                    key={prijava.zivotinja_ime}
+                                    defaultValue={prijava.zivotinja_ime}
+                                />
+                            </Form.Group>
 
-                <Form.Group controlId="zivotinja_godine">
-                    <Form.Label>Godine</Form.Label>
-                    <Form.Control type="number" name="zivotinja_godine" step={1} min={0}
-                        defaultValue={prijava.zivotinja_godine} />
-                </Form.Group>
+                            <Form.Group as={Col} md={6} controlId="zivotinja_vrsta">
+                                <Form.Label className="fw-medium">
+                                    Vrsta <span className="text-danger">*</span>
+                                </Form.Label>
+                                <Form.Select
+                                    name="zivotinja_vrsta"
+                                    key={prijava.zivotinja_vrsta}
+                                    defaultValue={prijava.zivotinja_vrsta}
+                                    required
+                                >
+                                    <option value="" disabled>Odaberi vrstu...</option>
+                                    {vrste && vrste.map((v) => (
+                                        <option key={v.id} value={v.id}>
+                                            {v.naziv}
+                                        </option>
+                                    ))}
+                                </Form.Select>
+                            </Form.Group>
+                        </Row>
 
-                <Form.Group controlId="cipirana" className="mt-3">
-                    <Form.Check label="Čipirana" name="cipirana"
-                        checked={cipirana}
-                        onChange={(e) => { setCipirana(e.target.checked) }} />
-                </Form.Group>
+                        <Row className="mb-3">
+                            <Form.Group as={Col} md={6} controlId="zivotinja_godine">
+                                <Form.Label className="fw-medium">Procjena godina</Form.Label>
+                                <Form.Control
+                                    type="number"
+                                    name="zivotinja_godine"
+                                    step={1}
+                                    min={0}
+                                    key={prijava.zivotinja_godine}
+                                    defaultValue={prijava.zivotinja_godine}
+                                />
+                            </Form.Group>
 
-                <Form.Group controlId="tip_prijave">
-                    <Form.Label>Tip prijave</Form.Label>
-                    <Form.Select name="tip_prijave" required
-                        defaultValue={prijava.tip_prijave}>
-                        <option value="" disabled>Odaberi tip...</option>
-                        {tipovi && tipovi.map((t) => (
-                            <option key={t.id} value={t.id}>
-                                {t.naziv}
-                                </option>
-                        ))}
-                    </Form.Select>
-                </Form.Group>
+                            <Form.Group as={Col} md={6} controlId="slika">
+                                <Form.Label className="fw-medium">Slika (URL link)</Form.Label>
+                                <Form.Control
+                                    type="url"
+                                    name="slika"
+                                    key={prijava.slika}
+                                    defaultValue={prijava.slika}
+                                />
+                            </Form.Group>
+                        </Row>
 
-                <Form.Group controlId="lokacija_opis">
-                    <Form.Label>Opis lokacije</Form.Label>
-                    <Form.Control type="text" name="lokacija_opis" defaultValue={prijava.lokacija_opis} placeholder="Gornji grad, Osijek" />
-                </Form.Group>
+                        <Form.Group className="mb-4" controlId="zivotinja_opis">
+                            <Form.Label className="fw-medium">Opis životinje</Form.Label>
+                            <Form.Control
+                                as="textarea"
+                                rows={3}
+                                name="zivotinja_opis"
+                                key={prijava.zivotinja_opis}
+                                defaultValue={prijava.zivotinja_opis}
+                            />
+                        </Form.Group>
 
+                        <h5 className="text-secondary fw-bold mb-3 border-bottom pb-2 pt-2">
+                            2. Detalji prijave i lokacija
+                        </h5>
 
-                <Form.Group controlId="datum">
-                    <Form.Label>Datum i vrijeme</Form.Label>
-                    <Form.Control   
-                        type="datetime-local"
-                        name="datum"
-                        defaultValue={prijava.datum}
-                        required />
-                </Form.Group>
+                        <Row className="mb-3">
+                            <Form.Group as={Col} md={6} controlId="tip_prijave">
+                                <Form.Label className="fw-medium">
+                                    Tip prijave <span className="text-danger">*</span>
+                                </Form.Label>
+                                <Form.Select
+                                    name="tip_prijave"
+                                    key={prijava.tip_prijave}
+                                    defaultValue={prijava.tip_prijave}
+                                    required
+                                >
+                                    <option value="" disabled>Odaberi tip...</option>
+                                    {tipovi && tipovi.map((t) => (
+                                        <option key={t.id} value={t.id}>
+                                            {t.naziv}
+                                        </option>
+                                    ))}
+                                </Form.Select>
+                            </Form.Group>
 
-                <Form.Group controlId="slika">
-                    <Form.Label>Slika (URL)</Form.Label>
-                    <Form.Control type="url" defaultValue={prijava.slika} name="slika" />
-                </Form.Group>
+                            <Form.Group as={Col} md={6} controlId="status">
+                                <Form.Label className="fw-medium">
+                                    Status <span className="text-danger">*</span>
+                                </Form.Label>
+                                <Form.Select
+                                    name="status"
+                                    key={prijava.status}
+                                    defaultValue={prijava.status === "zatvorena" ? "zatvorena" : "otvorena"}
+                                    required
+                                >
+                                    <option value="otvorena">Otvorena</option>
+                                    <option value="zatvorena">Zatvorena</option>
+                                </Form.Select>
+                            </Form.Group>
+                        </Row>
 
-                <Form.Group controlId="hitno" className="mt-3">
-                    <Form.Check label="Hitno" name="hitno"
-                        checked={hitno}
-                        onChange={(e) => { setHitno(e.target.checked) }} />
-                </Form.Group>
+                        <Row className="mb-3">
+                            <Form.Group as={Col} md={6} controlId="lokacija_opis">
+                                <Form.Label className="fw-medium">Opis lokacije</Form.Label>
+                                <Form.Control
+                                    type="text"
+                                    name="lokacija_opis"
+                                    key={prijava.lokacija_opis}
+                                    defaultValue={prijava.lokacija_opis}
+                                    placeholder="Gornji grad, Osijek"
+                                />
+                            </Form.Group>
 
-                <Form.Group controlId="status">
-                    <Form.Label>Status</Form.Label>
-                    <Form.Select name="status" defaultValue={prijava.status === "zatvorena" ? "zatvorena" : "otvorena"} required>
-                        <option value="otvorena">Otvorena</option>
-                        <option value="zatvorena">Zatvorena</option>
-                    </Form.Select>
-                </Form.Group>
+                            <Form.Group as={Col} md={6} controlId="datum">
+                                <Form.Label className="fw-medium">
+                                    Datum i vrijeme <span className="text-danger">*</span>
+                                </Form.Label>
+                                <Form.Control
+                                    type="datetime-local"
+                                    name="datum"
+                                    key={prijava.datum}
+                                    defaultValue={prijava.datum}
+                                    required
+                                />
+                            </Form.Group>
+                        </Row>
 
-                <Row className="mt-4" >
-                    <Col>
-                        <Link to={RouteNames.PRIJAVE_PREGLED} className="btn btn-danger">
-                            Odustani
-                        </Link>
-                    </Col>
-                    <Col>
-                        <Button type="submit" variant="success">
-                            Spremi
-                        </Button>
-                    </Col>
-                </Row>
-            </Form>
-        </div>
+                        <div className="bg-light p-3 rounded-3 mb-4 border">
+                            <Row className="align-items-center">
+                                <Col sm={6}>
+                                    <Form.Group controlId="cipirana" className="mb-0">
+                                        <Form.Check
+                                            type="checkbox"
+                                            label="Životinja je čipirana"
+                                            name="cipirana"
+                                            className="fw-medium text-dark"
+                                            checked={cipirana}
+                                            onChange={(e) => setCipirana(e.target.checked)}
+                                        />
+                                    </Form.Group>
+                                </Col>
+                                <Col sm={6}>
+                                    <Form.Group controlId="hitno" className="mb-0">
+                                        <Form.Check
+                                            type="checkbox"
+                                            label="🚨 Hitna intervencija"
+                                            name="hitno"
+                                            className="fw-bold text-danger"
+                                            checked={hitno}
+                                            onChange={(e) => setHitno(e.target.checked)}
+                                        />
+                                    </Form.Group>
+                                </Col>
+                            </Row>
+                        </div>
 
+                        <div className="d-flex justify-content-between align-items-center pt-2">
+                            <Link
+                                to={RouteNames.PRIJAVE_PREGLED}
+                                className="btn btn-outline-secondary px-4 fw-medium"
+                            >
+                                Odustani
+                            </Link>
+                            <Button type="submit" variant="success" className="px-5 fw-bold">
+                                Spremi
+                            </Button>
+                        </div>
+                    </Form>
+                </Card.Body>
+            </Card>
+        </Container>
     )
 }
