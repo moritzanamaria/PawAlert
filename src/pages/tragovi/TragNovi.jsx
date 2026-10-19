@@ -1,5 +1,5 @@
 import { Link, useNavigate, useParams } from "react-router-dom";
-import { Button, Col, Container, Form, Row } from "react-bootstrap";
+import { Button, Card, Col, Container, Form, Row } from "react-bootstrap";
 import TragoviService from "../../services/tragovi/TragoviService";
 import { useState } from "react";
 import DatePicker, { registerLocale } from "react-datepicker";
@@ -25,83 +25,68 @@ export default function TragNovi() {
         e.preventDefault()
         const podaci = new FormData(e.target)
         dodaj({
-            prijava: parseInt(id),
-            korisnik: parseInt(podaci.get('korisnik')) || 0,
             opis: podaci.get('opis'),
             lokacija_opis: podaci.get('lokacija_opis'),
-            lokacija_lat: parseFloat(podaci.get('lokacija_lat')) || 0,
-            lokacija_lng: parseFloat(podaci.get('lokacija_lng')) || 0,
             datum: new Date(podaci.get('datum')).toISOString(),
         })
     }
 
     return (
-        <Container className="my-4">
-            <h3>
-                Dodaj novi trag za prijavu {id}
-            </h3>
-            <Form onSubmit={obradiSubmit}>
-                <Form.Group className="mb-3" controlId="naziv">
-                    <Form.Label>Prijava (ID)</Form.Label>
-                    <Form.Control type="text" name="prijava" defaultValue={trag.prijava} />
-                </Form.Group>
-                <Form.Group controlId="korisnik" className="mb-3">
-                    <Form.Label>Korisnik (ID)</Form.Label>
-                    <Form.Control type="number" name="korisnik" defaultValue={trag.korisnik} required />
-                </Form.Group>
-                <Form.Group controlId="opis" className="mb-3">
-                    <Form.Label>Opis traga</Form.Label>
-                    <Form.Control as="textarea" rows={3} name="opis" placeholder="Unesite opis traga" required />
-                </Form.Group>
+        <Container className="my-5" style={{ maxWidth: "850px" }}>
+            <Card className="shadow-sm border-0 rounded-3">
+                <Card.Header className="bg-success text-white p-4 rounded-top-3">
+                    <h3 className="mb-0 fw-bold fs-4">🐾Dodaj novi trag za prijavu {id}
+                    </h3>
+                    <p className="mb-0 text-white-50 small">
+                        Unesite podatke o novom tragu za prijavu {id}.
+                    </p>
 
-                <Form.Group controlId="lokacija_opis" className="mb-3">
-                    <Form.Label>Opis lokacije</Form.Label>
-                    <Form.Control type="text" name="lokacija_opis" placeholder="Unesite opis lokacije (npr. Promenada, Osijek)" required />
-                </Form.Group>
+                </Card.Header>
 
-                <Row>
-                    <Col md={6}>
-                        <Form.Group controlId="lokacija_lat" className="mb-3">
-                            <Form.Label>Geografska širina (Latitude)</Form.Label>
-                            <Form.Control type="number" step="any" name="lokacija_lat" defaultValue={trag.lokacija_lat} required />
+                <Card.Body className="p-4">
+                    <Form onSubmit={obradiSubmit}>
+
+                        <Form.Group controlId="opis" className="mb-3">
+                            <Form.Label className="fw-medium">Opis traga</Form.Label>
+                            <Form.Control as="textarea" rows={3} name="opis" placeholder="Unesite opis traga..." required />
                         </Form.Group>
-                    </Col>
-                    <Col md={6}>
-                        <Form.Group controlId="lokacija_lng" className="mb-3">
-                            <Form.Label>Geografska dužina (Longitude)</Form.Label>
-                            <Form.Control type="number" step="any" name="lokacija_lng" defaultValue={trag.lokacija_lng} required />
-                        </Form.Group>
-                    </Col>
-                </Row>
+
+                        <Row className="mb-4">
+                            <Form.Group as={Col} md={6} controlId="lokacija_opis" className="mb-3">
+                                <Form.Label className="fw-medium">Opis lokacije</Form.Label>
+                                <Form.Control type="text" name="lokacija_opis" placeholder="Unesite opis lokacije (npr. Promenada, Osijek)" required />
+                            </Form.Group>
 
 
-                <Form.Group controlId="datum" className="mb-3">
-                    <Form.Label className="p-4">Datum i vrijeme</Form.Label>
-                    <DatePicker
-                        selected={datum}
-                        onChange={(date) => setDatum(date)}
-                        showTimeSelect
-                        timeFormat="HH:mm"
-                        timeIntervals={15}
-                        dateFormat="dd.MM.yyyy. HH:mm"
-                        locale="hr"
-                        customInput={<Form.Control required />}
-                    />
-                </Form.Group>
+                            <Form.Group as={Col} md={6} controlId="datum" className="mb-3">
+                                <Form.Label className="fw-medium">Datum i vrijeme</Form.Label>
+                                <div>
+                                    <DatePicker
+                                        selected={datum}
+                                        onChange={(date) => setDatum(date)}
+                                        showTimeSelect
+                                        timeFormat="HH:mm"
+                                        timeIntervals={15}
+                                        dateFormat="dd.MM.yyyy. HH:mm"
+                                        locale="hr"
+                                        customInput={<Form.Control required />}
+                                    />
+                                </div>
+                            </Form.Group>
+                        </Row>
+                        <div className="d-flex justify-content-between align-items-center pt-2">
 
-                <Row className="mt-4">
-                    <Col>
-                        <Link to={`/prijave/${id}/tragovi`} className="btn btn-danger">
-                            Odustani
-                        </Link>
-                    </Col>
-                    <Col className="text-end">
-                        <Button type="submit" variant="success">
-                            Dodaj
-                        </Button>
-                    </Col>
-                </Row>
-            </Form>
+                            <Link to={`/prijave/${id}/tragovi`} className="btn btn-outline-secondary px-4 fw-medium">
+                                Odustani
+                            </Link>
+
+                            <Button type="submit" variant="success" className="px-5 fw-bold">
+                                Dodaj
+                            </Button>
+                        </div>
+                    </Form>
+                </Card.Body>
+            </Card>
         </Container>
     )
 }
