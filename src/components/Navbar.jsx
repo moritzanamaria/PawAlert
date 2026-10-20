@@ -41,7 +41,8 @@ function Navbar() {
             <NavDropdown title="Šifrarnici" id="sifrarnici">
     <NavDropdown.Item as={Link} to={RouteNames.VRSTE_PREGLED} onClick={handleClose}>Vrste</NavDropdown.Item>
     <NavDropdown.Item as={Link} to={RouteNames.TIPOVI_PREGLED} onClick={handleClose}>Tipovi</NavDropdown.Item>
-
+     <NavDropdown.Divider />
+    <NavDropdown.Item as={Link} to={RouteNames.GENERIRANJE_PODATAKA}>Generiraj podatke</NavDropdown.Item>
 </NavDropdown>
           </Nav>
           <Nav>

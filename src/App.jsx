@@ -17,6 +17,7 @@ import Navbar from "./components/Navbar"
 import { IME_APLIKACIJE, RouteNames } from "./constants"
 import Katalog from "./pages/Katalog"
 import DetaljiSlucaja from "./pages/DetaljiSlucaja"
+import GeneriranjePodataka from "./pages/GeneriranjePodataka"
 
 
 export default function App() {
@@ -39,6 +40,7 @@ export default function App() {
         <Route path={RouteNames.TRAG_PREGLED} element={<TragPregled />} />
         <Route path={RouteNames.TRAG_NOVI} element={<TragNovi />} />
         <Route path={RouteNames.TRAG_PROMJENA} element={<TragPromjena />} />
+        <Route path={RouteNames.GENERIRANJE_PODATAKA} element={<GeneriranjePodataka />} />
       </Routes>
 
       <hr />

@@ -18,6 +18,8 @@ export const RouteNames = {
 
   KATALOG: "/katalog",
   DETALJI_SLUCAJA: '/detalji-slucaja/:id',
+
+  GENERIRANJE_PODATAKA: '/generiranje-podatka',
 };
 
 export const CENTAR_OSIJEK = [45.5550, 18.6955];
@@ -31,4 +33,4 @@ export const BojeStatusa = {
 
 
 // localStorage   memorija
-export const DATA_SOURCE = 'memorija'
+export const DATA_SOURCE = 'localStorage'
