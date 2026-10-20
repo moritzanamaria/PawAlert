@@ -2,18 +2,38 @@ import { Link, useNavigate } from "react-router-dom";
 import { RouteNames } from "../../constants";
 import { Button, Card, Col, Container, Form, Row } from "react-bootstrap";
 import prijaveService from "../../services/prijave/prijaveService";
-import { tipovi } from "../../services/tip/TipPodaci";
-import { vrste } from "../../services/vrste/VrstePodaci";
+import VrsteService from "../../services/vrste/VrsteService";
+import TipService from "../../services/tip/TipService";
 import DatePicker, { registerLocale } from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { hr } from "date-fns/locale";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 registerLocale("hr", hr);
 
 export default function PrijavaNova() {
     const navigate = useNavigate()
     const [datum, setDatum] = useState(new Date());
+    const [vrste, setVrste] = useState([]);
+    const [tipovi, setTipovi] = useState([]);
+
+    async function dohvatiPodatke() {
+
+            const [resVrste, resTipovi] = await Promise.all([
+                VrsteService.get(),
+                TipService.get()
+            ]);
+
+            const vData = Array.isArray(resVrste) ? resVrste : (resVrste?.data ?? []);
+            const tData = Array.isArray(resTipovi) ? resTipovi : (resTipovi?.data ?? []);
+
+            setVrste(Array.isArray(vData) ? vData : []);
+            setTipovi(Array.isArray(tData) ? tData : []);
+    }
+
+    useEffect(() => {
+        dohvatiPodatke();
+    }, []);
 
     async function dodaj(prijava) {
         await prijaveService.dodaj(prijava).then(() => {

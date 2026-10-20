@@ -3,35 +3,44 @@ import { Link, useNavigate, useParams } from "react-router-dom";
 import { RouteNames } from "../../constants";
 import { Button, Card, Col, Container, Form, Row } from "react-bootstrap";
 import prijaveService from "../../services/prijave/prijaveService";
-import { tipovi } from "../../services/tip/TipPodaci";
-import { vrste } from "../../services/vrste/VrstePodaci";
-import "react-datepicker/dist/react-datepicker.css";
-import hr from "date-fns/locale/hr";
+import TipService from "../../services/tip/TipService";
+import VrsteService from "../../services/vrste/VrsteService";
 import DatePicker, { registerLocale } from "react-datepicker";
+import { hr } from "@faker-js/faker";
 
 registerLocale("hr", hr);
+
 export default function PrijavaPromjena() {
     const navigate = useNavigate()
     const params = useParams()
-    const [prijava, setPrijava] = useState({})
+    const [prijava, setPrijava] = useState({});
+    const [vrste, setVrste] = useState([]);
+    const [tipovi, setTipovi] = useState([]);
     const [cipirana, setCipirana] = useState(false);
     const [hitno, setHitno] = useState(false);
     const handleDateChange = (date) => {
         setPrijava({ ...prijava, datum: date });
     };
 
-    async function ucitajPrijavu() {
-        await prijaveService.getById(params.id).then((odgovor) => {
-            const p = odgovor.data
-
-            setPrijava(p)
-            setCipirana(Boolean(p.cipirana))
-            setHitno(Boolean(p.hitno))
-        })
+    async function ucitajPodatke() {
+        const [resPrijava, resVrste, resTipovi] = await Promise.all([
+                prijaveService.getById(params.id),
+                VrsteService.get(),
+                TipService.get()
+            ]);
+            const pData = resPrijava?.data ?? resPrijava;
+            const vData = Array.isArray(resVrste) ? resVrste : (resVrste?.data ?? []);
+            const tData = Array.isArray(resTipovi) ? resTipovi : (resTipovi?.data ?? []);
+            setPrijava(pData || {});
+            setCipirana(Boolean(pData?.cipirana));
+            setHitno(Boolean(pData?.hitno));
+            setVrste(Array.isArray(vData) ? vData : []);
+            setTipovi(Array.isArray(tData) ? tData : []);
     }
+
     useEffect(() => {
-        ucitajPrijavu()
-    }, [])
+        ucitajPodatke()
+    }, [params.id])
 
     async function promjeni(podaciPrijave) {
         await prijaveService.promjeni(params.id, podaciPrijave).then(() => {
@@ -89,10 +98,10 @@ export default function PrijavaPromjena() {
                                 <Form.Label className="fw-medium">
                                     Vrsta <span className="text-danger">*</span>
                                 </Form.Label>
-                                <Form.Select
+                               <Form.Select
                                     name="zivotinja_vrsta"
-                                    key={prijava.zivotinja_vrsta}
-                                    defaultValue={prijava.zivotinja_vrsta}
+                                    value={prijava.zivotinja_vrsta || ""}
+                                    onChange={(e) => setPrijava({ ...prijava, zivotinja_vrsta: parseInt(e.target.value) })}
                                     required
                                 >
                                     <option value="" disabled>Odaberi vrstu...</option>
@@ -149,10 +158,10 @@ export default function PrijavaPromjena() {
                                 <Form.Label className="fw-medium">
                                     Tip prijave <span className="text-danger">*</span>
                                 </Form.Label>
-                                <Form.Select
+                               <Form.Select
                                     name="tip_prijave"
-                                    key={prijava.tip_prijave}
-                                    defaultValue={prijava.tip_prijave}
+                                    value={prijava.tip_prijave || ""}
+                                    onChange={(e) => setPrijava({ ...prijava, tip_prijave: parseInt(e.target.value) })}
                                     required
                                 >
                                     <option value="" disabled>Odaberi tip...</option>
