@@ -4,11 +4,11 @@ export const RouteNames = {
   PRIJAVA_NOVA: "/prijave/dodaj",
   PRIJAVA_PROMJENA: "/prijave/:id",
 
-  TIPOVI_PREGLED: "/tip",
+  TIPOVI_I_VRSTE_PREGLED: "/tip-i-vrste-pregled",
+  
   TIP_NOVI: "/tip/dodaj",
   TIP_PROMJENA: "/tip/:id",
 
-  VRSTE_PREGLED: "/vrste",
   VRSTA_NOVA: "/vrste/dodaj",
   VRSTA_PROMJENA: "/vrste/:id",
 

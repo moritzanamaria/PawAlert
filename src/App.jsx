@@ -3,12 +3,11 @@ import Pocetna from "./pages/Home"
 import PrijavePregled from "./pages/prijave/PrijavePregled"
 import PrijavaNova from "./pages/prijave/PrijavaNova"
 import PrijavaPromjena from "./pages/prijave/PrijavaPromjena"
-import TipoviPregled from "./pages/tipovi/TipoviPregled"
-import TipNovi from "./pages/tipovi/TipNovi"
-import TipPromjena from "./pages/tipovi/TipPromjena"
-import VrstePregled from "./pages/vrste/VrstePregled"
-import VrstaNova from "./pages/vrste/VrstaNova"
-import VrstaPromjena from "./pages/vrste/VrstaPromjena"
+import TipoviIVrstePregled from "./pages/tipovi_vrste/TipoviIVrstePregled"
+import TipNovi from "./pages/tipovi_vrste/TipNovi"
+import TipPromjena from "./pages/tipovi_vrste/TipPromjena"
+import VrstaNova from "./pages/tipovi_vrste/VrstaNova"
+import VrstaPromjena from "./pages/tipovi_vrste/VrstaPromjena"
 import TragPregled from "./pages/tragovi/TragPregled"
 import TragNovi from "./pages/tragovi/TragNovi"
 import TragPromjena from "./pages/tragovi/TragPromjena"
@@ -31,10 +30,9 @@ export default function App() {
         <Route path={RouteNames.PRIJAVE_PREGLED} element={<PrijavePregled />} />
         <Route path={RouteNames.PRIJAVA_NOVA} element={<PrijavaNova />} />
         <Route path={RouteNames.PRIJAVA_PROMJENA} element={<PrijavaPromjena />} />
-        <Route path={RouteNames.TIPOVI_PREGLED} element={<TipoviPregled />} />
+        <Route path={RouteNames.TIPOVI_I_VRSTE_PREGLED} element={<TipoviIVrstePregled />} />
         <Route path={RouteNames.TIP_NOVI} element={<TipNovi />} />
         <Route path={RouteNames.TIP_PROMJENA} element={<TipPromjena />} />
-        <Route path={RouteNames.VRSTE_PREGLED} element={<VrstePregled />} />
         <Route path={RouteNames.VRSTA_NOVA} element={<VrstaNova />} />
         <Route path={RouteNames.VRSTA_PROMJENA} element={<VrstaPromjena />} />
         <Route path={RouteNames.TRAG_PREGLED} element={<TragPregled />} />

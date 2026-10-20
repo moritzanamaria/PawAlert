@@ -39,8 +39,7 @@ function Navbar() {
             <Nav.Link as={Link} to={RouteNames.KATALOG} onClick={handleClose}>Katalog</Nav.Link>
             <Nav.Link as={Link} to={RouteNames.PRIJAVE_PREGLED} onClick={handleClose}>Pregled prijava</Nav.Link>
             <NavDropdown title="Šifrarnici" id="sifrarnici">
-    <NavDropdown.Item as={Link} to={RouteNames.VRSTE_PREGLED} onClick={handleClose}>Vrste</NavDropdown.Item>
-    <NavDropdown.Item as={Link} to={RouteNames.TIPOVI_PREGLED} onClick={handleClose}>Tipovi</NavDropdown.Item>
+    <NavDropdown.Item as={Link} to={RouteNames.TIPOVI_I_VRSTE_PREGLED} onClick={handleClose}>Tipovi i vrste</NavDropdown.Item>
      <NavDropdown.Divider />
     <NavDropdown.Item as={Link} to={RouteNames.GENERIRANJE_PODATAKA}>Generiraj podatke</NavDropdown.Item>
 </NavDropdown>
