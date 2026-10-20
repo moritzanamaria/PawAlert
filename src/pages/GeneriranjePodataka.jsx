@@ -269,7 +269,7 @@ export default function GeneriranjePodataka() {
                                 min="1"
                                 max="20"
                                 value={brojVrsta}
-                                onChange={(e) => setBrojVrsta(parseInt(e.target.value) || 0)}
+                                onChange={(e) => setBrojVrsta(parseInt(e.target.value))}
                                 disabled={loading}
                             />
                             <Form.Text className="text-muted">Unesite broj vrsta (1-20)</Form.Text>
@@ -288,7 +288,7 @@ export default function GeneriranjePodataka() {
                                 min="1"
                                 max="20"
                                 value={brojTipova}
-                                onChange={(e) => setBrojTipova(parseInt(e.target.value) || 0)}
+                                onChange={(e) => setBrojTipova(parseInt(e.target.value))}
                                 disabled={loading}
                             />
                             <Form.Text className="text-muted">Unesite broj tipova (1-20)</Form.Text>
@@ -307,7 +307,7 @@ export default function GeneriranjePodataka() {
                                 min="1"
                                 max="50"
                                 value={brojPrijava}
-                                onChange={(e) => setBrojPrijava(parseInt(e.target.value) || 0)}
+                                onChange={(e) => setBrojPrijava(parseInt(e.target.value))}
                                 disabled={loading}
                             />
                             <Form.Text className="text-muted">Unesite broj prijava (1-50)</Form.Text>
@@ -326,7 +326,7 @@ export default function GeneriranjePodataka() {
                                 min="1"
                                 max="100"
                                 value={brojTragova}
-                                onChange={(e) => setBrojTragova(parseInt(e.target.value) || 0)}
+                                onChange={(e) => setBrojTragova(parseInt(e.target.value))}
                                 disabled={loading}
                             />
                             <Form.Text className="text-muted">Unesite broj tragova (1-100)</Form.Text>

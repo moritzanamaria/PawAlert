@@ -3,26 +3,36 @@ import prijaveService from "../../services/prijave/prijaveService";
 import VrsteService from "../../services/vrste/VrsteService";
 import TipService from "../../services/tip/TipService";
 import { RouteNames } from "../../constants";
-import { Badge, Button, Card, Container, Table, ButtonGroup } from "react-bootstrap";
+import { Badge, Button, Card, Container, Table, ButtonGroup, Row, Col } from "react-bootstrap";
 import FormatDatuma from "../../components/FormatDatuma";
+import PretragaInput from "../../components/PretragaInput";
+import VrstaSelect from "../../components/VrstaSelect";
+import { filtrirajPrijave } from "../../utils/filterHelpers";
 import { Link, useNavigate } from "react-router-dom";
 import { BiPlus, BiPencil, BiTrash, BiSearch } from "react-icons/bi";
+
+const toArray = (res) => {
+  const data = Array.isArray(res) ? res : (res?.data ?? []);
+  return Array.isArray(data) ? data : [];
+};
 
 export default function PrijavePregled() {
   const [prijave, setPrijave] = useState([])
   const [vrste, setVrste] = useState([]);
   const [tipovi, setTipovi] = useState([]);
+  const [pretraga, setPretraga] = useState("");
+  const [vrsta, setVrsta] = useState("");
   const navigate = useNavigate()
 
   async function ucitajPodatke() {
-   const [resPrijave, resVrste, resTipovi] = await Promise.all([
-        prijaveService.get(),
-        VrsteService.get(),
-        TipService.get()
-      ]);
-      setPrijave(resPrijave.data || resPrijave);
-      setVrste(resVrste.data || resVrste);
-      setTipovi(resTipovi.data || resTipovi);
+    const [resPrijave, resVrste, resTipovi] = await Promise.all([
+      prijaveService.get(),
+      VrsteService.get(),
+      TipService.get()
+    ]);
+    setPrijave(toArray(resPrijave));
+    setVrste(toArray(resVrste));
+    setTipovi(toArray(resTipovi));
   }
 
   useEffect(() => {
@@ -36,7 +46,7 @@ export default function PrijavePregled() {
     }
 
     await prijaveService.obrisi(id)
-    ucitajPrijave()
+    ucitajPodatke()
   }
 
   const getNazivVrste = (id) => {
@@ -49,9 +59,9 @@ export default function PrijavePregled() {
     return tip ? tip.naziv : id;
   };
 
-
+  const filtriranePrijave = filtrirajPrijave(prijave, pretraga, vrsta, vrste);
   return (
-    <Container className="my-5">
+    <Container>
       <Card className="shadow-sm border-0 rounded-3">
         <Card.Header className="bg-white p-4 border-0 d-flex justify-content-between align-items-center flex-wrap gap-2">
           <div>
@@ -62,67 +72,77 @@ export default function PrijavePregled() {
             <BiPlus size={20} /> Nova prijava
           </Link>
         </Card.Header>
+        <div className="px-4 pb-3">
+          <Row className="g-3">
+            <Col xs={12} md={6}>
+              <PretragaInput pretraga={pretraga} setPretraga={setPretraga} />
+            </Col>
+            <Col xs={12} md={6}>
+              <VrstaSelect vrsta={vrsta} setVrsta={setVrsta} vrste={vrste} />
+            </Col>
+          </Row>
+        </div>
 
         <Card.Body className="p-0">
-            <Table responsive hover className="align-middle mb-0 border-top">
-              <thead className="table-light">
-                <tr>
-                  <th className="ps-4">Ime životinje</th>
-                  <th className="d-none d-md-table-cell">Vrsta</th>
-                  <th className="d-none d-lg-table-cell">Lokacija</th>
-                  <th className="d-none d-lg-table-cell">Tip prijave</th>
-                  <th className="text-center d-none d-md-table-cell">Vrijeme prijave</th>
-                  <th className="text-center">Status</th>
-                  <th className="text-center pe-4" style={{ minWidth: "220px" }}>Akcije</th>
+          <Table responsive hover className="align-middle mb-0 border-top">
+            <thead className="table-light">
+              <tr>
+                <th className="ps-4">Ime životinje</th>
+                <th className="d-none d-md-table-cell">Vrsta</th>
+                <th className="d-none d-lg-table-cell">Lokacija</th>
+                <th className="d-none d-lg-table-cell">Tip prijave</th>
+                <th className="text-center d-none d-md-table-cell">Vrijeme prijave</th>
+                <th className="text-center">Status</th>
+                <th className="text-center pe-4" style={{ minWidth: "220px" }}>Akcije</th>
+              </tr>
+            </thead>
+            <tbody>
+              {filtriranePrijave.map((prijava) => (
+                <tr key={prijava.id} className={prijava.hitno ? "table-danger" : ""}>
+                  <td className="ps-4 fw-semibold text-dark">
+                    {prijava.zivotinja_ime || <span className="text-muted fst-italic">Nepoznato</span>}
+                  </td>
+                  <td className="d-none d-md-table-cell">
+                    <Badge bg="info" className="text-dark bg-opacity-10 border border-info px-2 py-1">
+                      {getNazivVrste(prijava.zivotinja_vrsta)}
+                    </Badge>
+                  </td>
+                  <td className="text-muted d-none d-lg-table-cell">{prijava.lokacija_opis || "-"}</td>
+                  <td className="d-none d-lg-table-cell">{getNazivTipa(prijava.tip_prijave)}</td>
+                  <td className="text-center text-secondary small d-none d-md-table-cell">
+                    <FormatDatuma datum={prijava.datum} prikazDatuma="Nepoznato" />
+                  </td>
+                  <td className="text-center">
+                    <Badge bg={prijava.status === "otvorena" ? "success" : "secondary"} className="text-capitalize px-2 py-1">
+                      {prijava.status}
+                    </Badge>
+                  </td>
+                  <td className="text-center pe-4">
+                    <ButtonGroup size="sm">
+                      <Link to={`/prijave/${prijava.id}/tragovi`} className="btn btn-outline-primary" title="Tragovi">
+                        <BiSearch size={16} /> Tragovi
+                      </Link>
+                      <Button variant="outline-warning" onClick={() => navigate(`/prijave/${prijava.id}`)} title="Uredi">
+                        <BiPencil size={16} />
+                      </Button>
+                      <Button variant="outline-danger" onClick={() => obrisi(prijava.id)} title="Obriši">
+                        <BiTrash size={16} />
+                      </Button>
+                    </ButtonGroup>
+                  </td>
                 </tr>
-              </thead>
-              <tbody>
-                {prijave.map((prijava) => (
-                  <tr key={prijava.id} className={prijava.hitno ? "table-danger" : ""}>
-                    <td className="ps-4 fw-semibold text-dark">
-                      {prijava.zivotinja_ime || <span className="text-muted fst-italic">Nepoznato</span>}
-                    </td>
-                    <td className="d-none d-md-table-cell">
-                      <Badge bg="info" className="text-dark bg-opacity-10 border border-info px-2 py-1">
-                        {getNazivVrste(prijava.zivotinja_vrsta)}
-                      </Badge>
-                    </td>
-                    <td className="text-muted d-none d-lg-table-cell">{prijava.lokacija_opis || "-"}</td>
-                    <td className="d-none d-lg-table-cell">{getNazivTipa(prijava.tip_prijave)}</td>
-                    <td className="text-center text-secondary small d-none d-md-table-cell">
-                      <FormatDatuma datum={prijava.datum} prikazDatuma="Nepoznato" />
-                    </td>
-                    <td className="text-center">
-                      <Badge bg={prijava.status === "otvorena" ? "success" : "secondary"} className="text-capitalize px-2 py-1">
-                        {prijava.status}
-                      </Badge>
-                    </td>
-                    <td className="text-center pe-4">
-                      <ButtonGroup size="sm">
-                        <Link to={`/prijave/${prijava.id}/tragovi`} className="btn btn-outline-primary" title="Tragovi">
-                          <BiSearch size={16} /> Tragovi
-                        </Link>
-                        <Button variant="outline-warning" onClick={() => navigate(`/prijave/${prijava.id}`)} title="Uredi">
-                          <BiPencil size={16} />
-                        </Button>
-                        <Button variant="outline-danger" onClick={() => obrisi(prijava.id)} title="Obriši">
-                          <BiTrash size={16} />
-                        </Button>
-                      </ButtonGroup>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </Table>     
+              ))}
+            </tbody>
+          </Table>
         </Card.Body>
 
 
-          <Card.Footer className="bg-light border-0 p-3 px-4 d-flex align-items-center justify-content-between">
-            <span className="text-muted small">
-              Ukupno prijava: <Badge pill bg="primary" className="ms-1">{prijave ? prijave.length : 0}</Badge>
-            </span>
-          </Card.Footer>
-    
+        <Card.Footer className="bg-light border-0 p-3 px-4 d-flex align-items-center justify-content-between">
+          <span className="text-muted small">
+            Ukupno prijava: <Badge pill bg="primary" className="ms-1">{prijave ? prijave.length : 0}</Badge>
+          </span>
+        </Card.Footer>
+
       </Card>
     </Container>
   )
