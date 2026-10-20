@@ -16,13 +16,14 @@ const crvenaIkona = new L.Icon({
   popupAnchor: [1, -34],
 });
 
-export function dohvatiIkonu(tipId) {
-  return Number(tipId) === 2 || tipId === "Nestanak" ? crvenaIkona : plavaIkona;
+export function dohvatiIkonu(nazivTipa) {
+  const naziv = (nazivTipa || "").toString().toLowerCase();
+  return naziv.includes("nestanak") ? crvenaIkona : plavaIkona;
 }
 
 export function parsirajKoordinate(p) {
-  const lat = parseFloat(p.lokacija_lat);
-  const lng = parseFloat(p.lokacija_lng);
+  const lat = parseFloat(p.lokacija_lat ?? p.lat);
+  const lng = parseFloat(p.lokacija_lng ?? p.lng);
   return isNaN(lat) || isNaN(lng) ? null : [lat, lng];
 }
 

@@ -1,24 +1,32 @@
 import { useState, useEffect } from "react";
 import prijaveService from "../../services/prijave/prijaveService";
+import VrsteService from "../../services/vrste/VrsteService";
+import TipService from "../../services/tip/TipService";
 import { RouteNames } from "../../constants";
-import { Badge, Button, Card, Container, Table, Spinner, ButtonGroup } from "react-bootstrap";
+import { Badge, Button, Card, Container, Table, ButtonGroup } from "react-bootstrap";
 import FormatDatuma from "../../components/FormatDatuma";
 import { Link, useNavigate } from "react-router-dom";
-import { vrste } from "../../services/vrste/VrstePodaci";
-import { tipovi } from "../../services/tip/TipPodaci";
 import { BiPlus, BiPencil, BiTrash, BiSearch } from "react-icons/bi";
 
 export default function PrijavePregled() {
   const [prijave, setPrijave] = useState([])
+  const [vrste, setVrste] = useState([]);
+  const [tipovi, setTipovi] = useState([]);
   const navigate = useNavigate()
-  async function ucitajPrijave() {
-    await prijaveService.get().then((odgovor) => {
-      setPrijave(odgovor.data)
-    })
+
+  async function ucitajPodatke() {
+   const [resPrijave, resVrste, resTipovi] = await Promise.all([
+        prijaveService.get(),
+        VrsteService.get(),
+        TipService.get()
+      ]);
+      setPrijave(resPrijave.data || resPrijave);
+      setVrste(resVrste.data || resVrste);
+      setTipovi(resTipovi.data || resTipovi);
   }
 
   useEffect(() => {
-    ucitajPrijave()
+    ucitajPodatke()
   }, [])
 
 
