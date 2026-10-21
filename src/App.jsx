@@ -21,7 +21,7 @@ import GeneriranjePodataka from "./pages/GeneriranjePodataka"
 
 export default function App() {
   return (
-    <div className="container my-4">
+    <div className="container my-1">
       <Navbar />
       <Routes>
         <Route path={RouteNames.HOME} element={<Pocetna />} />

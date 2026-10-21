@@ -65,10 +65,10 @@ function obradiSubmit(e) {
         <Container className="my-5" style={{ maxWidth: "850px" }}>
             <Card className="shadow-sm border-0 rounded-3">
                 <Card.Header className="bg-success text-white p-4 rounded-top-3">
-                    <h3 className="mb-0 fw-bold fs-4">🐾Dodaj novi trag za prijavu {id}
+                    <h3 className="mb-0 fw-bold fs-4">🐾Dodaj novi trag za prijavu
                     </h3>
                     <p className="mb-0 text-white-50 small">
-                        Unesite podatke o novom tragu za prijavu {id}.
+                        Unesite podatke o novom tragu
                     </p>
 
                 </Card.Header>

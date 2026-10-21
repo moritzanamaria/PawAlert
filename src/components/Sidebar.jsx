@@ -1,4 +1,5 @@
 import FormatDatuma from "./FormatDatuma";
+import { Link } from "react-router-dom";
 
 function Sidebar({ prijave = [] }) {
   const najnovije = [...prijave]
@@ -38,23 +39,33 @@ function Sidebar({ prijave = [] }) {
         <div className="list-group list-group-flush">
           {najnovije.length > 0 ? (
             najnovije.map((prijava) => (
-              <div key={prijava.id || Math.random()} className="list-group-item px-0 py-2 border-0 border-bottom">
+              <div key={prijava.id} className="list-group-item px-0 py-2 border-0 border-bottom">
                 <div className="d-flex justify-content-between align-items-start">
                   <div>
-                    <strong className="d-block text-dark small">
-                      {prijava.zivotinja_ime || "Prijava bez naziva"}
-                    </strong>
-                    <span className="text-muted small">
+                    <div className="d-flex align-items-center gap-2 flex-wrap">
+                      <strong className="text-dark fs-5">
+                        {prijava.zivotinja_ime || "Prijava bez naziva"}
+                      </strong>
+                      <Link
+                        to={`/prijave/${prijava.id}/tragovi`}
+                        title="Pogledaj tragove"
+                        className="text-decoration-none fs-3 lh-1 px-1"
+                      >
+                        🐾
+                      </Link>
+                    </div>
+                    <div className="text-muted small mt-1">
                       📍 {prijava.lokacija_opis || "Nepoznata lokacija"}
-                    </span>
+                    </div>
                   </div>
-                 {prijava.datum && (
-  <span className="badge bg-light text-dark border small">
-    <span className="datum">
-      <FormatDatuma datum={prijava.datum} />
-    </span>
-  </span>
-)}
+                  {prijava.datum && (
+                    <span className="badge bg-light text-dark border small">
+                      <span className="datum">
+                        <FormatDatuma datum={prijava.datum} />
+                      </span>
+                    </span>
+                  )}
+
                 </div>
               </div>
             ))
