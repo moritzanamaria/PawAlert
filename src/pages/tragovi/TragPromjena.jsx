@@ -40,16 +40,45 @@ export default function TragPromjena() {
     }
 
     function obradiSubmit(e) {
-        e.preventDefault()
-        const podaci = new FormData(e.target)
-        promjeni({
-            ...trag,
-            opis: podaci.get('opis'),
-            lokacija_opis: podaci.get('lokacija_opis'),
-            datum: new Date(podaci.get('datum')).toISOString(),
-        })
+    e.preventDefault()
+    const podaci = new FormData(e.target)
+
+    const opis = (podaci.get('opis') || '').trim()
+    if (opis.length === 0) {
+        alert("Opis traga je obavezan i ne smije sadržavati samo razmake!")
+        return
+    }
+    if (opis.length < 3 || opis.length > 500) {
+        alert("Opis traga mora imati najmanje 3 i najviše 500 znakova!")
+        return
     }
 
+    const lokacija = (podaci.get('lokacija_opis') || '').trim()
+    if (lokacija.length === 0) {
+        alert("Opis lokacije je obavezan i ne smije sadržavati samo razmake!")
+        return
+    }
+    if (lokacija.length < 3 || lokacija.length > 100) {
+        alert("Opis lokacije mora imati najmanje 3 i najviše 100 znakova!")
+        return
+    }
+
+    if (!datum || isNaN(datum.getTime())) {
+        alert("Morate odabrati datum i vrijeme!")
+        return
+    }
+    if (datum > new Date()) {
+        alert("Datum traga ne može biti u budućnosti!")
+        return
+    }
+
+    promjeni({
+        ...trag,
+        opis: opis,
+        lokacija_opis: lokacija,
+        datum: datum.toISOString(),
+    })
+}
     return (
         <Container className="my-5" style={{ maxWidth: "850px" }}>
             <Card className="shadow-sm border-0 rounded-3">

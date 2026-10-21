@@ -21,16 +21,31 @@ export default function VrstaPromjena() {
 
     async function promjeni(podaci) {
         await VrsteService.promjeni(params.id, podaci).then(() => {
-            navigate(RouteNames.VRSTE_PREGLED)
+            navigate(RouteNames.TIPOVI_I_VRSTE_PREGLED)
         })
     }
 
     function obradiSubmit(e) {
         e.preventDefault()
         const podaci = new FormData(e.target)
+
+        const naziv = (podaci.get('naziv') || '').trim()
+        if (naziv.length === 0) {
+            alert("Naziv je obavezan i ne smije sadržavati samo razmake!")
+            return
+        }
+        if (naziv.length < 3 || naziv.length > 50) {
+            alert("Naziv vrste mora imati najmanje 3 i najviše 50 znakova!")
+            return
+        }
+        if (!/^[A-Za-zČčĆćĐđŠšŽž\s-]+$/.test(naziv)) {
+            alert("Naziv smije sadržavati samo slova, razmake i crticu (bez brojeva)!")
+            return
+        }
+
         promjeni({
             ...vrsta,
-            naziv: podaci.get('naziv')
+            naziv: naziv
         })
     }
 
@@ -51,7 +66,7 @@ export default function VrstaPromjena() {
                             <Form.Control type="text" name="naziv" defaultValue={vrsta.naziv} placeholder="Npr. Pas, Ptica" required />
                         </Form.Group>
                         <div className="d-flex justify-content-between align-items-center pt-2">
-                            <Link to={RouteNames.VRSTE_PREGLED} className="btn btn-outline-secondary px-4 fw-medium">Odustani</Link>
+                            <Link to={RouteNames.TIPOVI_I_VRSTE_PREGLED} className="btn btn-outline-secondary px-4 fw-medium">Odustani</Link>
 
                             <Button type="submit" variant="warning" className="px-5 fw-bold text-dark">Spremi promjene</Button>
                         </div>

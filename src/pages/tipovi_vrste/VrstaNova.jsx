@@ -8,15 +8,31 @@ export default function VrstaNova() {
 
     async function dodaj(vrsta) {
         await VrsteService.dodaj(vrsta).then(() => {
-            navigate(RouteNames.VRSTE_PREGLED)
+            navigate(RouteNames.TIPOVI_I_VRSTE_PREGLED)
         })
     }
 
     function obradiSubmit(e) {
         e.preventDefault()
         const podaci = new FormData(e.target)
+
+        const naziv = (podaci.get('naziv') || '').trim()
+        if (naziv.length === 0) {
+            alert("Naziv je obavezan i ne smije sadržavati samo razmake!")
+            return
+        }
+        if (naziv.length < 3 || naziv.length > 20) {
+            alert("Naziv vrste mora imati najmanje 3 i najviše 20 znakova!")
+            return
+        }
+
+        if (!/^[A-Za-zČčĆćĐđŠšŽž\s-]+$/.test(naziv)) {
+            alert("Naziv smije sadržavati samo slova, razmake i crticu (bez brojeva)!")
+            return
+        }
+
         dodaj({
-            naziv: podaci.get('naziv')
+            naziv: naziv
         })
     }
 
@@ -38,7 +54,7 @@ export default function VrstaNova() {
                         </Form.Group>
 
                         <div className="d-flex justify-content-between align-items-center pt-2">
-                            <Link to={RouteNames.VRSTE_PREGLED} className="btn btn-outline-secondary px-4 fw-medium">
+                            <Link to={RouteNames.TIPOVI_I_VRSTE_PREGLED} className="btn btn-outline-secondary px-4 fw-medium">
                                 Odustani
                             </Link>
 

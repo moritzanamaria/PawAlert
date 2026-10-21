@@ -6,8 +6,8 @@ import prijaveService from "../../services/prijave/prijaveService";
 import TipService from "../../services/tip/TipService";
 import VrsteService from "../../services/vrste/VrsteService";
 import DatePicker, { registerLocale } from "react-datepicker";
-import { hr } from "@faker-js/faker";
-
+import "react-datepicker/dist/react-datepicker.css";
+import { hr } from "date-fns/locale";
 registerLocale("hr", hr);
 
 export default function PrijavaPromjena() {
@@ -65,7 +65,82 @@ export default function PrijavaPromjena() {
             slika: podaci.get('slika'),
             hitno: podaci.get('hitno') === 'on'
         })
+    }function obradiSubmit(e) {
+    e.preventDefault()
+    const podaci = new FormData(e.target)
+
+    const ime = (podaci.get('zivotinja_ime') || '').trim()
+    if (ime.length > 0 && (ime.length < 2 || ime.length > 50)) {
+        alert("Ime životinje mora imati najmanje 2 i najviše 50 znakova!")
+        return
     }
+
+    if (!podaci.get('zivotinja_vrsta')) {
+        alert("Morate odabrati vrstu životinje!")
+        return
+    }
+
+    const godineRaw = podaci.get('zivotinja_godine')
+    if (godineRaw !== null && godineRaw !== '') {
+        const godine = Number(godineRaw)
+        if (isNaN(godine) || !Number.isInteger(godine) || godine < 0 || godine > 50) {
+            alert("Godine moraju biti cijeli broj između 0 i 50!")
+            return
+        }
+    }
+
+    const slika = (podaci.get('slika') || '').trim()
+    if (slika.length > 0 && !/^https?:\/\//i.test(slika)) {
+        alert("URL slike mora započeti s http:// ili https://")
+        return
+    }
+
+    const opis = (podaci.get('zivotinja_opis') || '').trim()
+    if (opis.length > 500) {
+        alert("Opis može imati najviše 500 znakova!")
+        return
+    }
+
+    if (!podaci.get('tip_prijave')) {
+        alert("Morate odabrati tip prijave!")
+        return
+    }
+
+    const lokacija = (podaci.get('lokacija_opis') || '').trim()
+    if (lokacija.length === 0) {
+        alert("Opis lokacije je obavezan i ne smije sadržavati samo razmake!")
+        return
+    }
+    if (lokacija.length < 3 || lokacija.length > 100) {
+        alert("Opis lokacije mora imati najmanje 3 i najviše 100 znakova!")
+        return
+    }
+
+    const odabraniDatum = prijava.datum ? new Date(prijava.datum) : null
+    if (!odabraniDatum || isNaN(odabraniDatum.getTime())) {
+        alert("Morate odabrati datum i vrijeme!")
+        return
+    }
+    if (odabraniDatum > new Date()) {
+        alert("Datum prijave ne može biti u budućnosti!")
+        return
+    }
+
+    promjeni({
+        ...prijava,
+        zivotinja_ime: ime,
+        zivotinja_vrsta: parseInt(podaci.get('zivotinja_vrsta')),
+        zivotinja_opis: opis,
+        zivotinja_godine: godineRaw ? parseInt(godineRaw) : null,
+        cipirana: podaci.get('cipirana') === 'on',
+        tip_prijave: parseInt(podaci.get('tip_prijave')),
+        status: podaci.get('status') || prijava.status || 'otvorena',
+        lokacija_opis: lokacija,
+        datum: odabraniDatum.toISOString(),
+        slika: slika,
+        hitno: podaci.get('hitno') === 'on'
+    })
+}
 
     return (
         <Container className="my-5" style={{ maxWidth: "850px" }}>
@@ -214,7 +289,6 @@ export default function PrijavaPromjena() {
                                     dateFormat="dd.MM.yyyy. HH:mm"
                                     locale="hr"
                                     customInput={<Form.Control required />}
-                                    key={prijava.datum}
                                 />
                             </Form.Group>
                         </Row>
