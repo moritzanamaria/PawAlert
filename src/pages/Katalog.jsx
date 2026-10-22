@@ -59,8 +59,8 @@ const ukupnoPrijava = prijave.length;
       <Card className="shadow-sm border-0 rounded-3 mb-4">
         <Card.Header className="bg-white p-4 border-0 d-flex justify-content-between align-items-center flex-wrap gap-2">
           <div>
-            <h3 className="fw-bold mb-1 text-dark">📋 Pregled prijava</h3>
-            <p className="text-muted small mb-0">Popis svih uočenih i prijavljenih slučajeva</p>
+            <h3 className="fw-bold mb-1 text-dark">🎴 Katalog</h3>
+            <p className="text-muted small mb-0">Popis svih prijavljenih slučajeva</p>
           </div>
           <Link to={RouteNames.PRIJAVA_NOVA} className="btn btn-success fw-medium d-flex align-items-center gap-1 shadow-sm px-3 py-2">
             <BiPlus size={20} /> Nova prijava

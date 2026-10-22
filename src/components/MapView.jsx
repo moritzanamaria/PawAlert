@@ -67,7 +67,7 @@ function MapView({ prijave = [], vrste: propVrste, tipovi: propTipovi }) {
                   <br />
                   <span>Tip: {nazivTipa}</span>
                   <br />
-                  <span>Lokacija: {p.lokacija_opis || "-"}</span>
+                  <span>Lokacija: {p.lokacija?.opis || p.lokacija_opis || "-"}</span>
                   <br />
                   {p.datum && <small className="text-muted"><FormatDatuma datum={p.datum} /></small>}
                 </div>
