@@ -311,13 +311,13 @@ const handleObrisiSve = async () => {
 };
     return (
         <Container className="mt-4">
-            <div className="d-flex justify-content-between align-items-center flex-wrap gap-2">
+            <div className="d-flex flex-column flex-md-row justify-content-md-between align-items-md-center gap-3">
                 <h1 className="mb-0">Generiranje podataka</h1>
                 <div className="d-flex gap-2">
-                    <Button variant="success" onClick={handleGenerirajSve} disabled={loading}>
+                    <Button variant="success" onClick={handleGenerirajSve} disabled={loading} className='mb-1 flex-fill flex-md-grow-0'>
                         {loading ? 'Radim...' : 'Generiraj sve'}
                     </Button>
-                    <Button variant="danger" onClick={handleObrisiSve} disabled={loading}>
+                    <Button variant="danger" onClick={handleObrisiSve} disabled={loading} className='mb-1 flex-fill flex-md-grow-0'>
                         {loading ? 'Radim...' : 'Obriši sve'}
                     </Button>
                 </div>
