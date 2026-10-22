@@ -100,31 +100,31 @@ export default function PrijavePregled() {
     <Container>
       <Row className="g-3 mb-4">
         <Col xs={4}>
-          <div className="card shadow-sm border-0 p-3 text-center">
+          <div className="card shadow-sm border-0 p-3 text-center h-100 d-flex flex-col justify-content-center">
             <div className="fs-2 fw-bold text-primary">{animiraneSve}</div>
             <div className="text-muted small">Ukupno prijava</div>
           </div>
         </Col>
         <Col xs={4}>
-          <div className="card shadow-sm border-0 p-3 text-center">
+          <div className="card shadow-sm border-0 p-3 text-center h-100 d-flex flex-col justify-content-center">
             <div className="fs-2 fw-bold text-success">{animiraneOtvorene}</div>
             <div className="text-muted small">Otvorene</div>
           </div>
         </Col>
         <Col xs={4}>
-          <div className="card shadow-sm border-0 p-3 text-center">
+          <div className="card shadow-sm border-0 p-3 text-center h-100 d-flex flex-col justify-content-center">
             <div className="fs-2 fw-bold text-danger">{animiraniHitni}</div>
             <div className="text-muted small">Hitni slučajevi</div>
           </div>
         </Col>
       </Row>
       <Card className="shadow-sm border-0 rounded-3">
-        <Card.Header className="bg-white p-4 border-0 d-flex justify-content-between align-items-center flex-wrap gap-2">
+        <Card.Header className="bg-white p-4 border-0 d-flex justify-content-between align-items-center flex-wrap gap-3">
           <div>
             <h3 className="fw-bold mb-1 text-dark">📋 Pregled prijava</h3>
             <p className="text-muted small mb-0">Popis svih uočenih i prijavljenih slučajeva</p>
           </div>
-          <Link to={RouteNames.PRIJAVA_NOVA} className="btn btn-success fw-medium d-flex align-items-center gap-1 shadow-sm px-3 py-2">
+          <Link to={RouteNames.PRIJAVA_NOVA} className="btn btn-success fw-medium d-flex align-items-center gap-1 shadow-sm px-3 py-2 justify-content-center col-12 col-md-auto">
             <BiPlus size={20} /> Nova prijava
           </Link>
         </Card.Header>

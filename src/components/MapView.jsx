@@ -7,6 +7,7 @@ import { useEffect, useState } from "react";
 import VrsteService from "../services/vrste/VrsteService";
 import TipService from "../services/tip/TipService";
 import { bojaTipa } from "../utils/mapHelpers";
+import "../App.css"
 
 podesiLeafletIkone();
 
@@ -76,24 +77,18 @@ function MapView({ prijave = [], vrste: propVrste, tipovi: propTipovi }) {
           );
         })}
       </MapContainer>
-      <div className="d-flex flex-wrap gap-3 p-2 small">
+     <div className="legenda-tipova p-2 small">
   {tipovi.map((t) => (
-    <span key={t.id}>
+    <div key={t.id} className="legenda-stavka">
       <span
-        style={{
-          display: "inline-block",
-          width: 12,
-          height: 12,
-          borderRadius: "50%",
-          background: bojaTipa(t.id),
-          marginRight: 6,
-        }}
+        className="legenda-tocka"
+        style={{ background: bojaTipa(t.id) }}
       />
-      {t.naziv}
-    </span>
+      <span>{t.naziv}</span>
+    </div>
   ))}
 </div>
-    </div>
+</div>
 
   );
 }
