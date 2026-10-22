@@ -249,10 +249,79 @@ export default function GeneriranjePodataka() {
             setLoading(false);
         }
     };
+const handleGenerirajSve = async () => {
+    setLoading(true);
+    setPoruka(null);
 
+    try {
+        await generirajVrste(brojVrsta);
+        await generirajTipove(brojTipova);
+        await generirajPrijave(brojPrijava);
+        await generirajTragove(brojTragova);
+        setPoruka({
+            tip: 'success',
+            tekst: `Uspješno generirano: ${brojVrsta} vrsta, ${brojTipova} tipova, ${brojPrijava} prijava i ${brojTragova} tragova!`
+        });
+    } catch (error) {
+        setPoruka({ tip: 'danger', tekst: 'Greška pri generiranju svih podataka: ' + error.message });
+    } finally {
+        setLoading(false);
+    }
+};
+
+const handleObrisiSve = async () => {
+    if (!window.confirm('Jeste li sigurni da želite obrisati SVE podatke (tragove, prijave, tipove i vrste)?')) return;
+    setLoading(true);
+    setPoruka(null);
+
+    try {
+        const tragoviOdgovor = await TragoviService.get();
+        const tragovi = tragoviOdgovor.data || tragoviOdgovor;
+        for (const trag of tragovi) {
+            await TragoviService.obrisi(trag.id);
+        }
+
+        const prijaveOdgovor = await prijaveService.get();
+        const prijave = prijaveOdgovor.data || prijaveOdgovor;
+        for (const prijava of prijave) {
+            await prijaveService.obrisi(prijava.id);
+        }
+
+        const tipoviOdgovor = await TipService.get();
+        const tipovi = tipoviOdgovor.data || tipoviOdgovor;
+        for (const tip of tipovi) {
+            await TipService.obrisi(tip.id);
+        }
+
+        const vrsteOdgovor = await VrsteService.get();
+        const vrste = vrsteOdgovor.data || vrsteOdgovor;
+        for (const vrsta of vrste) {
+            await VrsteService.obrisi(vrsta.id);
+        }
+
+        setPoruka({
+            tip: 'success',
+            tekst: `Uspješno obrisano: ${tragovi.length} tragova, ${prijave.length} prijava, ${tipovi.length} tipova i ${vrste.length} vrsta!`
+        });
+    } catch (error) {
+        setPoruka({ tip: 'danger', tekst: 'Greška pri brisanju svih podataka: ' + error.message });
+    } finally {
+        setLoading(false);
+    }
+};
     return (
         <Container className="mt-4">
-            <h1>Generiranje podataka</h1>
+            <div className="d-flex justify-content-between align-items-center flex-wrap gap-2">
+                <h1 className="mb-0">Generiranje podataka</h1>
+                <div className="d-flex gap-2">
+                    <Button variant="success" onClick={handleGenerirajSve} disabled={loading}>
+                        {loading ? 'Radim...' : 'Generiraj sve'}
+                    </Button>
+                    <Button variant="danger" onClick={handleObrisiSve} disabled={loading}>
+                        {loading ? 'Radim...' : 'Obriši sve'}
+                    </Button>
+                </div>
+            </div>
             <p className="text-muted">
                 Koristite ovaj alat za generiranje testnih podataka s lažnim (fake) podacima na hrvatskom jeziku u Osijeku.
             </p>
