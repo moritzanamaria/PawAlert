@@ -47,7 +47,7 @@ function Sidebar({ prijave = [] }) {
                         {prijava.zivotinja_ime || "Prijava bez naziva"}
                       </strong>
                       <Link
-                        to={`/prijave/${prijava.id}/tragovi`}
+                        to={`/detalji-slucaja/${prijava.id}`}
                         title="Pogledaj tragove"
                         className="text-decoration-none fs-3 lh-1 px-1"
                       >

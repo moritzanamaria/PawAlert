@@ -17,11 +17,13 @@ import { IME_APLIKACIJE, RouteNames } from "./constants"
 import Katalog from "./pages/Katalog"
 import DetaljiSlucaja from "./pages/DetaljiSlucaja"
 import GeneriranjePodataka from "./pages/GeneriranjePodataka"
+import ScrollToTop from "./components/ScrollToTop";
 
 
 export default function App() {
   return (
     <div className="container my-1">
+      <ScrollToTop />
       <Navbar />
       <Routes>
         <Route path={RouteNames.HOME} element={<Pocetna />} />
