@@ -9,9 +9,11 @@ export const prijave = [
     cipirana: true,
     tip_prijave: 2,
     status: "otvorena",
-    lokacija_opis: "Tvrđa, Osijek",
-    lokacija_lat: 45.5550,
-    lokacija_lng: 18.6955,
+    lokacija: {
+      lat: 45.5550,
+      lng: 18.6955,
+      opis: "Tvrđa, Osijek"
+    },
     datum: "2026-09-20T17:34:00",
     slika: "https://images.unsplash.com/photo-1583511655857-d19b40a7a54e?w=500"
   },
@@ -25,9 +27,11 @@ export const prijave = [
     cipirana: false,
     tip_prijave: 1,
     status: "otvorena",
-    lokacija_opis: "Gornji grad, Osijek",
-    lokacija_lat: 45.5610,
-    lokacija_lng: 18.6800,
+    lokacija: {
+      lat: 45.5610,
+      lng: 18.6800,
+      opis: "Gornji grad, Osijek"
+    },
     datum: "2026-09-21T12:00:00",
     slika: "https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?w=500"
   },
@@ -42,9 +46,11 @@ export const prijave = [
     tip_prijave: 2,
     status: "zatvorena",
     hitno: false,
-    lokacija_opis: "Jug 2, Osijek",
-    lokacija_lat: 45.5480,
-    lokacija_lng: 18.7100,
+    lokacija: {
+      lat: 45.5480,
+      lng: 18.7100,
+      opis: "Jug 2, Osijek"
+    },
     datum: "2026-09-18T21:25:00",
     slika: "https://images.unsplash.com/photo-1537151608828-ea2b11777ee8?w=500"
   },
@@ -59,9 +65,11 @@ export const prijave = [
     tip_prijave: 1,
     status: "otvorena",
     hitno: true,
-    lokacija_opis: "Industrijska zona, Osijek",
-    lokacija_lat: 45.5390,
-    lokacija_lng: 18.6450,
+    lokacija: {
+      lat: 45.5390,
+      lng: 18.6450,
+      opis: "Industrijska zona, Osijek"
+    },
     datum: "2026-09-15T19:50:00",
     slika: ""
   },
@@ -76,9 +84,11 @@ export const prijave = [
     tip_prijave: 1,
     status: "zatvorena",
     hitno: false,
-    lokacija_opis: "Sjenjak, Osijek",
-    lokacija_lat: 45.5620,
-    lokacija_lng: 18.7050,
+    lokacija: {
+      lat: 45.5620,
+      lng: 18.7050,
+      opis: "Sjenjak, Osijek"
+    },
     datum: "2026-09-23T10:05:00",
     slika: "https://images.unsplash.com/photo-1533738363-b7f9aef128ce?w=500"
   },

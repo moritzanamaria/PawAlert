@@ -5,6 +5,8 @@ import { useState } from "react";
 import DatePicker, { registerLocale } from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { hr } from "date-fns/locale";
+import LokacijaPicker from "../../components/LokacijaPicker";
+import { validirajLokaciju } from "../../utils/lokacija";
 
 registerLocale("hr", hr);
 
@@ -12,9 +14,8 @@ registerLocale("hr", hr);
 export default function TragNovi() {
     const navigate = useNavigate()
     const { id } = useParams()
-    const [trag, setTrag] = useState({})
     const [datum, setDatum] = useState(new Date());
-
+    const [lokacija, setLokacija] = useState(null);
     async function dodaj(trag) {
         await TragoviService.dodaj(trag).then(() => {
             navigate(`/prijave/${id}/tragovi`)
@@ -34,15 +35,11 @@ function obradiSubmit(e) {
         return
     }
 
-    const lokacija = (podaci.get('lokacija_opis') || '').trim()
-    if (lokacija.length === 0) {
-        alert("Opis lokacije je obavezan i ne smije sadržavati samo razmake!")
-        return
-    }
-    if (lokacija.length < 3 || lokacija.length > 100) {
-        alert("Opis lokacije mora imati najmanje 3 i najviše 100 znakova!")
-        return
-    }
+  const greskaLokacije = validirajLokaciju(lokacija)
+if (greskaLokacije) {
+    alert(greskaLokacije)
+    return
+}
 
     if (!datum || isNaN(datum.getTime())) {
         alert("Morate odabrati datum i vrijeme!")
@@ -56,7 +53,7 @@ function obradiSubmit(e) {
     dodaj({
         prijava: parseInt(id),
         opis: opis,
-        lokacija_opis: lokacija,
+         lokacija: { ...lokacija, opis: lokacija.opis.trim() },
         datum: datum.toISOString(),
     })
 }
@@ -82,11 +79,10 @@ function obradiSubmit(e) {
                         </Form.Group>
 
                         <Row className="mb-4">
-                            <Form.Group as={Col} md={6} controlId="lokacija_opis" className="mb-3">
-                                <Form.Label className="fw-medium">Opis lokacije</Form.Label>
-                                <Form.Control type="text" name="lokacija_opis" placeholder="Unesite opis lokacije (npr. Promenada, Osijek)" required />
-                            </Form.Group>
-
+                          <Form.Group className="mb-3">
+    <Form.Label className="fw-medium">Lokacija</Form.Label>
+    <LokacijaPicker value={lokacija} onChange={setLokacija} />
+</Form.Group>
 
                             <Form.Group as={Col} md={6} controlId="datum" className="mb-3">
                                 <Form.Label className="fw-medium">Datum i vrijeme</Form.Label>

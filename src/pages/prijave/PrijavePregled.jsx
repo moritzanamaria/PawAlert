@@ -163,7 +163,7 @@ export default function PrijavePregled() {
                       {getNazivVrste(prijava.zivotinja_vrsta)}
                     </Badge>
                   </td>
-                  <td className="text-muted d-none d-lg-table-cell">{prijava.lokacija_opis || "-"}</td>
+                  <td className="text-muted d-none d-lg-table-cell">{prijava.lokacija?.opis || prijava.lokacija_opis || "Nepoznata lokacija"}</td>
                   <td className="d-none d-lg-table-cell">{getNazivTipa(prijava.tip_prijave)}</td>
                   <td className="text-center text-secondary small d-none d-md-table-cell">
                     <FormatDatuma datum={prijava.datum} prikazDatuma="Nepoznato" />

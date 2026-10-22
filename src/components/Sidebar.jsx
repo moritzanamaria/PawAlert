@@ -55,7 +55,7 @@ function Sidebar({ prijave = [] }) {
                       </Link>
                     </div>
                     <div className="text-muted small mt-1">
-                      📍 {prijava.lokacija_opis || "Nepoznata lokacija"}
+                      📍 {prijava.lokacija?.opis || prijava.lokacija_opis || "Nepoznata lokacija"}
                     </div>
                   </div>
                   {prijava.datum && (

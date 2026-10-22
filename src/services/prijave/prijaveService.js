@@ -1,4 +1,5 @@
 import { DATA_SOURCE } from "../../constants";
+import { normalizirajLokaciju } from "../../utils/lokacija";
 import prijaveServiceLocalStorage from "./prijaveServiceLocalStorage";
 import prijaveServiceMemorija from "./prijaveServiceMemorija";
 
@@ -25,8 +26,16 @@ const PrazanServis = {
 const AktivniServis = Servis||PrazanServis
 
 export default{
-  get: ()=> AktivniServis.get(),
-  getById: (id)=> AktivniServis.getById(id),
+  get: async () => {
+    const res = await AktivniServis.get()
+    const lista = Array.isArray(res) ? res : (res?.data ?? [])
+    return { data: lista.map(normalizirajLokaciju) }
+  },
+  getById: async (id) => {
+    const res = await AktivniServis.getById(id)
+    const zapis = res?.data ?? res
+    return { data: normalizirajLokaciju(zapis) }
+  },
   dodaj: (prijava)=>AktivniServis.dodaj(prijava),
   promjeni: (id, prijava)=>AktivniServis.promjeni(id, prijava),
   obrisi: (id)=> AktivniServis.obrisi(id)

@@ -75,9 +75,11 @@ export default function GeneriranjePodataka() {
                 cipirana: faker.datatype.boolean(),
                 tip_prijave: randomTip.id,
                 status: faker.helpers.arrayElement(['otvorena', 'zatvorena']),
-                lokacija_opis: `Osijek, ${ulica} ${faker.number.int({ min: 1, max: 120 })}`,
-                lokacija_lat: faker.number.float({ min: 45.5400, max: 45.5750, precision: 0.0001 }),
-                lokacija_lng: faker.number.float({ min: 18.6400, max: 18.7200, precision: 0.0001 }),
+                lokacija: {
+                    lat: faker.number.float({ min: 45.5400, max: 45.5750, precision: 0.0001 }),
+                    lng: faker.number.float({ min: 18.6400, max: 18.7200, precision: 0.0001 }),
+                    opis: `Osijek, ${ulica} ${faker.number.int({ min: 1, max: 120 })}`
+                },
                 datum: faker.date.recent({ days: 30 }).toISOString(),
                 slika: 'https://picsum.photos/400/300',
                 hitno: faker.datatype.boolean(0.3)
@@ -97,14 +99,16 @@ export default function GeneriranjePodataka() {
 
         for (let i = 0; i < broj; i++) {
             const randomPrijava = prijave[faker.number.int({ min: 0, max: prijave.length - 1 })];
-            const kvart = osjeckeUlice[faker.number.int({ min: 0, max: osjeckeUlice.length - 1 })];
+            const ulica = osjeckeUlice[faker.number.int({ min: 0, max: osjeckeUlice.length - 1 })];
 
             await TragoviService.dodaj({
                 prijava: randomPrijava.id,
                 opis: faker.lorem.paragraph(),
-                lokacija_opis: `Osijek, ${kvart}`,
-                lokacija_lat: faker.number.float({ min: 45.5400, max: 45.5750, precision: 0.0001 }),
-                lokacija_lng: faker.number.float({ min: 18.6400, max: 18.7200, precision: 0.0001 }),
+                lokacija: {
+                    lat: faker.number.float({ min: 45.5400, max: 45.5750, precision: 0.0001 }),
+                    lng: faker.number.float({ min: 18.6400, max: 18.7200, precision: 0.0001 }),
+                    opis: `Osijek, ${ulica} ${faker.number.int({ min: 1, max: 120 })}`
+                },
                 datum: faker.date.recent({ days: 10 }).toISOString()
             });
         }

@@ -6,6 +6,7 @@ import { Link, useNavigate, useParams } from "react-router-dom";
 import FormatDatuma from "../../components/FormatDatuma";
 import { BiPlus, BiPencil, BiTrash, BiArrowBack } from "react-icons/bi";
 
+
 export default function TragPregled() {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -67,7 +68,7 @@ export default function TragPregled() {
                 <tr key={trag.id}>
                   <td className="ps-4 fw-semibold text-dark">{trag.prijava}</td>
                   <td>{trag.opis}</td>
-                  <td className="text-muted">{trag.lokacija_opis}</td>
+                  <td className="text-muted">{trag.lokacija?.opis || trag.lokacija_opis || "Nepoznata lokacija"}</td>
                   <td className="text-center text-secondary small">
                     <FormatDatuma datum={trag.datum} />
                   </td>

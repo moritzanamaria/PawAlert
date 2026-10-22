@@ -60,7 +60,7 @@ function Home() {
         </div>
 
 
-        <div className="col-12 col-md-7 col-lg-8">
+        <div className="shadow-sm col-12 col-md-7 col-lg-8">
           <MapView prijave={filtriranePrijave} />
         </div>
       </div>

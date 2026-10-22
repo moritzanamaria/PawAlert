@@ -6,6 +6,7 @@ import { podesiLeafletIkone, parsirajKoordinate, dohvatiIkonu } from "../utils/m
 import { useEffect, useState } from "react";
 import VrsteService from "../services/vrste/VrsteService";
 import TipService from "../services/tip/TipService";
+import { bojaTipa } from "../utils/mapHelpers";
 
 podesiLeafletIkone();
 
@@ -57,7 +58,7 @@ function MapView({ prijave = [], vrste: propVrste, tipovi: propTipovi }) {
           const nazivVrste = getNazivVrste(vrstaVal);
           const nazivTipa = getNazivTipa(tipVal);
           return (
-            <Marker key={p.id || Math.random()} position={pozicija} icon={dohvatiIkonu(p.tip_id || p.tip)}>
+            <Marker key={p.id} position={pozicija} icon={dohvatiIkonu(tipVal)}>
               <Popup>
                 <div>
                   <strong>{p.zivotinja_ime || "Prijava"}</strong>
@@ -75,6 +76,23 @@ function MapView({ prijave = [], vrste: propVrste, tipovi: propTipovi }) {
           );
         })}
       </MapContainer>
+      <div className="d-flex flex-wrap gap-3 p-2 small">
+  {tipovi.map((t) => (
+    <span key={t.id}>
+      <span
+        style={{
+          display: "inline-block",
+          width: 12,
+          height: 12,
+          borderRadius: "50%",
+          background: bojaTipa(t.id),
+          marginRight: 6,
+        }}
+      />
+      {t.naziv}
+    </span>
+  ))}
+</div>
     </div>
 
   );

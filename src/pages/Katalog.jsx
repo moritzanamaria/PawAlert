@@ -1,14 +1,15 @@
 import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Container, Row, Col, Card, Badge, Button } from "react-bootstrap";
-import { GrAlert } from "react-icons/gr";
 import prijaveService from "../services/prijave/prijaveService";
 import VrsteService from "../services/vrste/VrsteService";
-import TipService from "../services/tip/TipService"
-import FilterBar from "../components/FilterBar";
-import FormatDatuma from "../components/FormatDatuma";
+import TipService from "../services/tip/TipService";
+import PretragaInput from "../components/PretragaInput";
+import VrstaSelect from "../components/VrstaSelect";
 import { filtrirajPrijave } from "../utils/filterHelpers";
+import FormatDatuma from "../components/FormatDatuma";
 import { RouteNames } from "../constants";
+import { BiPlus } from "react-icons/bi";
 
 export default function Katalog() {
   const [prijave, setPrijave] = useState([]);
@@ -29,52 +30,65 @@ export default function Katalog() {
 const getNazivVrste = (id) => vrste.find((v) => v.id === id)?.naziv ?? "";
 const getNazivTipa = (id) => tipovi.find((t) => t.id === id)?.naziv ?? "";
 
+const ukupnoPrijava = prijave.length;
+  const otvorenePrijave = prijave.filter((p) => p.status === "otvorena").length;
+  const hitnePrijave = prijave.filter((p) => p.hitno).length;
+
   return (
-    <Container className="my-4">
-      <div className="d-flex justify-content-between align-items-center mb-3">
-        <h2>Katalog prijava 🐾</h2>
-        <Link to={RouteNames.PRIJAVA_NOVA} className="btn btn-success">
-          + Nova prijava
-        </Link>
-      </div>
-
-      <FilterBar
-        pretraga={pretraga}
-        setPretraga={setPretraga}
-        vrsta={vrsta}
-        setVrsta={setVrsta}
-        vrste={vrste}
-      />
-
-      <Row className="g-4 mt-1">
-        {filtriranePrijave && filtriranePrijave.map((prijava) => (
-          <Col key={prijava.id} sm={12} md={6} lg={4}>
-            <Card className="h-100 shadow-sm border-0 position-relative">
-              <div className="position-absolute top-0 start-0 m-2" style={{ zIndex: 2 }}>
-                {prijava.hitno && (
-                  <Badge bg="danger" className="d-flex align-items-center gap-1 px-2 py-1 fs-6">
-                    <GrAlert /> HITNO
-                  </Badge>
-                )}
-              </div>
-
-              <div className="position-absolute top-0 end-0 m-2" style={{ zIndex: 2 }}>
-                <Badge
-                  bg={prijava.status === "otvorena" ? "warning" : "secondary"}
-                  text={prijava.status === "otvorena" ? "dark" : "white"}
-                >
-                  {prijava.status?.toUpperCase()}
-                </Badge>
-              </div>
-              <div style={{ height: "200px", overflow: "hidden", backgroundColor: "#f8f9fa" }}>
-                <Card.Img
-                  variant="top"
-                  src={prijava.slika || `${import.meta.env.BASE_URL}nemaSlike.svg`}
-                  alt={prijava.zivotinja_ime}
-                  style={{ objectFit: "cover", width: "100%", height: "100%" }}
+    <Container>
+        <Row className="g-3 mb-4">
+        <Col xs={4}>
+          <div className="card shadow-sm border-0 p-3 text-center">
+            <div className="fs-2 fw-bold text-primary">{ukupnoPrijava}</div>
+            <div className="text-muted small">Ukupno prijava</div>
+          </div>
+        </Col>
+        <Col xs={4}>
+          <div className="card shadow-sm border-0 p-3 text-center">
+            <div className="fs-2 fw-bold text-success">{otvorenePrijave}</div>
+            <div className="text-muted small">Otvorene</div>
+          </div>
+        </Col>
+        <Col xs={4}>
+          <div className="card shadow-sm border-0 p-3 text-center">
+            <div className="fs-2 fw-bold text-danger">{hitnePrijave}</div>
+            <div className="text-muted small">Hitni slučajevi</div>
+          </div>
+        </Col>
+      </Row>
+      <Card className="shadow-sm border-0 rounded-3 mb-4">
+        <Card.Header className="bg-white p-4 border-0 d-flex justify-content-between align-items-center flex-wrap gap-2">
+          <div>
+            <h3 className="fw-bold mb-1 text-dark">📋 Pregled prijava</h3>
+            <p className="text-muted small mb-0">Popis svih uočenih i prijavljenih slučajeva</p>
+          </div>
+          <Link to={RouteNames.PRIJAVA_NOVA} className="btn btn-success fw-medium d-flex align-items-center gap-1 shadow-sm px-3 py-2">
+            <BiPlus size={20} /> Nova prijava
+          </Link>
+        </Card.Header>
+        <div className="px-4 pb-3">
+          <Row className="g-3">
+            <Col xs={12} md={6}>
+              <PretragaInput pretraga={pretraga} setPretraga={setPretraga} />
+            </Col>
+            <Col xs={12} md={6}>
+              <VrstaSelect vrsta={vrsta} setVrsta={setVrsta} vrste={vrste} />
+            </Col>
+          </Row>
+        </div>
+      </Card>
+<Row className="g-4">
+        {filtriranePrijave.map((prijava) => (
+          <Col xs={12} md={4} key={prijava.id}>
+            <Card className="h-100 shadow-sm border-0 rounded-3">
+              {prijava.slika && (
+                <Card.Img 
+                  variant="top" 
+                  src={prijava.slika} 
+                  style={{ height: "200px", objectFit: "cover" }} 
+                  alt={prijava.zivotinja_ime || "Slika prijave"} 
                 />
-              </div>
-              
+              )}
               <Card.Body className="d-flex flex-column">
                 <div className="d-flex justify-content-between align-items-start mb-2">
                   <Card.Title className="mb-0 fw-bold fs-4">
@@ -90,7 +104,7 @@ const getNazivTipa = (id) => tipovi.find((t) => t.id === id)?.naziv ?? "";
                 </Card.Subtitle>
 
                 <Card.Text className="small text-secondary mb-3 flex-grow-1">
-                  📍 <strong>Lokacija:</strong> {prijava.lokacija_opis || "Nije navedena"}
+                  📍 <strong>Lokacija:</strong> {prijava.lokacija?.opis || prijava.lokacija_opis || "Nepoznata lokacija"}
                   <br />
                   🕒 <strong>Vrijeme:</strong> <FormatDatuma datum={prijava.datum} prikazDatuma="Nepoznato" />
                 </Card.Text>

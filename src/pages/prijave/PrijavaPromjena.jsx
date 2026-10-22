@@ -8,6 +8,9 @@ import VrsteService from "../../services/vrste/VrsteService";
 import DatePicker, { registerLocale } from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { hr } from "date-fns/locale";
+import LokacijaPicker from "../../components/LokacijaPicker";
+import { validirajLokaciju } from "../../utils/lokacija";
+
 registerLocale("hr", hr);
 
 export default function PrijavaPromjena() {
@@ -21,6 +24,7 @@ export default function PrijavaPromjena() {
     const handleDateChange = (date) => {
         setPrijava({ ...prijava, datum: date });
     };
+    const [lokacija, setLokacija] = useState(null);
 
     async function ucitajPodatke() {
         const [resPrijava, resVrste, resTipovi] = await Promise.all([
@@ -34,6 +38,9 @@ export default function PrijavaPromjena() {
             setPrijava(pData || {});
             setCipirana(Boolean(pData?.cipirana));
             setHitno(Boolean(pData?.hitno));
+            if (pData?.lokacija) {
+                setLokacija(pData.lokacija);
+            }
             setVrste(Array.isArray(vData) ? vData : []);
             setTipovi(Array.isArray(tData) ? tData : []);
     }
@@ -106,16 +113,11 @@ export default function PrijavaPromjena() {
         return
     }
 
-    const lokacija = (podaci.get('lokacija_opis') || '').trim()
-    if (lokacija.length === 0) {
-        alert("Opis lokacije je obavezan i ne smije sadržavati samo razmake!")
-        return
-    }
-    if (lokacija.length < 3 || lokacija.length > 100) {
-        alert("Opis lokacije mora imati najmanje 3 i najviše 100 znakova!")
-        return
-    }
-
+  const greskaLokacije = validirajLokaciju(lokacija)
+if (greskaLokacije) {
+    alert(greskaLokacije)
+    return
+}
     const odabraniDatum = prijava.datum ? new Date(prijava.datum) : null
     if (!odabraniDatum || isNaN(odabraniDatum.getTime())) {
         alert("Morate odabrati datum i vrijeme!")
@@ -135,7 +137,7 @@ export default function PrijavaPromjena() {
         cipirana: podaci.get('cipirana') === 'on',
         tip_prijave: parseInt(podaci.get('tip_prijave')),
         status: podaci.get('status') || prijava.status || 'otvorena',
-        lokacija_opis: lokacija,
+         lokacija: { ...lokacija, opis: lokacija.opis.trim() },
         datum: odabraniDatum.toISOString(),
         slika: slika,
         hitno: podaci.get('hitno') === 'on'
@@ -265,16 +267,11 @@ export default function PrijavaPromjena() {
                         </Row>
 
                         <Row className="mb-3">
-                            <Form.Group as={Col} md={6} controlId="lokacija_opis">
-                                <Form.Label className="fw-medium">Opis lokacije</Form.Label>
-                                <Form.Control
-                                    type="text"
-                                    name="lokacija_opis"
-                                    key={prijava.lokacija_opis}
-                                    defaultValue={prijava.lokacija_opis}
-                                    placeholder="Gornji grad, Osijek"
-                                />
-                            </Form.Group>
+                          
+                            <Form.Group className="mb-3">
+    <Form.Label className="fw-medium">Lokacija</Form.Label>
+    <LokacijaPicker value={lokacija} onChange={setLokacija} />
+</Form.Group>
 
                             <Form.Group as={Col} md={6} controlId="datum">
                                 <Form.Label className="fw-medium p-4">
