@@ -65,6 +65,7 @@ export default function DetaljiSlucaja() {
                         <h4 className="fw-bold mb-0">🐾 Tragovi i viđenja</h4>
                         <Link 
                             to={`/prijave/${id}/tragovi/dodaj`}
+                            state={{ povratak: `/detalji-slucaja/${id}` }}
                             className="btn btn-success btn-sm d-flex align-items-center gap-1 fw-medium text-decoration-none shadow-sm px-3 py-2"
                         >
                             <BiPlus size={18} /> Novi trag

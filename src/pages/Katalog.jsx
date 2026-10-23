@@ -17,7 +17,7 @@ export default function Katalog() {
   const [tipovi, setTipovi] = useState([]);
   const [pretraga, setPretraga] = useState("");
   const [vrsta, setVrsta] = useState("");
-
+  
   useEffect(() => {
     prijaveService.get().then((res) => setPrijave(res.data || res));
     VrsteService.get().then((res) => setVrste(res.data || res));
@@ -91,7 +91,7 @@ export default function Katalog() {
             <h3 className="fw-bold mb-1 text-dark">🎴 Katalog</h3>
             <p className="text-muted small mb-0">Popis svih prijavljenih slučajeva</p>
           </div>
-          <Link to={RouteNames.PRIJAVA_NOVA} className="btn btn-success fw-medium d-flex align-items-center gap-1 shadow-sm px-3 py-2 justify-content-center col-12 col-md-auto">
+          <Link to={RouteNames.PRIJAVA_NOVA} state={{ povratak: RouteNames.KATALOG }} className="btn btn-success fw-medium d-flex align-items-center gap-1 shadow-sm px-3 py-2 justify-content-center col-12 col-md-auto">
             <BiPlus size={20} /> Nova prijava
           </Link>
         </Card.Header>

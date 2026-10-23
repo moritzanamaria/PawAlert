@@ -1,4 +1,4 @@
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import { RouteNames } from "../../constants";
 import { Button, Card, Col, Container, Form, Row } from "react-bootstrap";
 import prijaveService from "../../services/prijave/prijaveService";
@@ -14,7 +14,9 @@ import { validirajLokaciju } from "../../utils/lokacija";
 registerLocale("hr", hr);
 
 export default function PrijavaNova() {
-    const navigate = useNavigate()
+    const navigate = useNavigate();
+    const location = useLocation()
+    const povratak = location.state?.povratak ?? RouteNames.PRIJAVE_PREGLED
     const [datum, setDatum] = useState(new Date());
     const [vrste, setVrste] = useState([]);
     const [tipovi, setTipovi] = useState([]);
@@ -42,7 +44,7 @@ export default function PrijavaNova() {
 
     async function dodaj(prijava) {
         await prijaveService.dodaj(prijava).then(() => {
-            navigate(RouteNames.PRIJAVE_PREGLED)
+            navigate(povratak)
         })
     }
     function obradiSubmit(e) {
@@ -244,7 +246,7 @@ export default function PrijavaNova() {
                         </div>
 
                         <div className="d-flex justify-content-between align-items-center pt-2">
-                            <Link to={RouteNames.PRIJAVE_PREGLED} className="btn btn-outline-secondary px-4 fw-medium">
+                            <Link to={povratak} className="btn btn-outline-secondary px-4 fw-medium">
                                 Odustani
                             </Link>
 

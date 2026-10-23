@@ -1,4 +1,4 @@
-import { Link, useNavigate, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams, useLocation } from "react-router-dom";
 import { Button, Card, Col, Container, Form, Row } from "react-bootstrap";
 import TragoviService from "../../services/tragovi/TragoviService";
 import { useState } from "react";
@@ -7,18 +7,20 @@ import "react-datepicker/dist/react-datepicker.css";
 import { hr } from "date-fns/locale";
 import LokacijaPicker from "../../components/LokacijaPicker";
 import { validirajLokaciju } from "../../utils/lokacija";
-
+import { RouteNames } from "../../constants";
 registerLocale("hr", hr);
 
 
 export default function TragNovi() {
     const navigate = useNavigate()
+        const location = useLocation()
+    const povratak = location.state?.povratak ?? RouteNames.TRAG_PREGLED
     const { id } = useParams()
     const [datum, setDatum] = useState(new Date());
     const [lokacija, setLokacija] = useState(null);
     async function dodaj(trag) {
         await TragoviService.dodaj(trag).then(() => {
-            navigate(`/prijave/${id}/tragovi`)
+            navigate(povratak)
         })
     }
 function obradiSubmit(e) {
@@ -102,7 +104,7 @@ if (greskaLokacije) {
                         </Row>
                         <div className="d-flex justify-content-between align-items-center pt-2">
 
-                            <Link to={`/prijave/${id}/tragovi`} className="btn btn-outline-secondary px-4 fw-medium">
+                            <Link to={povratak} className="btn btn-outline-secondary px-4 fw-medium">
                                 Odustani
                             </Link>
 
