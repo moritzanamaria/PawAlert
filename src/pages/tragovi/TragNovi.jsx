@@ -8,16 +8,17 @@ import { hr } from "date-fns/locale";
 import LokacijaPicker from "../../components/LokacijaPicker";
 import { validirajLokaciju } from "../../utils/lokacija";
 import { RouteNames } from "../../constants";
+
 registerLocale("hr", hr);
 
 
 export default function TragNovi() {
     const navigate = useNavigate()
-        const location = useLocation()
-    const povratak = location.state?.povratak ?? RouteNames.TRAG_PREGLED
+    const location = useLocation()
     const { id } = useParams()
-    const [datum, setDatum] = useState(new Date());
-    const [lokacija, setLokacija] = useState(null);
+    const povratak = location.state?.povratak ?? RouteNames.TRAG_PREGLED.replace(":id", id)
+    const [datum, setDatum] = useState(new Date())
+    const [lokacija, setLokacija] = useState(null)
     async function dodaj(trag) {
         await TragoviService.dodaj(trag).then(() => {
             navigate(povratak)

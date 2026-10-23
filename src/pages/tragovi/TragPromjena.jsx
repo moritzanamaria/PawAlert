@@ -29,7 +29,17 @@ export default function TragPromjena() {
         async function ucitajTrag() {
             try {
                 const res = await TragoviService.getById(params.id);
-                setTrag(res?.data ?? res ?? {});
+                const tData = res?.data ?? res;
+                setTrag(tData || {});
+                if (tData?.lokacija) {
+                    setLokacija(tData.lokacija);
+                } else if (tData?.lokacija_opis || tData?.lokacija_lat) {
+                    setLokacija({
+                        opis: tData.lokacija_opis || "",
+                        lat: tData.lokacija_lat || 0,
+                        lng: tData.lokacija_lng || 0
+                    });
+                }
             } catch (error) {
                 console.error("Greška:", error);
             }

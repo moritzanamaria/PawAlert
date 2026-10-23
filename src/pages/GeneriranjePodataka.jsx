@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { Button, Card, Form, Alert, Container, Row, Col } from 'react-bootstrap';
 import { Faker, hr, en } from '@faker-js/faker';
 import prijaveService from '../services/prijave/prijaveService';
@@ -310,66 +310,10 @@ export default function GeneriranjePodataka() {
         }
     };
 
-    const [prijave] = useState([]);
-
-    const [animiraneSve, setAnimiraneSve] = useState(0);
-    const [animiraneOtvorene, setAnimiraneOtvorene] = useState(0);
-    const [animiraniHitni, setAnimiraniHitni] = useState(0);
-
-    const brojSvih = prijave.length;
-    const brojOtvorenih = prijave.filter(p => p.status === "otvorena").length;
-    const brojHitnih = prijave.filter(p => p.hitno).length;
-
-    useEffect(() => {
-        if (animiraneSve < brojSvih) {
-            const timer = setTimeout(() => {
-                setAnimiraneSve(prev => Math.min(prev + 1, brojSvih));
-            }, 100);
-            return () => clearTimeout(timer);
-        }
-    }, [animiraneSve, brojSvih]);
-
-    useEffect(() => {
-        if (animiraneOtvorene < brojOtvorenih) {
-            const timer = setTimeout(() => {
-                setAnimiraneOtvorene(prev => Math.min(prev + 1, brojOtvorenih));
-            }, 200);
-            return () => clearTimeout(timer);
-        }
-    }, [animiraneOtvorene, brojOtvorenih]);
-
-    useEffect(() => {
-        if (animiraniHitni < brojHitnih) {
-            const timer = setTimeout(() => {
-                setAnimiraniHitni(prev => Math.min(prev + 1, brojHitnih));
-            }, 300);
-            return () => clearTimeout(timer);
-        }
-    }, [animiraniHitni, brojHitnih]);
-
+   
     return (
         <Container>
-            <Row className="g-3 mb-4">
-                <Col xs={4}>
-                    <div className="card shadow-sm border-0 p-3 text-center h-100 d-flex flex-col justify-content-center">
-                        <div className="fs-2 fw-bold text-primary">{animiraneSve}</div>
-                        <div className="text-muted small">Ukupno prijava</div>
-                    </div>
-                </Col>
-                <Col xs={4}>
-                    <div className="card shadow-sm border-0 p-3 text-center h-100 d-flex flex-column justify-content-center">
-                        <div className="fs-2 fw-bold text-success">{animiraneOtvorene}</div>
-                        <div className="text-muted small">Otvorene</div>
-                    </div>
-                </Col>
-                <Col xs={4}>
-                    <div className="card shadow-sm border-0 p-3 text-center h-100 d-flex flex-column justify-content-center">
-                        <div className="fs-2 fw-bold text-danger">{animiraniHitni}</div>
-                        <div className="text-muted small">Hitni slučajevi</div>
-                    </div>
-                </Col>
-            </Row>
-            <Card className="shadow-sm border-0 rounded-3 mb-4">
+                <Card className="shadow-sm border-0 rounded-3 mb-4">
                 <Card.Header className="bg-white p-4 border-0 d-flex justify-content-between align-items-center flex-wrap gap-3">
                     <div>
                         <h3 className="fw-bold mb-1 text-dark">🎴 Generiranje podataka</h3>

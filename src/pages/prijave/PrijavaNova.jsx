@@ -15,8 +15,8 @@ registerLocale("hr", hr);
 
 export default function PrijavaNova() {
     const navigate = useNavigate();
-    const location = useLocation()
-    const povratak = location.state?.povratak ?? RouteNames.PRIJAVE_PREGLED
+    const location = useLocation();
+    const povratak = location.state?.povratak ?? RouteNames.PRIJAVE_PREGLED;
     const [datum, setDatum] = useState(new Date());
     const [vrste, setVrste] = useState([]);
     const [tipovi, setTipovi] = useState([]);

@@ -16,17 +16,22 @@ export default function TragPregled() {
   const { id } = useParams();
   const [tragovi, setTragovi] = useState([])
 
-useEffect(() => {
+  useEffect(() => {
     async function ucitajTragove() {
       try {
         const res = await TragoviService.get();
-        setTragovi(toArray(res));
+        const sviTragovi = toArray(res);
+        const filtrirani = sviTragovi.filter(t => String(t.prijava) === String(id) || String(t.prijavaId) === String(id));
+
+        setTragovi(filtrirani)
       } catch (error) {
         console.error("Greška:", error);
       }
     }
-    ucitajTragove();
-  }, []);
+    if (id) {
+      ucitajTragove();
+    }
+  }, [id]);
 
   async function obrisi(id) {
     if (!confirm('Sigurno obrisati?')) {
@@ -34,7 +39,7 @@ useEffect(() => {
     }
 
     await TragoviService.obrisi(id)
-   setTragovi(prev => prev.filter(t => t.id !== id));
+    setTragovi(prev => prev.filter(t => t.id !== id));
   }
 
   return (
