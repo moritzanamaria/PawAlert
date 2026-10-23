@@ -28,6 +28,7 @@ async function dodaj(trag) {
 
 async function promjeni(id, trag) {
   const index = nadiIndex(id)
+  if (index === -1) return
   tragovi[index] = { ...tragovi[index], ...trag, id: parseInt(id) }
 }
 
@@ -37,6 +38,7 @@ function nadiIndex(id) {
 
 async function obrisi(id) {
   const index = nadiIndex(id)
+  if (index === -1) return
   tragovi.splice(index, 1)
 }
 

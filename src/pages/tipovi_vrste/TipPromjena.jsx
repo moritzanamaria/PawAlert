@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { RouteNames } from "../../constants";
-import { Button, Card, Col, Container, Form, Row } from "react-bootstrap";
+import { Button, Card, Container, Form } from "react-bootstrap";
 import TipService from "../../services/tip/TipService";
 
 export default function TipPromjena() {
@@ -9,15 +9,17 @@ export default function TipPromjena() {
     const params = useParams()
     const [tip, setTip] = useState({})
 
-    async function ucitajTip() {
-        await TipService.getById(params.id).then((odgovor) => {
-            setTip(odgovor.data)
-        })
-    }
-
     useEffect(() => {
-        ucitajTip()
-    }, [])
+        async function ucitajTip() {
+            try {
+                const res = await TipService.getById(params.id);
+                setTip(res.data || res);
+            } catch (error) {
+                console.error("Greška:", error);
+            }
+        }
+        ucitajTip();
+    }, [params.id]);
 
     async function promjeni(podaci) {
         await TipService.promjeni(params.id, podaci).then(() => {
@@ -34,8 +36,8 @@ export default function TipPromjena() {
             alert("Naziv je obavezan i ne smije sadržavati samo razmake!")
             return
         }
-        if (naziv.length < 3 || naziv.length > 50) {
-            alert("Naziv tipa mora imati najmanje 3 i najviše 50 znakova!")
+        if (naziv.length < 3 || naziv.length > 20) {
+            alert("Naziv tipa mora imati najmanje 3 i najviše 20 znakova!")
             return
         }
         if (!/^[A-Za-zČčĆćĐđŠšŽž\s-]+$/.test(naziv)) {

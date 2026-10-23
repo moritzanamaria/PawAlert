@@ -1,28 +1,32 @@
 import { useState, useEffect } from "react";
 import TragoviService from "../../services/tragovi/TragoviService";
 import { RouteNames } from "../../constants";
-import { Badge, Button, Card, Container, Table, ButtonGroup, CardHeader } from "react-bootstrap";
+import { Badge, Button, Card, Container, Table, ButtonGroup } from "react-bootstrap";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import FormatDatuma from "../../components/FormatDatuma";
 import { BiPlus, BiPencil, BiTrash, BiArrowBack } from "react-icons/bi";
 
+const toArray = (res) => {
+  const data = Array.isArray(res) ? res : (res?.data ?? []);
+  return Array.isArray(data) ? data : [];
+};
 
 export default function TragPregled() {
-  const { id } = useParams();
   const navigate = useNavigate();
+  const { id } = useParams();
   const [tragovi, setTragovi] = useState([])
 
-
-  async function ucitajTragove() {
-    await TragoviService.getByPrijava(id).then((odgovor) => {
-      setTragovi(odgovor.data)
-    })
-  }
-
-  useEffect(() => {
-    ucitajTragove()
-  }, [id])
-
+useEffect(() => {
+    async function ucitajTragove() {
+      try {
+        const res = await TragoviService.get();
+        setTragovi(toArray(res));
+      } catch (error) {
+        console.error("Greška:", error);
+      }
+    }
+    ucitajTragove();
+  }, []);
 
   async function obrisi(id) {
     if (!confirm('Sigurno obrisati?')) {
@@ -30,7 +34,7 @@ export default function TragPregled() {
     }
 
     await TragoviService.obrisi(id)
-    ucitajTragove()
+   setTragovi(prev => prev.filter(t => t.id !== id));
   }
 
   return (
@@ -46,7 +50,7 @@ export default function TragPregled() {
               <BiArrowBack size={18} /> Natrag na prijave
             </Link>
             <Link to={`/prijave/${id}/tragovi/dodaj`}
-              className="btn btnsuccess d-flex align-items-center gap-1 shadow-sm px-3 py-2">
+              className="btn btn-success d-flex align-items-center gap-1 shadow-sm px-3 py-2">
               <BiPlus size={20} /> Novi trag
             </Link>
           </div>

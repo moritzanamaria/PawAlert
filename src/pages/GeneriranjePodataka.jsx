@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import { Button, Form, Alert, Container, Row, Col } from 'react-bootstrap';
+import { useEffect, useState } from 'react';
+import { Button, Card, Form, Alert, Container, Row, Col } from 'react-bootstrap';
 import { Faker, hr, en } from '@faker-js/faker';
 import prijaveService from '../services/prijave/prijaveService';
 import TragoviService from '../services/tragovi/TragoviService';
@@ -249,203 +249,263 @@ export default function GeneriranjePodataka() {
             setLoading(false);
         }
     };
-const handleGenerirajSve = async () => {
-    setLoading(true);
-    setPoruka(null);
+    const handleGenerirajSve = async () => {
+        setLoading(true);
+        setPoruka(null);
 
-    try {
-        await generirajVrste(brojVrsta);
-        await generirajTipove(brojTipova);
-        await generirajPrijave(brojPrijava);
-        await generirajTragove(brojTragova);
-        setPoruka({
-            tip: 'success',
-            tekst: `Uspješno generirano: ${brojVrsta} vrsta, ${brojTipova} tipova, ${brojPrijava} prijava i ${brojTragova} tragova!`
-        });
-    } catch (error) {
-        setPoruka({ tip: 'danger', tekst: 'Greška pri generiranju svih podataka: ' + error.message });
-    } finally {
-        setLoading(false);
-    }
-};
-
-const handleObrisiSve = async () => {
-    if (!window.confirm('Jeste li sigurni da želite obrisati SVE podatke (tragove, prijave, tipove i vrste)?')) return;
-    setLoading(true);
-    setPoruka(null);
-
-    try {
-        const tragoviOdgovor = await TragoviService.get();
-        const tragovi = tragoviOdgovor.data || tragoviOdgovor;
-        for (const trag of tragovi) {
-            await TragoviService.obrisi(trag.id);
+        try {
+            await generirajVrste(brojVrsta);
+            await generirajTipove(brojTipova);
+            await generirajPrijave(brojPrijava);
+            await generirajTragove(brojTragova);
+            setPoruka({
+                tip: 'success',
+                tekst: `Uspješno generirano: ${brojVrsta} vrsta, ${brojTipova} tipova, ${brojPrijava} prijava i ${brojTragova} tragova!`
+            });
+        } catch (error) {
+            setPoruka({ tip: 'danger', tekst: 'Greška pri generiranju svih podataka: ' + error.message });
+        } finally {
+            setLoading(false);
         }
+    };
 
-        const prijaveOdgovor = await prijaveService.get();
-        const prijave = prijaveOdgovor.data || prijaveOdgovor;
-        for (const prijava of prijave) {
-            await prijaveService.obrisi(prijava.id);
+    const handleObrisiSve = async () => {
+        if (!window.confirm('Jeste li sigurni da želite obrisati SVE podatke (tragove, prijave, tipove i vrste)?')) return;
+        setLoading(true);
+        setPoruka(null);
+
+        try {
+            const tragoviOdgovor = await TragoviService.get();
+            const tragovi = tragoviOdgovor.data || tragoviOdgovor;
+            for (const trag of tragovi) {
+                await TragoviService.obrisi(trag.id);
+            }
+
+            const prijaveOdgovor = await prijaveService.get();
+            const prijave = prijaveOdgovor.data || prijaveOdgovor;
+            for (const prijava of prijave) {
+                await prijaveService.obrisi(prijava.id);
+            }
+
+            const tipoviOdgovor = await TipService.get();
+            const tipovi = tipoviOdgovor.data || tipoviOdgovor;
+            for (const tip of tipovi) {
+                await TipService.obrisi(tip.id);
+            }
+
+            const vrsteOdgovor = await VrsteService.get();
+            const vrste = vrsteOdgovor.data || vrsteOdgovor;
+            for (const vrsta of vrste) {
+                await VrsteService.obrisi(vrsta.id);
+            }
+
+            setPoruka({
+                tip: 'success',
+                tekst: `Uspješno obrisano: ${tragovi.length} tragova, ${prijave.length} prijava, ${tipovi.length} tipova i ${vrste.length} vrsta!`
+            });
+        } catch (error) {
+            setPoruka({ tip: 'danger', tekst: 'Greška pri brisanju svih podataka: ' + error.message });
+        } finally {
+            setLoading(false);
         }
+    };
 
-        const tipoviOdgovor = await TipService.get();
-        const tipovi = tipoviOdgovor.data || tipoviOdgovor;
-        for (const tip of tipovi) {
-            await TipService.obrisi(tip.id);
+    const [prijave] = useState([]);
+
+    const [animiraneSve, setAnimiraneSve] = useState(0);
+    const [animiraneOtvorene, setAnimiraneOtvorene] = useState(0);
+    const [animiraniHitni, setAnimiraniHitni] = useState(0);
+
+    const brojSvih = prijave.length;
+    const brojOtvorenih = prijave.filter(p => p.status === "otvorena").length;
+    const brojHitnih = prijave.filter(p => p.hitno).length;
+
+    useEffect(() => {
+        if (animiraneSve < brojSvih) {
+            const timer = setTimeout(() => {
+                setAnimiraneSve(prev => Math.min(prev + 1, brojSvih));
+            }, 100);
+            return () => clearTimeout(timer);
         }
+    }, [animiraneSve, brojSvih]);
 
-        const vrsteOdgovor = await VrsteService.get();
-        const vrste = vrsteOdgovor.data || vrsteOdgovor;
-        for (const vrsta of vrste) {
-            await VrsteService.obrisi(vrsta.id);
+    useEffect(() => {
+        if (animiraneOtvorene < brojOtvorenih) {
+            const timer = setTimeout(() => {
+                setAnimiraneOtvorene(prev => Math.min(prev + 1, brojOtvorenih));
+            }, 200);
+            return () => clearTimeout(timer);
         }
+    }, [animiraneOtvorene, brojOtvorenih]);
 
-        setPoruka({
-            tip: 'success',
-            tekst: `Uspješno obrisano: ${tragovi.length} tragova, ${prijave.length} prijava, ${tipovi.length} tipova i ${vrste.length} vrsta!`
-        });
-    } catch (error) {
-        setPoruka({ tip: 'danger', tekst: 'Greška pri brisanju svih podataka: ' + error.message });
-    } finally {
-        setLoading(false);
-    }
-};
+    useEffect(() => {
+        if (animiraniHitni < brojHitnih) {
+            const timer = setTimeout(() => {
+                setAnimiraniHitni(prev => Math.min(prev + 1, brojHitnih));
+            }, 300);
+            return () => clearTimeout(timer);
+        }
+    }, [animiraniHitni, brojHitnih]);
+
     return (
-        <Container className="mt-4">
-            <div className="d-flex flex-column flex-md-row justify-content-md-between align-items-md-center gap-3">
-                <h1 className="mb-0">Generiranje podataka</h1>
-                <div className="d-flex gap-2">
-                    <Button variant="success" onClick={handleGenerirajSve} disabled={loading} className='mb-1 flex-fill flex-md-grow-0'>
-                        {loading ? 'Radim...' : 'Generiraj sve'}
-                    </Button>
-                    <Button variant="danger" onClick={handleObrisiSve} disabled={loading} className='mb-1 flex-fill flex-md-grow-0'>
-                        {loading ? 'Radim...' : 'Obriši sve'}
-                    </Button>
-                </div>
-            </div>
-            <p className="text-muted">
-                Koristite ovaj alat za generiranje testnih podataka s lažnim (fake) podacima na hrvatskom jeziku u Osijeku.
-            </p>
-
-            {poruka && (
-                <Alert variant={poruka.tip} dismissible onClose={() => setPoruka(null)}>
-                    {poruka.tekst}
-                </Alert>
-            )}
-
-            <Row>
-                <Col md={3}>
-                    <Form onSubmit={handleGenerirajVrste}>
-                        <Form.Group className="mb-3">
-                            <Form.Label>Broj vrsta</Form.Label>
-                            <Form.Control
-                                type="number"
-                                min="1"
-                                max="20"
-                                value={brojVrsta}
-                                onChange={(e) => setBrojVrsta(parseInt(e.target.value))}
-                                disabled={loading}
-                            />
-                            <Form.Text className="text-muted">Unesite broj vrsta (1-20)</Form.Text>
-                        </Form.Group>
-                        <Button variant="primary" type="submit" disabled={loading} className="w-100">
-                            {loading ? 'Generiranje...' : 'Generiraj vrste'}
-                        </Button>
-                    </Form>
+        <Container>
+            <Row className="g-3 mb-4">
+                <Col xs={4}>
+                    <div className="card shadow-sm border-0 p-3 text-center h-100 d-flex flex-col justify-content-center">
+                        <div className="fs-2 fw-bold text-primary">{animiraneSve}</div>
+                        <div className="text-muted small">Ukupno prijava</div>
+                    </div>
                 </Col>
-                <Col md={3}>
-                    <Form onSubmit={handleGenerirajTipove}>
-                        <Form.Group className="mb-3">
-                            <Form.Label>Broj tipova</Form.Label>
-                            <Form.Control
-                                type="number"
-                                min="1"
-                                max="20"
-                                value={brojTipova}
-                                onChange={(e) => setBrojTipova(parseInt(e.target.value))}
-                                disabled={loading}
-                            />
-                            <Form.Text className="text-muted">Unesite broj tipova (1-20)</Form.Text>
-                        </Form.Group>
-                        <Button variant="primary" type="submit" disabled={loading} className="w-100">
-                            {loading ? 'Generiranje...' : 'Generiraj tipove'}
-                        </Button>
-                    </Form>
+                <Col xs={4}>
+                    <div className="card shadow-sm border-0 p-3 text-center h-100 d-flex flex-column justify-content-center">
+                        <div className="fs-2 fw-bold text-success">{animiraneOtvorene}</div>
+                        <div className="text-muted small">Otvorene</div>
+                    </div>
                 </Col>
-                <Col md={3}>
-                    <Form onSubmit={handleGenerirajPrijave}>
-                        <Form.Group className="mb-3">
-                            <Form.Label>Broj prijava</Form.Label>
-                            <Form.Control
-                                type="number"
-                                min="1"
-                                max="50"
-                                value={brojPrijava}
-                                onChange={(e) => setBrojPrijava(parseInt(e.target.value))}
-                                disabled={loading}
-                            />
-                            <Form.Text className="text-muted">Unesite broj prijava (1-50)</Form.Text>
-                        </Form.Group>
-                        <Button variant="primary" type="submit" disabled={loading} className="w-100">
-                            {loading ? 'Generiranje...' : 'Generiraj prijave'}
-                        </Button>
-                    </Form>
-                </Col>
-                <Col md={3}>
-                    <Form onSubmit={handleGenerirajTragove}>
-                        <Form.Group className="mb-3">
-                            <Form.Label>Broj tragova</Form.Label>
-                            <Form.Control
-                                type="number"
-                                min="1"
-                                max="100"
-                                value={brojTragova}
-                                onChange={(e) => setBrojTragova(parseInt(e.target.value))}
-                                disabled={loading}
-                            />
-                            <Form.Text className="text-muted">Unesite broj tragova (1-100)</Form.Text>
-                        </Form.Group>
-                        <Button variant="primary" type="submit" disabled={loading} className="w-100">
-                            {loading ? 'Generiranje...' : 'Generiraj tragove'}
-                        </Button>
-                    </Form>
+                <Col xs={4}>
+                    <div className="card shadow-sm border-0 p-3 text-center h-100 d-flex flex-column justify-content-center">
+                        <div className="fs-2 fw-bold text-danger">{animiraniHitni}</div>
+                        <div className="text-muted small">Hitni slučajevi</div>
+                    </div>
                 </Col>
             </Row>
+            <Card className="shadow-sm border-0 rounded-3 mb-4">
+                <Card.Header className="bg-white p-4 border-0 d-flex justify-content-between align-items-center flex-wrap gap-3">
+                    <div>
+                        <h3 className="fw-bold mb-1 text-dark">🎴 Generiranje podataka</h3>
+                        <p className="text-muted small mb-0">Koristite ovaj alat za generiranje testnih podataka s lažnim (fake) podacima na hrvatskom jeziku u Osijeku.</p>
+                    </div>
+                    <div className="d-flex gap-2">
+                        <Button variant="success" onClick={handleGenerirajSve} disabled={loading} className='mb-1 flex-fill flex-md-grow-0'>
+                            {loading ? 'Radim...' : 'Generiraj sve'}
+                        </Button>
+                        <Button variant="danger" onClick={handleObrisiSve} disabled={loading} className='mb-1 flex-fill flex-md-grow-0'>
+                            {loading ? 'Radim...' : 'Obriši sve'}
+                        </Button>
+                    </div>
+                    {poruka && (
+                        <Alert variant={poruka.tip} dismissible onClose={() => setPoruka(null)}>
+                            {poruka.tekst}
+                        </Alert>
+                    )}
+                </Card.Header>
+                <Card.Body>
+                    <Row>
+                        <Col md={3}>
+                            <Form onSubmit={handleGenerirajVrste}>
+                                <Form.Group className="mb-3">
+                                    <Form.Label>Broj vrsta</Form.Label>
+                                    <Form.Control
+                                        type="number"
+                                        min="1"
+                                        max="20"
+                                        value={brojVrsta}
+                                        onChange={(e) => setBrojVrsta(parseInt(e.target.value))}
+                                        disabled={loading}
+                                    />
+                                    <Form.Text className="text-muted">Unesite broj vrsta (1-20)</Form.Text>
+                                </Form.Group>
+                                <Button variant="primary" type="submit" disabled={loading} className="w-100">
+                                    {loading ? 'Generiranje...' : 'Generiraj vrste'}
+                                </Button>
+                            </Form>
+                        </Col>
+                        <Col md={3}>
+                            <Form onSubmit={handleGenerirajTipove}>
+                                <Form.Group className="mb-3">
+                                    <Form.Label>Broj tipova</Form.Label>
+                                    <Form.Control
+                                        type="number"
+                                        min="1"
+                                        max="20"
+                                        value={brojTipova}
+                                        onChange={(e) => setBrojTipova(parseInt(e.target.value))}
+                                        disabled={loading}
+                                    />
+                                    <Form.Text className="text-muted">Unesite broj tipova (1-20)</Form.Text>
+                                </Form.Group>
+                                <Button variant="primary" type="submit" disabled={loading} className="w-100">
+                                    {loading ? 'Generiranje...' : 'Generiraj tipove'}
+                                </Button>
+                            </Form>
+                        </Col>
+                        <Col md={3}>
+                            <Form onSubmit={handleGenerirajPrijave}>
+                                <Form.Group className="mb-3">
+                                    <Form.Label>Broj prijava</Form.Label>
+                                    <Form.Control
+                                        type="number"
+                                        min="1"
+                                        max="50"
+                                        value={brojPrijava}
+                                        onChange={(e) => setBrojPrijava(parseInt(e.target.value))}
+                                        disabled={loading}
+                                    />
+                                    <Form.Text className="text-muted">Unesite broj prijava (1-50)</Form.Text>
+                                </Form.Group>
+                                <Button variant="primary" type="submit" disabled={loading} className="w-100">
+                                    {loading ? 'Generiranje...' : 'Generiraj prijave'}
+                                </Button>
+                            </Form>
+                        </Col>
+                        <Col md={3}>
+                            <Form onSubmit={handleGenerirajTragove}>
+                                <Form.Group className="mb-3">
+                                    <Form.Label>Broj tragova</Form.Label>
+                                    <Form.Control
+                                        type="number"
+                                        min="1"
+                                        max="100"
+                                        value={brojTragova}
+                                        onChange={(e) => setBrojTragova(parseInt(e.target.value))}
+                                        disabled={loading}
+                                    />
+                                    <Form.Text className="text-muted">Unesite broj tragova (1-100)</Form.Text>
+                                </Form.Group>
+                                <Button variant="primary" type="submit" disabled={loading} className="w-100">
+                                    {loading ? 'Generiranje...' : 'Generiraj tragove'}
+                                </Button>
+                            </Form>
+                        </Col>
+                    </Row>
 
-            <Alert variant="warning" className="mt-3">
-                <strong>Upozorenje:</strong> Ove akcije će dodati nove podatke u postojeće. Ako želite početi ispočetka, prvo obrišite postojeće podatke.
-            </Alert>
+                    <Alert variant="warning" className="mt-3">
+                        <strong>Upozorenje:</strong> Ove akcije će dodati nove podatke u postojeće. Ako želite početi ispočetka, prvo obrišite postojeće podatke.
+                    </Alert>
 
-            <hr className="my-4" />
+                    <hr className="my-4" />
 
-            <h3>Brisanje podataka</h3>
-            <p className="text-muted">Koristite ove opcije za brisanje svih podataka iz baze.</p>
+                    <h3>Brisanje podataka</h3>
+                    <p className="text-muted">Koristite ove opcije za brisanje svih podataka iz baze.</p>
 
-            <Row className="mt-3">
-                <Col md={3}>
-                    <Button variant="danger" onClick={handleObrisiVrste} disabled={loading} className="w-100 mb-2">
-                        {loading ? 'Brisanje...' : 'Obriši sve vrste'}
-                    </Button>
-                </Col>
-                <Col md={3}>
-                    <Button variant="danger" onClick={handleObrisiTipove} disabled={loading} className="w-100 mb-2">
-                        {loading ? 'Brisanje...' : 'Obriši sve tipove'}
-                    </Button>
-                </Col>
-                <Col md={3}>
-                    <Button variant="danger" onClick={handleObrisiPrijave} disabled={loading} className="w-100 mb-2">
-                        {loading ? 'Brisanje...' : 'Obriši sve prijave'}
-                    </Button>
-                </Col>
-                <Col md={3}>
-                    <Button variant="danger" onClick={handleObrisiTragove} disabled={loading} className="w-100 mb-2">
-                        {loading ? 'Brisanje...' : 'Obriši sve tragove'}
-                    </Button>
-                </Col>
-            </Row>
+                    <Row className="mt-3">
+                        <Col md={3}>
+                            <Button variant="danger" onClick={handleObrisiVrste} disabled={loading} className="w-100 mb-2">
+                                {loading ? 'Brisanje...' : 'Obriši sve vrste'}
+                            </Button>
+                        </Col>
+                        <Col md={3}>
+                            <Button variant="danger" onClick={handleObrisiTipove} disabled={loading} className="w-100 mb-2">
+                                {loading ? 'Brisanje...' : 'Obriši sve tipove'}
+                            </Button>
+                        </Col>
+                        <Col md={3}>
+                            <Button variant="danger" onClick={handleObrisiPrijave} disabled={loading} className="w-100 mb-2">
+                                {loading ? 'Brisanje...' : 'Obriši sve prijave'}
+                            </Button>
+                        </Col>
+                        <Col md={3}>
+                            <Button variant="danger" onClick={handleObrisiTragove} disabled={loading} className="w-100 mb-2">
+                                {loading ? 'Brisanje...' : 'Obriši sve tragove'}
+                            </Button>
+                        </Col>
+                    </Row>
 
-            <Alert variant="danger" className="mt-3">
-                <strong>Oprez!</strong> Brisanje podataka je trajna akcija i ne može se poništiti.
-            </Alert>
+                    <Alert variant="danger" className="mt-3">
+                        <strong>Oprez!</strong> Brisanje podataka je trajna akcija i ne može se poništiti.
+                    </Alert>
+                </Card.Body>
+            </Card>
         </Container>
     );
 }

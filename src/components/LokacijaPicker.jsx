@@ -32,7 +32,7 @@ function Prati({ value }) {
         if (value && typeof value.lat === "number" && typeof value.lng === "number") {
             map.flyTo([value.lat, value.lng], Math.max(map.getZoom(), 16))
         }
-    }, [value?.lat, value?.lng, map])
+    }, [value, map]);
     return null
 }
 

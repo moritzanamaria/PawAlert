@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
-import { Link, useNavigate } from "react-router-dom";
-import { Container, Row, Col, Card, Badge, Button } from "react-bootstrap";
+import { Link } from "react-router-dom";
+import { Container, Row, Col, Card, Badge } from "react-bootstrap";
 import prijaveService from "../services/prijave/prijaveService";
 import VrsteService from "../services/vrste/VrsteService";
 import TipService from "../services/tip/TipService";
@@ -14,11 +14,9 @@ import { BiPlus } from "react-icons/bi";
 export default function Katalog() {
   const [prijave, setPrijave] = useState([]);
   const [vrste, setVrste] = useState([]);
-  const [tipovi, setTipovi]= useState([]);
+  const [tipovi, setTipovi] = useState([]);
   const [pretraga, setPretraga] = useState("");
   const [vrsta, setVrsta] = useState("");
-
-  const navigate = useNavigate();
 
   useEffect(() => {
     prijaveService.get().then((res) => setPrijave(res.data || res));
@@ -27,31 +25,62 @@ export default function Katalog() {
   }, []);
 
   const filtriranePrijave = filtrirajPrijave(prijave, pretraga, vrsta, vrste);
-const getNazivVrste = (id) => vrste.find((v) => v.id === id)?.naziv ?? "";
-const getNazivTipa = (id) => tipovi.find((t) => t.id === id)?.naziv ?? "";
+  const getNazivVrste = (id) => vrste.find((v) => v.id === id)?.naziv ?? "";
+  const getNazivTipa = (id) => tipovi.find((t) => t.id === id)?.naziv ?? "";
 
-const ukupnoPrijava = prijave.length;
-  const otvorenePrijave = prijave.filter((p) => p.status === "otvorena").length;
-  const hitnePrijave = prijave.filter((p) => p.hitno).length;
+  const [animiraneSve, setAnimiraneSve] = useState(0);
+  const [animiraneOtvorene, setAnimiraneOtvorene] = useState(0);
+  const [animiraniHitni, setAnimiraniHitni] = useState(0);
+
+  const brojSvih = prijave.length;
+  const brojOtvorenih = prijave.filter(p => p.status === "otvorena").length;
+  const brojHitnih = prijave.filter(p => p.hitno).length;
+
+  useEffect(() => {
+    if (animiraneSve < brojSvih) {
+      const timer = setTimeout(() => {
+        setAnimiraneSve(prev => Math.min(prev + 1, brojSvih));
+      }, 100);
+      return () => clearTimeout(timer);
+    }
+  }, [animiraneSve, brojSvih]);
+
+  useEffect(() => {
+    if (animiraneOtvorene < brojOtvorenih) {
+      const timer = setTimeout(() => {
+        setAnimiraneOtvorene(prev => Math.min(prev + 1, brojOtvorenih));
+      }, 200);
+      return () => clearTimeout(timer);
+    }
+  }, [animiraneOtvorene, brojOtvorenih]);
+
+  useEffect(() => {
+    if (animiraniHitni < brojHitnih) {
+      const timer = setTimeout(() => {
+        setAnimiraniHitni(prev => Math.min(prev + 1, brojHitnih));
+      }, 300);
+      return () => clearTimeout(timer);
+    }
+  }, [animiraniHitni, brojHitnih]);
 
   return (
     <Container>
-        <Row className="g-3 mb-4">
+      <Row className="g-3 mb-4">
         <Col xs={4}>
-          <div className="card shadow-sm border-0 p-3 text-center h-100 d-flex flex-col justify-content-center">
-            <div className="fs-2 fw-bold text-primary">{ukupnoPrijava}</div>
+          <div className="card shadow-sm border-0 p-3 text-center h-100 d-flex flex-column justify-content-center">
+            <div className="fs-2 fw-bold text-primary">{animiraneSve}</div>
             <div className="text-muted small">Ukupno prijava</div>
           </div>
         </Col>
         <Col xs={4}>
           <div className="card shadow-sm border-0 p-3 text-center h-100 d-flex flex-column justify-content-center">
-            <div className="fs-2 fw-bold text-success">{otvorenePrijave}</div>
+            <div className="fs-2 fw-bold text-success">{animiraneOtvorene}</div>
             <div className="text-muted small">Otvorene</div>
           </div>
         </Col>
         <Col xs={4}>
           <div className="card shadow-sm border-0 p-3 text-center h-100 d-flex flex-column justify-content-center">
-            <div className="fs-2 fw-bold text-danger">{hitnePrijave}</div>
+            <div className="fs-2 fw-bold text-danger">{animiraniHitni}</div>
             <div className="text-muted small">Hitni slučajevi</div>
           </div>
         </Col>
@@ -77,16 +106,16 @@ const ukupnoPrijava = prijave.length;
           </Row>
         </div>
       </Card>
-<Row className="g-4">
+      <Row className="g-4">
         {filtriranePrijave.map((prijava) => (
           <Col xs={12} md={4} key={prijava.id}>
             <Card className="h-100 shadow-sm border-0 rounded-3">
               {prijava.slika && (
-                <Card.Img 
-                  variant="top" 
-                  src={prijava.slika} 
-                  style={{ height: "200px", objectFit: "cover" }} 
-                  alt={prijava.zivotinja_ime || "Slika prijave"} 
+                <Card.Img
+                  variant="top"
+                  src={prijava.slika}
+                  style={{ height: "200px", objectFit: "cover" }}
+                  alt={prijava.zivotinja_ime || "Slika prijave"}
                 />
               )}
               <Card.Body className="d-flex flex-column">
@@ -94,7 +123,7 @@ const ukupnoPrijava = prijave.length;
                   <Card.Title className="mb-0 fw-bold fs-4">
                     {prijava.zivotinja_ime}
                   </Card.Title>
-                  <Badge bg={getNazivTipa(prijava.tip_prijave) === "Nestanak" ? "danger" : "info"} className="fs-6 text-wrap text-start mw-100" style={{ whiteSpace: "normal", lineHeight: 1.3 }}>
+                  <Badge bg={/nestan|izgublj/i.test(getNazivTipa(prijava.tip_prijave)) ? "danger" : "info"} className="fs-6 text-wrap text-start mw-100" style={{ whiteSpace: "normal", lineHeight: 1.3 }}>
                     {getNazivTipa(prijava.tip_prijave)}
                   </Badge>
                 </div>

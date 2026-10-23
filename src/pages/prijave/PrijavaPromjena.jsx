@@ -26,28 +26,33 @@ export default function PrijavaPromjena() {
     };
     const [lokacija, setLokacija] = useState(null);
 
-    async function ucitajPodatke() {
-        const [resPrijava, resVrste, resTipovi] = await Promise.all([
-            prijaveService.getById(params.id),
-            VrsteService.get(),
-            TipService.get()
-        ]);
-        const pData = resPrijava?.data ?? resPrijava;
-        const vData = Array.isArray(resVrste) ? resVrste : (resVrste?.data ?? []);
-        const tData = Array.isArray(resTipovi) ? resTipovi : (resTipovi?.data ?? []);
-        setPrijava(pData || {});
-        setCipirana(Boolean(pData?.cipirana));
-        setHitno(Boolean(pData?.hitno));
-        if (pData?.lokacija) {
-            setLokacija(pData.lokacija);
-        }
-        setVrste(Array.isArray(vData) ? vData : []);
-        setTipovi(Array.isArray(tData) ? tData : []);
-    }
-
     useEffect(() => {
-        ucitajPodatke()
-    }, [params.id])
+        async function ucitajPodatke() {
+            try {
+                const [resPrijava, resVrste, resTipovi] = await Promise.all([
+                    prijaveService.getById(params.id),
+                    VrsteService.get(),
+                    TipService.get()
+                ]);
+                const pData = resPrijava?.data ?? resPrijava;
+                const vData = Array.isArray(resVrste) ? resVrste : (resVrste?.data ?? []);
+                const tData = Array.isArray(resTipovi) ? resTipovi : (resTipovi?.data ?? []);
+                
+                setPrijava(pData || {});
+                setCipirana(Boolean(pData?.cipirana));
+                setHitno(Boolean(pData?.hitno));
+                if (pData?.lokacija) {
+                    setLokacija(pData.lokacija);
+                }
+                setVrste(Array.isArray(vData) ? vData : []);
+                setTipovi(Array.isArray(tData) ? tData : []);
+            } catch (error) {
+                console.error("Greška pri dohvatu podataka prijave:", error);
+            }
+        }
+
+        ucitajPodatke();
+    }, [params.id]);
 
     async function promjeni(podaciPrijave) {
         await prijaveService.promjeni(params.id, podaciPrijave).then(() => {
@@ -56,23 +61,6 @@ export default function PrijavaPromjena() {
 
     }
     function obradiSubmit(e) {
-        e.preventDefault()
-        const podaci = new FormData(e.target)
-        promjeni({
-            ...prijava,
-            zivotinja_ime: podaci.get('zivotinja_ime'),
-            zivotinja_vrsta: parseInt(podaci.get("zivotinja_vrsta")),
-            zivotinja_opis: podaci.get('zivotinja_opis'),
-            zivotinja_godine: parseInt(podaci.get('zivotinja_godine')),
-            cipirana: podaci.get('cipirana') === 'on',
-            tip_prijave: parseInt(podaci.get('tip_prijave')),
-            status: podaci.get('status') || prijava.status || 'aktivna',
-            lokacija_opis: podaci.get('lokacija_opis'),
-            datum: podaci.get('datum'),
-            slika: podaci.get('slika'),
-            hitno: podaci.get('hitno') === 'on'
-        })
-    } function obradiSubmit(e) {
         e.preventDefault()
         const podaci = new FormData(e.target)
 

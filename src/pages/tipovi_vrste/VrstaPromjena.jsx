@@ -9,15 +9,17 @@ export default function VrstaPromjena() {
     const params = useParams()
     const [vrsta, setVrsta] = useState({})
 
+useEffect(() => {
     async function ucitajVrstu() {
-        await VrsteService.getById(params.id).then((odgovor) => {
-            setVrsta(odgovor.data)
-        })
+      try {
+        const res = await VrsteService.getById(params.id);
+        setVrsta(res.data || res);
+      } catch (error) {
+        console.error("Greška:", error);
+      }
     }
-
-    useEffect(() => {
-        ucitajVrstu()
-    }, [])
+    ucitajVrstu();
+  }, [params.id]);
 
     async function promjeni(podaci) {
         await VrsteService.promjeni(params.id, podaci).then(() => {
@@ -34,8 +36,8 @@ export default function VrstaPromjena() {
             alert("Naziv je obavezan i ne smije sadržavati samo razmake!")
             return
         }
-        if (naziv.length < 3 || naziv.length > 50) {
-            alert("Naziv vrste mora imati najmanje 3 i najviše 50 znakova!")
+        if (naziv.length < 3 || naziv.length > 20) {
+            alert("Naziv vrste mora imati najmanje 3 i najviše 20 znakova!")
             return
         }
         if (!/^[A-Za-zČčĆćĐđŠšŽž\s-]+$/.test(naziv)) {

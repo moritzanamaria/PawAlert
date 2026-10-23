@@ -92,8 +92,8 @@ export default function DetaljiSlucaja() {
                     )}
 
   <div className="mt-4">
-                        <Link to={RouteNames.PRIJAVE_PREGLED} className="btn btn-outline-secondary">
-                            ← Natrag na pregled prijava
+                        <Link to={RouteNames.KATALOG} className="btn btn-outline-secondary">
+                            ← Natrag na Katalog
                         </Link>
                     </div>
                 </Col>

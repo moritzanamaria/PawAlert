@@ -3,30 +3,22 @@ import { normalizirajLokaciju } from "../../utils/lokacija";
 import TragoviServiceLocalStorage from "./TragoviServiceLocalStorage";
 import TragoviServiceMemorija from "./TragoviServiceMemorija";
 
-const toLista = (res) => Array.isArray(res) ? res : (res?.data ?? [])
-
-let Servis = null
-switch (DATA_SOURCE) {
-  case 'memorija':
-    Servis = TragoviServiceMemorija
-    break
-  case 'localStorage':
-    Servis = TragoviServiceLocalStorage
-    break
-  default:
-    Servis = null
-}
+let Servis = 
+  DATA_SOURCE === 'memorija' ? TragoviServiceMemorija:
+  DATA_SOURCE === 'localStorage' ? TragoviServiceLocalStorage : 
+  null;
 
 const PrazanServis = {
   get: async () => ({ data: [] }),
-  getById: async (id) => ({ data: {} }),
-  getByPrijava: async (prijavaId) => ({ data: [] }),
-  dodaj: async (trag) => { console.error('Servis nije implementiran') },
-  promjeni: async (id, trag) => { console.error('Servis nije implementiran') },
-  obrisi: async (id) => { console.error('Servis nije implementiran') },
+  getById: async () => ({ data: {} }),
+  getByPrijava: async () => ({ data: [] }),
+  dodaj: async () => { console.error('Servis nije implementiran') },
+  promjeni: async () => { console.error('Servis nije implementiran') },
+  obrisi: async () => { console.error('Servis nije implementiran') },
 }
 
 const AktivniServis = Servis || PrazanServis
+const toLista = (res) => Array.isArray(res) ? res : (res?.data ?? [])
 
 export default {
   get: async () => {

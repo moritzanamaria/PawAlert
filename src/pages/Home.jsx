@@ -15,24 +15,26 @@ function Home() {
   const [vrsta, setVrsta] = useState("");
 
   useEffect(() => {
-    dohvatiPrijave();
-    dohvatiVrste();
+
+  async function dohvatiPodatke() {
+  try{  
+   const [rezPrijave, rezVrste] = await Promise.all([
+          prijaveService.get(),
+          VrsteService.get(),
+        ]);
+        setPrijave(rezPrijave.data || rezPrijave);
+        setVrste(rezVrste.data || rezVrste);
+      } catch (error) {
+        console.error("Greška pri dohvaćanju podataka:", error);
+      }
+    }
+    dohvatiPodatke();
   }, []);
-
-  async function dohvatiPrijave() {
-    const rez = await prijaveService.get();
-    setPrijave(rez.data || rez);
-  }
-
-  async function dohvatiVrste() {
-    const rez = await VrsteService.get();
-    setVrste(rez.data || rez);
-  };
 
   const filtriranePrijave = filtrirajPrijave(prijave, pretraga, vrsta, vrste)
 
   return (
-    <Container className="py-1"> 
+    <Container className="py-1">
       <Row className="g-3 mb-4 align-items-stretch">
         <Col xs={12} md={5}>
           <div className="p-5 mb-1 bg-white shadow-sm rounded-4 border-start border-success border-5">
@@ -64,7 +66,7 @@ function Home() {
           <MapView prijave={filtriranePrijave} />
         </div>
       </div>
-</Container>
+    </Container>
   );
 };
 

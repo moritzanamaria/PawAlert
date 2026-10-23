@@ -1,37 +1,39 @@
-import {tipovi} from "./TipPodaci";
+import { tipovi } from "./TipPodaci";
 
-  async function get() {
-    return {data: [...tipovi]}
+async function get() {
+  return { data: [...tipovi] }
 
-  }
+}
 
-  async function getById(id) {
-    return{data: tipovi.find(p => p.id===parseInt(id))}
-  }
+async function getById(id) {
+  return { data: tipovi.find(p => p.id === parseInt(id)) }
+}
 
 async function dodaj(tip) {
-  if(tipovi.length===0){
+  if (tipovi.length === 0) {
     tip.id = 1
-  }else{
-    tip.id= tipovi[tipovi.length -1].id + 1
+  } else {
+    tip.id = tipovi[tipovi.length - 1].id + 1
   }
   tipovi.push(tip)
-  }
+}
 
-  async function promjeni(id, tip) {
-    const index = nadiIndex(id)
-    tipovi[index] = { ...tipovi[index], ...tip, id: parseInt(id) }
-    }
+async function promjeni(id, tip) {
+  const index = nadiIndex(id)
+  if (index === -1) return
+  tipovi[index] = { ...tipovi[index], ...tip, id: parseInt(id) }
+}
 
-    
-     function nadiIndex(id){
-    return tipovi.findIndex(p => p.id === parseInt(id))
-} 
-  
-async function obrisi(id){
-    const index = nadiIndex(id)
-        tipovi.splice(index, 1)
-    }
+
+function nadiIndex(id) {
+  return tipovi.findIndex(p => p.id === parseInt(id))
+}
+
+async function obrisi(id) {
+  const index = nadiIndex(id)
+  if (index === -1) return
+  tipovi.splice(index, 1)
+}
 
 
 export default {

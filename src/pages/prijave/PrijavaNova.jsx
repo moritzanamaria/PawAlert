@@ -18,23 +18,25 @@ export default function PrijavaNova() {
     const [datum, setDatum] = useState(new Date());
     const [vrste, setVrste] = useState([]);
     const [tipovi, setTipovi] = useState([]);
-const [lokacija, setLokacija] = useState(null);
-
-    async function dohvatiPodatke() {
-
-            const [resVrste, resTipovi] = await Promise.all([
-                VrsteService.get(),
-                TipService.get()
-            ]);
-
-            const vData = Array.isArray(resVrste) ? resVrste : (resVrste?.data ?? []);
-            const tData = Array.isArray(resTipovi) ? resTipovi : (resTipovi?.data ?? []);
-
-            setVrste(Array.isArray(vData) ? vData : []);
-            setTipovi(Array.isArray(tData) ? tData : []);
-    }
+    const [lokacija, setLokacija] = useState(null);
 
     useEffect(() => {
+        async function dohvatiPodatke() {
+            try {
+                const [resVrste, resTipovi] = await Promise.all([
+                    VrsteService.get(),
+                    TipService.get()
+                ]);
+
+                const vData = Array.isArray(resVrste) ? resVrste : (resVrste?.data ?? []);
+                const tData = Array.isArray(resTipovi) ? resTipovi : (resTipovi?.data ?? []);
+
+                setVrste(Array.isArray(vData) ? vData : []);
+                setTipovi(Array.isArray(tData) ? tData : []);
+            } catch (error) {
+                console.error("Greška pri dohvatu podataka:", error);
+            }
+        }
         dohvatiPodatke();
     }, []);
 
@@ -43,76 +45,76 @@ const [lokacija, setLokacija] = useState(null);
             navigate(RouteNames.PRIJAVE_PREGLED)
         })
     }
-function obradiSubmit(e) {
-    e.preventDefault()
-    const podaci = new FormData(e.target)
+    function obradiSubmit(e) {
+        e.preventDefault()
+        const podaci = new FormData(e.target)
 
-    const ime = (podaci.get('zivotinja_ime') || '').trim()
-    if (ime.length > 0 && (ime.length < 2 || ime.length > 50)) {
-        alert("Ime životinje mora imati najmanje 2 i najviše 50 znakova!")
-        return
-    }
-
-    if (!podaci.get('zivotinja_vrsta')) {
-        alert("Morate odabrati vrstu životinje!")
-        return
-    }
-
-    const godineRaw = podaci.get('zivotinja_godine')
-    if (godineRaw !== null && godineRaw !== '') {
-        const godine = Number(godineRaw)
-        if (isNaN(godine) || !Number.isInteger(godine) || godine < 0 || godine > 50) {
-            alert("Godine moraju biti cijeli broj između 0 i 50!")
+        const ime = (podaci.get('zivotinja_ime') || '').trim()
+        if (ime.length > 0 && (ime.length < 2 || ime.length > 50)) {
+            alert("Ime životinje mora imati najmanje 2 i najviše 50 znakova!")
             return
         }
-    }
 
-    const slika = (podaci.get('slika') || '').trim()
-    if (slika.length > 0 && !/^https?:\/\//i.test(slika)) {
-        alert("URL slike mora započeti s http:// ili https://")
-        return
-    }
+        if (!podaci.get('zivotinja_vrsta')) {
+            alert("Morate odabrati vrstu životinje!")
+            return
+        }
 
-    const opis = (podaci.get('zivotinja_opis') || '').trim()
-    if (opis.length > 500) {
-        alert("Opis može imati najviše 500 znakova!")
-        return
-    }
+        const godineRaw = podaci.get('zivotinja_godine')
+        if (godineRaw !== null && godineRaw !== '') {
+            const godine = Number(godineRaw)
+            if (isNaN(godine) || !Number.isInteger(godine) || godine < 0 || godine > 50) {
+                alert("Godine moraju biti cijeli broj između 0 i 50!")
+                return
+            }
+        }
 
-    if (!podaci.get('tip_prijave')) {
-        alert("Morate odabrati tip prijave!")
-        return
-    }
+        const slika = (podaci.get('slika') || '').trim()
+        if (slika.length > 0 && !/^https?:\/\//i.test(slika)) {
+            alert("URL slike mora započeti s http:// ili https://")
+            return
+        }
 
-const greskaLokacije = validirajLokaciju(lokacija)
-if (greskaLokacije) {
-    alert(greskaLokacije)
-    return
-}
+        const opis = (podaci.get('zivotinja_opis') || '').trim()
+        if (opis.length > 500) {
+            alert("Opis može imati najviše 500 znakova!")
+            return
+        }
 
-    if (!datum || isNaN(datum.getTime())) {
-        alert("Morate odabrati datum i vrijeme!")
-        return
-    }
-    if (datum > new Date()) {
-        alert("Datum prijave ne može biti u budućnosti!")
-        return
-    }
+        if (!podaci.get('tip_prijave')) {
+            alert("Morate odabrati tip prijave!")
+            return
+        }
 
-    dodaj({
-        zivotinja_ime: ime,
-        zivotinja_vrsta: parseInt(podaci.get('zivotinja_vrsta')),
-        zivotinja_opis: opis,
-        zivotinja_godine: godineRaw ? parseInt(godineRaw) : null,
-        cipirana: podaci.get('cipirana') === 'on',
-        tip_prijave: parseInt(podaci.get('tip_prijave')),
-        status: podaci.get('status') || 'otvorena',
-        lokacija: { ...lokacija, opis: lokacija.opis.trim() },
-        datum: datum.toISOString(),
-        slika: slika,
-        hitno: podaci.get('hitno') === 'on'
-    })
-}
+        const greskaLokacije = validirajLokaciju(lokacija)
+        if (greskaLokacije) {
+            alert(greskaLokacije)
+            return
+        }
+
+        if (!datum || isNaN(datum.getTime())) {
+            alert("Morate odabrati datum i vrijeme!")
+            return
+        }
+        if (datum > new Date()) {
+            alert("Datum prijave ne može biti u budućnosti!")
+            return
+        }
+
+        dodaj({
+            zivotinja_ime: ime,
+            zivotinja_vrsta: parseInt(podaci.get('zivotinja_vrsta')),
+            zivotinja_opis: opis,
+            zivotinja_godine: godineRaw ? parseInt(godineRaw) : null,
+            cipirana: podaci.get('cipirana') === 'on',
+            tip_prijave: parseInt(podaci.get('tip_prijave')),
+            status: podaci.get('status') || 'otvorena',
+            lokacija: { ...lokacija, opis: lokacija.opis.trim() },
+            datum: datum.toISOString(),
+            slika: slika,
+            hitno: podaci.get('hitno') === 'on'
+        })
+    }
 
     return (
         <Container className="my-5" style={{ maxWidth: "850px" }}>
@@ -199,11 +201,11 @@ if (greskaLokacije) {
                         </Row>
 
                         <Row className="mb-3">
-                            
+
                             <Form.Group className="mb-3">
-    <Form.Label className="fw-medium">Lokacija</Form.Label>
-    <LokacijaPicker value={lokacija} onChange={setLokacija} />
-</Form.Group>
+                                <Form.Label className="fw-medium">Lokacija</Form.Label>
+                                <LokacijaPicker value={lokacija} onChange={setLokacija} />
+                            </Form.Group>
 
                             <Form.Group as={Col} md={6} controlId="datum">
                                 <Form.Label className="fw-medium p-4">Datum i vrijeme</Form.Label>
@@ -221,7 +223,7 @@ if (greskaLokacije) {
                         </Row>
 
                         <div className="bg-light p-3 rounded-3 mb-4 border">
-                            <Row className="align-items-centar">
+                            <Row className="align-items-center">
                                 <Col sm={6}>
                                     <Form.Group controlId="cipirana" className="mb-0">
                                         <Form.Check

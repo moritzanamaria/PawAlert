@@ -1,6 +1,6 @@
 import { Link, useNavigate } from "react-router-dom";
 import { RouteNames } from "../../constants";
-import { Button, Card, Col, Container, Form, Row } from "react-bootstrap";
+import { Button, Card, Container, Form } from "react-bootstrap";
 import TipService from "../../services/tip/TipService";
 
 export default function TipNovi() {

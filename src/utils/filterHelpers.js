@@ -1,7 +1,7 @@
-export function filtrirajPrijave(prijave = [], pretraga = "", odabranaVrsta = "", vrste = []) {
+export function filtrirajPrijave(prijave = [], pretraga = "", odabranaVrsta = "") {
   return prijave.filter((p) => {
     const imeIliNaziv = (p.zivotinja_ime || p.naziv || "").toLowerCase();
-    const opisLokacije = (p.lokacija_opis || p.opis || "").toLowerCase();
+    const opisLokacije = (p.lokacija?.opis || p.lokacija_opis || p.opis || "").toLowerCase();
     const pojamPretrage = pretraga.toLowerCase();
 
     const zadovoljavaPretragu =
@@ -12,9 +12,9 @@ export function filtrirajPrijave(prijave = [], pretraga = "", odabranaVrsta = ""
     let zadovoljavaVrstu = true;
     if (odabranaVrsta !== "") {
 
-        zadovoljavaVrstu = String(p.zivotinja_vrsta) === String(odabranaVrsta);
-      }
-    
+      zadovoljavaVrstu = String(p.zivotinja_vrsta) === String(odabranaVrsta);
+    }
+
     return zadovoljavaPretragu && zadovoljavaVrstu;
   });
 }

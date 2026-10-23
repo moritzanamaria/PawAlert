@@ -24,21 +24,24 @@ export default function PrijavePregled() {
   const [vrsta, setVrsta] = useState("");
   const navigate = useNavigate()
 
-  async function ucitajPodatke() {
-    const [resPrijave, resVrste, resTipovi] = await Promise.all([
-      prijaveService.get(),
-      VrsteService.get(),
-      TipService.get()
-    ]);
-    setPrijave(toArray(resPrijave));
-    setVrste(toArray(resVrste));
-    setTipovi(toArray(resTipovi));
-  }
-
   useEffect(() => {
-    ucitajPodatke()
-  }, [])
+    async function dohvatiPodatke() {
+      try {
+        const [resPrijave, resVrste, resTipovi] = await Promise.all([
+          prijaveService.get(),
+          VrsteService.get(),
+          TipService.get()
+        ]);
+        setPrijave(toArray(resPrijave));
+        setVrste(toArray(resVrste));
+        setTipovi(toArray(resTipovi));
+      } catch (error) {
+        console.error("Greška pri dohvatu podataka:", error);
+      }
+    }
 
+    dohvatiPodatke();
+  }, []);
 
   async function obrisi(id) {
     if (!confirm('Sigurno obrisati?')) {
@@ -46,7 +49,7 @@ export default function PrijavePregled() {
     }
 
     await prijaveService.obrisi(id)
-    ucitajPodatke()
+    setPrijave(prevPrijave => prevPrijave.filter(p => p.id !== id));
   }
 
   const getNazivVrste = (id) => {

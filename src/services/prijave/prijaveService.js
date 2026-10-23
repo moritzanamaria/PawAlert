@@ -3,29 +3,22 @@ import { normalizirajLokaciju } from "../../utils/lokacija";
 import prijaveServiceLocalStorage from "./prijaveServiceLocalStorage";
 import prijaveServiceMemorija from "./prijaveServiceMemorija";
 
-let Servis = null
-switch(DATA_SOURCE){
-  case 'memorija':
-    Servis = prijaveServiceMemorija
-    break
-    case 'localStorage':
-      Servis = prijaveServiceLocalStorage
-      break
-      default:
-        Servis = null
-}
+let Servis = 
+  DATA_SOURCE === 'memorija' ? prijaveServiceMemorija :
+  DATA_SOURCE === 'localStorage' ? prijaveServiceLocalStorage : 
+  null;
 
 const PrazanServis = {
-  get: async ()=>({data:[]}),
-  getById: async (id)=>({data:{}}),
-  dodaj: async (prijava)=>{console.error('Servis nije implementiran')},
-  promjeni: async (id, prijava)=>{console.error('Servis nije implementiran')},
-  obrisi: async (id)=>{console.error('Servis nije implementiran')},
+  get: async () => ({ data: [] }),
+  getById: async () => ({ data: {} }),
+  dodaj: async () => { console.error('Servis nije implementiran') },
+  promjeni: async () => { console.error('Servis nije implementiran') },
+  obrisi: async () => { console.error('Servis nije implementiran') },
 }
 
-const AktivniServis = Servis||PrazanServis
+const AktivniServis = Servis || PrazanServis;
 
-export default{
+export default {
   get: async () => {
     const res = await AktivniServis.get()
     const lista = Array.isArray(res) ? res : (res?.data ?? [])
@@ -36,7 +29,7 @@ export default{
     const zapis = res?.data ?? res
     return { data: normalizirajLokaciju(zapis) }
   },
-  dodaj: (prijava)=>AktivniServis.dodaj(prijava),
-  promjeni: (id, prijava)=>AktivniServis.promjeni(id, prijava),
-  obrisi: (id)=> AktivniServis.obrisi(id)
+  dodaj: (prijava) => AktivniServis.dodaj(prijava),
+  promjeni: (id, prijava) => AktivniServis.promjeni(id, prijava),
+  obrisi: (id) => AktivniServis.obrisi(id)
 }

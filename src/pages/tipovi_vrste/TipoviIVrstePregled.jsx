@@ -6,26 +6,31 @@ import { Badge, Button, Card, Col, Container, Row, Table, ButtonGroup } from "re
 import { Link, useNavigate } from "react-router-dom";
 import { BiPlus, BiPencil, BiTrash } from "react-icons/bi";
 
+const toArray = (res) => {
+  const data = Array.isArray(res) ? res : (res?.data ?? []);
+  return Array.isArray(data) ? data : [];
+};
+
 export default function TipoviPregled() {
   const [vrste, setVrste] = useState([]);
   const [tipovi, setTipovi] = useState([])
   const navigate = useNavigate()
 
-  async function ucitajPodatke() {
-    const [resVrste, resTipovi] = await Promise.all([
-      VrsteService.get(),
-      TipService.get(),
-    ]);
-    const vData = Array.isArray(resVrste) ? resVrste : (resVrste?.data ?? []);
-    const tData = Array.isArray(resTipovi) ? resTipovi : (resTipovi?.data ?? []);
-
-    setVrste(Array.isArray(vData) ? vData : []);
-    setTipovi(Array.isArray(tData) ? tData : []);
-  }
-
-  useEffect(() => {
-    ucitajPodatke()
-  }, [])
+ useEffect(() => {
+    async function dohvatiPodatke() {
+      try {
+        const [resTipovi, resVrste] = await Promise.all([
+          TipService.get(),
+          VrsteService.get()
+        ]);
+        setVrste(toArray(resVrste));
+        setTipovi(toArray(resTipovi));
+      } catch (error) {
+        console.error("Greška pri dohvatu podataka:", error);
+      }
+    }
+    dohvatiPodatke();
+  }, []);
 
   async function obrisiVrstu(id) {
     if (!confirm('Sigurno obrisati?')) {
@@ -33,7 +38,7 @@ export default function TipoviPregled() {
     }
 
     await VrsteService.obrisi(id)
-    ucitajPodatke()
+   setVrste(prev => prev.filter(v => v.id !== id));
   }
 
   async function obrisiTip(id) {
@@ -42,7 +47,7 @@ export default function TipoviPregled() {
   }
 
   await TipService.obrisi(id);
-  ucitajPodatke();
+  setTipovi(prev => prev.filter(t => t.id !== id));
 }
 
   return (

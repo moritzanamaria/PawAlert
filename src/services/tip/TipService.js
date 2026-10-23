@@ -2,32 +2,33 @@ import { DATA_SOURCE } from "../../constants";
 import TipServiceLocalStorage from "./TipServiceLocalStorage";
 import TipServiceMemorija from "./TipServiceMemorija";
 
-let Servis = null
-switch(DATA_SOURCE){
-  case 'memorija':
-    Servis = TipServiceMemorija
-    break
-    case 'localStorage':
-      Servis = TipServiceLocalStorage
-      break
-      default:
-        Servis = null
-}
+let Servis = 
+  DATA_SOURCE === 'memorija' ? TipServiceMemorija :
+  DATA_SOURCE === 'localStorage' ? TipServiceLocalStorage : 
+  null;
 
 const PrazanServis = {
-  get: async ()=>({data:[]}),
-  getById: async (id)=>({data:{}}),
-  dodaj: async (tip)=>{console.error('Servis nije implementiran')},
-  promjeni: async (id, tip)=>{console.error('Servis nije implementiran')},
-  obrisi: async (id)=>{console.error('Servis nije implementiran')},
+  get: async () => ({ data: [] }),
+  getById: async () => ({ data: {} }),
+  dodaj: async () => { console.error('Servis nije implementiran') },
+  promjeni: async () => { console.error('Servis nije implementiran') },
+  obrisi: async () => { console.error('Servis nije implementiran') },
 }
 
-const AktivniServis = Servis||PrazanServis
+const AktivniServis = Servis || PrazanServis
 
-export default{
-  get: ()=> AktivniServis.get(),
-  getById: (id)=> AktivniServis.getById(id),
-  dodaj: (tip)=>AktivniServis.dodaj(tip),
-  promjeni: (id, tip)=>AktivniServis.promjeni(id, tip),
-  obrisi: (id)=> AktivniServis.obrisi(id)
+export default {
+  get: async () => {
+    const res = await AktivniServis.get();
+    const lista = Array.isArray(res) ? res : (res?.data ?? []);
+    return { data: lista };
+  },
+  getById: async (id) => {
+    const res = await AktivniServis.getById(id);
+    const zapis = res?.data ?? res;
+    return { data: zapis };
+  },
+  dodaj: (tip) => AktivniServis.dodaj(tip),
+  promjeni: (id, tip) => AktivniServis.promjeni(id, tip),
+  obrisi: (id) => AktivniServis.obrisi(id)
 }

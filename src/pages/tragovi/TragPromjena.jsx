@@ -3,7 +3,7 @@ import { Link, useNavigate, useParams } from "react-router-dom";
 import { Button, Card, Col, Container, Form, Row } from "react-bootstrap";
 import TragoviService from "../../services/tragovi/TragoviService";
 import "react-datepicker/dist/react-datepicker.css";
-import hr from "date-fns/locale/hr";
+import { hr } from "date-fns/locale/hr";
 import DatePicker, { registerLocale } from "react-datepicker";
 import LokacijaPicker from "../../components/LokacijaPicker";
 import { validirajLokaciju } from "../../utils/lokacija";
@@ -12,9 +12,9 @@ registerLocale("hr", hr);
 
 export default function TragPromjena() {
     const navigate = useNavigate()
-    const { id } = useParams()
+    const params = useParams()
     const [datum, setDatum] = useState(new Date());
-const [lokacija, setLokacija] = useState(null);
+    const [lokacija, setLokacija] = useState(null);
     const [trag, setTrag] = useState({
         prijava: "",
         korisnik: "",
@@ -25,58 +25,65 @@ const [lokacija, setLokacija] = useState(null);
         datum: ""
     })
 
-    async function ucitajTrag() {
-        await TragoviService.getById(id).then((odgovor) => {
-            setTrag(odgovor.data)
-        })
-    }
-
     useEffect(() => {
-        ucitajTrag()
-    }, [])
+        async function ucitajTrag() {
+            try {
+                const res = await TragoviService.getById(params.id);
+                setTrag(res?.data ?? res ?? {});
+            } catch (error) {
+                console.error("Greška:", error);
+            }
+        }
+        if (params.id) {
+            ucitajTrag();
+        }
+    }, [params.id]);
 
     async function promjeni(podaci) {
-        await TragoviService.promjeni(id, podaci).then(() => {
+        try {
+            await TragoviService.promjeni(params.id, podaci)
             navigate(`/prijave/${trag.prijava}/tragovi`)
-        })
+        } catch (error) {
+            console.error("Greška pri promjeni:", error);
+        }
     }
 
     function obradiSubmit(e) {
-    e.preventDefault()
-    const podaci = new FormData(e.target)
+        e.preventDefault()
+        const podaci = new FormData(e.target)
 
-    const opis = (podaci.get('opis') || '').trim()
-    if (opis.length === 0) {
-        alert("Opis traga je obavezan i ne smije sadržavati samo razmake!")
-        return
-    }
-    if (opis.length < 3 || opis.length > 500) {
-        alert("Opis traga mora imati najmanje 3 i najviše 500 znakova!")
-        return
-    }
+        const opis = (podaci.get('opis') || '').trim()
+        if (opis.length === 0) {
+            alert("Opis traga je obavezan i ne smije sadržavati samo razmake!")
+            return
+        }
+        if (opis.length < 3 || opis.length > 500) {
+            alert("Opis traga mora imati najmanje 3 i najviše 500 znakova!")
+            return
+        }
 
-    const greskaLokacije = validirajLokaciju(lokacija)
-if (greskaLokacije) {
-    alert(greskaLokacije)
-    return
-}
+        const greskaLokacije = validirajLokaciju(lokacija)
+        if (greskaLokacije) {
+            alert(greskaLokacije)
+            return
+        }
 
-    if (!datum || isNaN(datum.getTime())) {
-        alert("Morate odabrati datum i vrijeme!")
-        return
-    }
-    if (datum > new Date()) {
-        alert("Datum traga ne može biti u budućnosti!")
-        return
-    }
+        if (!datum || isNaN(datum.getTime())) {
+            alert("Morate odabrati datum i vrijeme!")
+            return
+        }
+        if (datum > new Date()) {
+            alert("Datum traga ne može biti u budućnosti!")
+            return
+        }
 
-    promjeni({
-        ...trag,
-        opis: opis,
-         lokacija: { ...lokacija, opis: lokacija.opis.trim() },
-        datum: datum.toISOString(),
-    })
-}
+        promjeni({
+            ...trag,
+            opis: opis,
+            lokacija: { ...lokacija, opis: lokacija.opis.trim() },
+            datum: datum.toISOString(),
+        })
+    }
     return (
         <Container className="my-5" style={{ maxWidth: "850px" }}>
             <Card className="shadow-sm border-0 rounded-3">
@@ -95,10 +102,10 @@ if (greskaLokacije) {
                             <Form.Control as="textarea" rows={3} name="opis" defaultValue={trag.opis} required placeholder="Unesite opis traga..." />
                         </Form.Group>
                         <Row className="mb-4">
-                           <Form.Group className="mb-3">
-    <Form.Label className="fw-medium">Lokacija</Form.Label>
-    <LokacijaPicker value={lokacija} onChange={setLokacija} />
-</Form.Group>
+                            <Form.Group className="mb-3">
+                                <Form.Label className="fw-medium">Lokacija</Form.Label>
+                                <LokacijaPicker value={lokacija} onChange={setLokacija} />
+                            </Form.Group>
 
                             <Form.Group as={Col} md={6} controlId="datum" className="mb-3">
                                 <Form.Label className="fw-medium">Datum i vrijeme</Form.Label>
