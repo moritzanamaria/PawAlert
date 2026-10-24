@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import TipService from "../../services/tip/TipService";
 import VrsteService from "../../services/vrste/VrsteService";
+import prijaveService from "../../services/prijave/prijaveService";
 import { RouteNames } from "../../constants";
 import { Badge, Button, Card, Col, Container, Row, Table, ButtonGroup } from "react-bootstrap";
 import { Link, useNavigate } from "react-router-dom";
@@ -16,7 +17,7 @@ export default function TipoviPregled() {
   const [tipovi, setTipovi] = useState([])
   const navigate = useNavigate()
 
- useEffect(() => {
+  useEffect(() => {
     async function dohvatiPodatke() {
       try {
         const [resTipovi, resVrste] = await Promise.all([
@@ -33,22 +34,34 @@ export default function TipoviPregled() {
   }, []);
 
   async function obrisiVrstu(id) {
+    const res = await prijaveService.get()
+    const koristi = (res?.data ?? res).filter(p => p.zivotinja_vrsta === id).length
+    if (koristi > 0) {
+      alert(`Vrsta se koristi u ${koristi} prijava i ne može se obrisati.`)
+      return
+    }
     if (!confirm('Sigurno obrisati?')) {
       return
     }
 
     await VrsteService.obrisi(id)
-   setVrste(prev => prev.filter(v => v.id !== id));
+    setVrste(prev => prev.filter(v => v.id !== id));
   }
 
   async function obrisiTip(id) {
-  if (!confirm("Sigurno obrisati ovaj tip?")) {
-    return;
-  }
+    const res = await prijaveService.get()
+    const koristi = (res?.data ?? res).filter(p => p.tip_prijave === id).length
+    if (koristi > 0) {
+      alert(`Tip se koristi u ${koristi} prijava i ne može se obrisati.`)
+      return
+    }
+    if (!confirm("Sigurno obrisati ovaj tip?")) {
+      return;
+    }
 
-  await TipService.obrisi(id);
-  setTipovi(prev => prev.filter(t => t.id !== id));
-}
+    await TipService.obrisi(id);
+    setTipovi(prev => prev.filter(t => t.id !== id));
+  }
 
   return (
     <Container>

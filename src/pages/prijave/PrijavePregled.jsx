@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import prijaveService from "../../services/prijave/prijaveService";
 import VrsteService from "../../services/vrste/VrsteService";
 import TipService from "../../services/tip/TipService";
+import TragoviService from "../../services/tragovi/TragoviService";
 import { RouteNames } from "../../constants";
 import { Badge, Button, Card, Container, Table, ButtonGroup, Row, Col } from "react-bootstrap";
 import FormatDatuma from "../../components/FormatDatuma";
@@ -44,10 +45,14 @@ export default function PrijavePregled() {
   }, []);
 
   async function obrisi(id) {
-    if (!confirm('Sigurno obrisati?')) {
+    if (!confirm('Brisanjem prijave brišu se i svi njezini tragovi. Nastaviti?')) {
       return
     }
-
+    const res = await TragoviService.get()
+    const tragoviPrijave = (res?.data ?? res).filter(t => String(t.prijava) === String(id))
+    for (const t of tragoviPrijave) {
+      await TragoviService.obrisi(t.id)
+    }
     await prijaveService.obrisi(id)
     setPrijave(prevPrijave => prevPrijave.filter(p => p.id !== id));
   }

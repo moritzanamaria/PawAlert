@@ -31,6 +31,7 @@ export default function TragPromjena() {
                 const res = await TragoviService.getById(params.id);
                 const tData = res?.data ?? res;
                 setTrag(tData || {});
+                if (tData?.datum) setDatum(new Date(tData.datum))
                 if (tData?.lokacija) {
                     setLokacija(tData.lokacija);
                 } else if (tData?.lokacija_opis || tData?.lokacija_lat) {
