@@ -7,7 +7,7 @@ import "react-datepicker/dist/react-datepicker.css";
 import { hr } from "date-fns/locale";
 import LokacijaPicker from "../../components/LokacijaPicker";
 import { validirajLokaciju } from "../../utils/lokacija";
-import { RouteNames } from "../../constants";
+import { RouteNames, putanja } from "../../constants";
 
 registerLocale("hr", hr);
 

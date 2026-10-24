@@ -1,6 +1,6 @@
 import FormatDatuma from "./FormatDatuma";
 import { Link } from "react-router-dom";
-import { RouteNames, putanja } from "../../constants";
+import { RouteNames, putanja } from "../constants";
 
 function Sidebar({ prijave = [] }) {
   const najnovije = [...prijave]
@@ -27,7 +27,7 @@ function Sidebar({ prijave = [] }) {
           Pratite lokacije prijavljenih životinja u stvarnom vremenu na području Osijeka.
         </p>
         <div className="badge bg-primary fs-6 p-2 mx-auto" style={{ width: "fit-content" }}>
-          Ukupno aktivnih prijava: {prijave.length}
+          Ukupno prijava: {prijave.length}
         </div>
       </div>
 

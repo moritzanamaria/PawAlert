@@ -6,9 +6,8 @@ import TragoviService from "../../services/tragovi/TragoviService";
 import { RouteNames, putanja } from "../../constants";
 import { Badge, Button, Card, Container, Table, ButtonGroup, Row, Col } from "react-bootstrap";
 import FormatDatuma from "../../components/FormatDatuma";
-import PretragaInput from "../../components/PretragaInput";
-import VrstaSelect from "../../components/VrstaSelect";
-import { filtrirajPrijave } from "../../utils/filterHelpers";
+import FilterPrijava from "../../components/FilterPrijava";
+import { filtrirajPrijave, PRAZNI_FILTERI } from "../../utils/filterHelpers";
 import { Link, useNavigate } from "react-router-dom";
 import { BiPlus, BiPencil, BiTrash, BiSearch } from "react-icons/bi";
 
@@ -21,8 +20,7 @@ export default function PrijavePregled() {
   const [prijave, setPrijave] = useState([])
   const [vrste, setVrste] = useState([]);
   const [tipovi, setTipovi] = useState([]);
-  const [pretraga, setPretraga] = useState("");
-  const [vrsta, setVrsta] = useState("");
+  const [filteri, setFilteri] = useState(PRAZNI_FILTERI);
   const navigate = useNavigate()
 
   useEffect(() => {
@@ -67,7 +65,7 @@ export default function PrijavePregled() {
     return tip ? tip.naziv : id;
   };
 
-  const filtriranePrijave = filtrirajPrijave(prijave, pretraga, vrsta, vrste);
+  const filtriranePrijave = filtrirajPrijave(prijave, filteri);
 
   const [animiraneSve, setAnimiraneSve] = useState(0);
   const [animiraneOtvorene, setAnimiraneOtvorene] = useState(0);
@@ -108,19 +106,19 @@ export default function PrijavePregled() {
     <Container>
       <Row className="g-3 mb-4">
         <Col xs={4}>
-          <div className="card shadow-sm border-0 p-3 text-center h-100 d-flex flex-col justify-content-center">
+          <div className="card shadow-sm border-0 p-3 text-center h-100 d-flex flex-column justify-content-center">
             <div className="fs-2 fw-bold text-primary">{animiraneSve}</div>
             <div className="text-muted small">Ukupno prijava</div>
           </div>
         </Col>
         <Col xs={4}>
-          <div className="card shadow-sm border-0 p-3 text-center h-100 d-flex flex-col justify-content-center">
+          <div className="card shadow-sm border-0 p-3 text-center h-100 d-flex flex-column justify-content-center">
             <div className="fs-2 fw-bold text-success">{animiraneOtvorene}</div>
             <div className="text-muted small">Otvorene</div>
           </div>
         </Col>
         <Col xs={4}>
-          <div className="card shadow-sm border-0 p-3 text-center h-100 d-flex flex-col justify-content-center">
+          <div className="card shadow-sm border-0 p-3 text-center h-100 d-flex flex-column justify-content-center">
             <div className="fs-2 fw-bold text-danger">{animiraniHitni}</div>
             <div className="text-muted small">Hitni slučajevi</div>
           </div>
@@ -137,16 +135,8 @@ export default function PrijavePregled() {
           </Link>
         </Card.Header>
         <div className="px-4 pb-3">
-          <Row className="g-3">
-            <Col xs={12} md={6}>
-              <PretragaInput pretraga={pretraga} setPretraga={setPretraga} />
-            </Col>
-            <Col xs={12} md={6}>
-              <VrstaSelect vrsta={vrsta} setVrsta={setVrsta} vrste={vrste} />
-            </Col>
-          </Row>
-        </div>
-
+        <FilterPrijava filteri={filteri} setFilteri={setFilteri} vrste={vrste} tipovi={tipovi} />
+</div>
         <Card.Body className="p-0">
           <Table responsive hover className="align-middle mb-0 border-top">
             <thead className="table-light">

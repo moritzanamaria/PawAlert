@@ -1,29 +1,33 @@
 import { useState, useEffect } from "react";
 import prijaveService from "../services/prijave/prijaveService";
 import VrsteService from "../services/vrste/VrsteService";
+import TipService from "../services/tip/TipService";
 import MapView from "../components/MapView";
 import Sidebar from "../components/Sidebar";
-import { filtrirajPrijave } from "../utils/filterHelpers";
+import FilterPrijava from "../components/FilterPrijava";
+import { filtrirajPrijave, PRAZNI_FILTERI } from "../utils/filterHelpers";
 import { Col, Container, Row } from "react-bootstrap";
-import PretragaInput from "../components/PretragaInput";
-import VrstaSelect from "../components/VrstaSelect";
+import { Link } from "react-router-dom";
+import { RouteNames } from "../constants";
 
 function Home() {
   const [prijave, setPrijave] = useState([]);
   const [vrste, setVrste] = useState([]);
-  const [pretraga, setPretraga] = useState("");
-  const [vrsta, setVrsta] = useState("");
+  const [filteri, setFilteri] = useState(PRAZNI_FILTERI);
+  const [tipovi, setTipovi] = useState([]);
 
   useEffect(() => {
 
-  async function dohvatiPodatke() {
-  try{  
-   const [rezPrijave, rezVrste] = await Promise.all([
+    async function dohvatiPodatke() {
+      try {
+        const [rezPrijave, rezVrste, rezTipovi] = await Promise.all([
           prijaveService.get(),
           VrsteService.get(),
+          TipService.get(),
         ]);
         setPrijave(rezPrijave.data || rezPrijave);
         setVrste(rezVrste.data || rezVrste);
+        setTipovi(rezTipovi.data || rezTipovi)
       } catch (error) {
         console.error("Greška pri dohvaćanju podataka:", error);
       }
@@ -31,41 +35,54 @@ function Home() {
     dohvatiPodatke();
   }, []);
 
-  const filtriranePrijave = filtrirajPrijave(prijave, pretraga, vrsta, vrste)
+  const filtriranePrijave = filtrirajPrijave(prijave, filteri)
 
   return (
     <Container className="py-1">
-      <Row className="g-3 mb-4 align-items-stretch">
-        <Col xs={12} md={5}>
-          <div className="p-5 mb-1 bg-white shadow-sm rounded-4 border-start border-success border-5">
+      <div className="bg-white shadow-sm rounded-4 border-start border-success border-5 p-4 mb-4">
+        <Row className="align-items-center g-3">
+          <Col xs={12} md>
             <h1 className="h3 fw-bold text-dark mb-1">
               Tragom svake šape 🐾
             </h1>
             <p className="text-muted mb-0">
               Bilo da si primijetio izgubljenog ljubimca ili tražiš svog, označi lokaciju na interaktivnoj karti i pokreni zajednicu na akciju.
             </p>
-          </div>
-        </Col>
-        <Col xs={12} md={7} className="d-flex flex-column gap-3">
-          <div className="card shadow-sm border-0 p-3 flex-fill justify-content-center">
-            <PretragaInput pretraga={pretraga} setPretraga={setPretraga} />
-          </div>
+          </Col>
+          <Col xs={12} md="auto" className="d-flex flex-column flex-sm-row gap-2">
+            <Link
+              to={RouteNames.PRIJAVA_NOVA}
+              state={{ povratak: RouteNames.HOME }}
+              className="btn btn-success fw-semibold"
+            >
+              Prijavi životinju
+            </Link>
+            <Link to={RouteNames.KATALOG} className="btn btn-outline-success fw-semibold">
+              Katalog
+            </Link>
+          </Col>
+        </Row>
+      </div>
+      <div className="card shadow-sm border-0 rounded-4 p-3 mb-4">
+        <FilterPrijava
+          filteri={filteri}
+          setFilteri={setFilteri}
+          vrste={vrste}
+          tipovi={tipovi}
+        />
+      </div>
 
-          <div className="card shadow-sm border-0 p-3 flex-fill justify-content-center">
-            <VrstaSelect vrsta={vrsta} setVrsta={setVrsta} vrste={vrste} />
+      <Row className="g-4 align-items-stretch">
+        <Col xs={12} md={5} lg={4}>
+          <Sidebar prijave={filtriranePrijave} />
+        </Col>
+
+        <Col xs={12} md={7} lg={8}>
+          <div className="card shadow-sm border-0 rounded-4 overflow-hidden h-100">
+            <MapView prijave={filtriranePrijave} />
           </div>
         </Col>
       </Row>
-      <div className="row g-4 align-items-stretch">
-        <div className="col-12 col-md-5 col-lg-4">
-          <Sidebar prijave={filtriranePrijave} />
-        </div>
-
-
-        <div className="shadow-sm col-12 col-md-7 col-lg-8">
-          <MapView prijave={filtriranePrijave} />
-        </div>
-      </div>
     </Container>
   );
 };

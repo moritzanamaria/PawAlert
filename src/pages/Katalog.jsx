@@ -4,9 +4,8 @@ import { Container, Row, Col, Card, Badge } from "react-bootstrap";
 import prijaveService from "../services/prijave/prijaveService";
 import VrsteService from "../services/vrste/VrsteService";
 import TipService from "../services/tip/TipService";
-import PretragaInput from "../components/PretragaInput";
-import VrstaSelect from "../components/VrstaSelect";
-import { filtrirajPrijave } from "../utils/filterHelpers";
+import FilterPrijava from "../components/FilterPrijava";
+import { filtrirajPrijave, PRAZNI_FILTERI } from "../utils/filterHelpers";
 import FormatDatuma from "../components/FormatDatuma";
 import { RouteNames } from "../constants";
 import { BiPlus } from "react-icons/bi";
@@ -15,16 +14,20 @@ export default function Katalog() {
   const [prijave, setPrijave] = useState([]);
   const [vrste, setVrste] = useState([]);
   const [tipovi, setTipovi] = useState([]);
-  const [pretraga, setPretraga] = useState("");
-  const [vrsta, setVrsta] = useState("");
-  
+const [filteri, setFilteri] = useState(PRAZNI_FILTERI);
+  const [sortiranje, setSortiranje] = useState("najnovije");
+
   useEffect(() => {
     prijaveService.get().then((res) => setPrijave(res.data || res));
     VrsteService.get().then((res) => setVrste(res.data || res));
     TipService.get().then((res) => setTipovi(res.data || res));
   }, []);
 
-  const filtriranePrijave = filtrirajPrijave(prijave, pretraga, vrsta, vrste);
+  const prikazanePrijave = filtrirajPrijave(prijave, filteri).sort((a, b) =>
+  sortiranje === "najstarije"
+    ? new Date(a.datum) - new Date(b.datum)
+    : new Date(b.datum) - new Date(a.datum)
+);
   const getNazivVrste = (id) => vrste.find((v) => v.id === id)?.naziv ?? "";
   const getNazivTipa = (id) => tipovi.find((t) => t.id === id)?.naziv ?? "";
 
@@ -95,21 +98,21 @@ export default function Katalog() {
             <BiPlus size={20} /> Nova prijava
           </Link>
         </Card.Header>
-        <div className="px-4 pb-3">
-          <Row className="g-3">
-            <Col xs={12} md={6}>
-              <PretragaInput pretraga={pretraga} setPretraga={setPretraga} />
-            </Col>
-            <Col xs={12} md={6}>
-              <VrstaSelect vrsta={vrsta} setVrsta={setVrsta} vrste={vrste} />
-            </Col>
-          </Row>
-        </div>
+    <div className="px-4 pb-3">
+  <FilterPrijava
+    filteri={filteri}
+    setFilteri={setFilteri}
+    vrste={vrste}
+    tipovi={tipovi}
+    sortiranje={sortiranje}
+    setSortiranje={setSortiranje}
+  />
+</div>
       </Card>
       <Row className="g-4">
-        {filtriranePrijave.map((prijava) => (
+        {prikazanePrijave.map((prijava) => (
           <Col xs={12} md={4} key={prijava.id}>
-            <Card className="h-100 shadow-sm border-0 rounded-3">
+            <Card className={`h-100 shadow-sm rounded-3 ${prijava.hitno ? "border border-danger border-2" : "border-0"}`}>
               {prijava.slika && (
                 <Card.Img
                   variant="top"
@@ -150,7 +153,7 @@ export default function Katalog() {
         ))}
       </Row>
 
-      {filtriranePrijave.length === 0 && (
+      {prikazanePrijave.length === 0 && (
         <div className="text-center py-5 text-muted">
           <h5>Nema prijava koje odgovaraju zadanim kriterijima.</h5>
         </div>
