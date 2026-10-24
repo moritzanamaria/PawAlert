@@ -1,5 +1,6 @@
 import FormatDatuma from "./FormatDatuma";
 import { Link } from "react-router-dom";
+import { RouteNames, putanja } from "../../constants";
 
 function Sidebar({ prijave = [] }) {
   const najnovije = [...prijave]
@@ -21,7 +22,7 @@ function Sidebar({ prijave = [] }) {
 
       <div className="card shadow-sm border-0 p-4 text-center animirani-sidebar">
         <div style={{ fontSize: "3rem" }}>🐾</div>
-        <h5 className="fw-bold mt-2 mb-1">Aktivni sustav prijava</h5>
+        <h3 className="fw-bold mt-2 mb-1">Aktivni sustav prijava</h3>
         <p className="text-muted small mb-3">
           Pratite lokacije prijavljenih životinja u stvarnom vremenu na području Osijeka.
         </p>
@@ -47,7 +48,7 @@ function Sidebar({ prijave = [] }) {
                         {prijava.zivotinja_ime || "Prijava bez naziva"}
                       </strong>
                       <Link
-                        to={`/detalji-slucaja/${prijava.id}`}
+                        to={putanja(RouteNames.DETALJI_SLUCAJA, prijava.id)}
                         title="Pogledaj tragove"
                         className="text-decoration-none fs-3 lh-1 px-1"
                       >

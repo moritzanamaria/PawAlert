@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import TipService from "../../services/tip/TipService";
 import VrsteService from "../../services/vrste/VrsteService";
 import prijaveService from "../../services/prijave/prijaveService";
-import { RouteNames } from "../../constants";
+import { RouteNames, putanja } from "../../constants";
 import { Badge, Button, Card, Col, Container, Row, Table, ButtonGroup } from "react-bootstrap";
 import { Link, useNavigate } from "react-router-dom";
 import { BiPlus, BiPencil, BiTrash } from "react-icons/bi";
@@ -93,7 +93,7 @@ export default function TipoviPregled() {
                       <td className="ps-4 fw-semibold text-dark">{tip.naziv}</td>
                       <td className="text-center pe-4">
                         <ButtonGroup size="sm">
-                          <Button variant="outline-warning" onClick={() => { navigate(`/tip/${tip.id}`) }} title="Uredi">
+                          <Button variant="outline-warning" onClick={() => { navigate(putanja(RouteNames.TIP_PROMJENA, tip.id)) }} title="Uredi">
                             <BiPencil size={16} /> Uredi
                           </Button>
 
@@ -144,7 +144,7 @@ export default function TipoviPregled() {
                       <td className="fw-semibold text-dark">{vrsta.naziv}</td>
                       <td className="text-center pe-4">
                         <ButtonGroup size="sm">
-                          <Button variant="outline-warning" onClick={() => { navigate(`/vrste/${vrsta.id}`) }} title="Uredi">
+                          <Button variant="outline-warning" onClick={() => { navigate(putanja(RouteNames.VRSTA_PROMJENA, vrsta.id)) }} title="Uredi">
                             <BiPencil size={16} />
                           </Button>
 

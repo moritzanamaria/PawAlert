@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import TragoviService from "../../services/tragovi/TragoviService";
-import { RouteNames } from "../../constants";
+import { RouteNames, putanja } from "../../constants";
 import { Badge, Button, Card, Container, Table, ButtonGroup } from "react-bootstrap";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import FormatDatuma from "../../components/FormatDatuma";
@@ -54,7 +54,7 @@ export default function TragPregled() {
             <Link to={RouteNames.PRIJAVE_PREGLED} className="btn btn-outline-secondary d-flex align-items-center gap-1 shadow-sm px-3 py-2">
               <BiArrowBack size={18} /> Natrag na prijave
             </Link>
-            <Link to={`/prijave/${id}/tragovi/dodaj`}
+            <Link to={putanja(RouteNames.TRAG_NOVI, id)}
               className="btn btn-success d-flex align-items-center gap-1 shadow-sm px-3 py-2">
               <BiPlus size={20} /> Novi trag
             </Link>
@@ -83,7 +83,7 @@ export default function TragPregled() {
                   </td>
                   <td className="text-center pe-4">
                     <ButtonGroup size="sm">
-                      <Button variant="outline-warning" onClick={() => navigate(`/tragovi/${trag.id}`)} title="Uredi">
+                      <Button variant="outline-warning" onClick={() =>navigate(putanja(RouteNames.TRAG_PROMJENA, trag.id))} title="Uredi">
                         <BiPencil size={16} />
                       </Button>
                       <Button variant="outline-danger" onClick={() => obrisi(trag.id)} title="Obriši">

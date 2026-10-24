@@ -16,7 +16,7 @@ export default function TragNovi() {
     const navigate = useNavigate()
     const location = useLocation()
     const { id } = useParams()
-    const povratak = location.state?.povratak ?? RouteNames.TRAG_PREGLED.replace(":id", id)
+    const povratak = location.state?.povratak ?? putanja(RouteNames.TRAG_PREGLED, id)
     const [datum, setDatum] = useState(new Date())
     const [lokacija, setLokacija] = useState(null)
     async function dodaj(trag) {

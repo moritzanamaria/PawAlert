@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react"
 import { Link, useParams } from "react-router-dom"
 import { Card, Container, ListGroup, Row, Col } from "react-bootstrap"
-import { RouteNames } from "../constants"
+import { RouteNames, putanja } from "../constants"
 import prijaveService from "../services/prijave/prijaveService"
 import TragoviService from "../services/tragovi/TragoviService"
-import FormatDatuma from "../components/FormatDatuma"; 
+import FormatDatuma from "../components/FormatDatuma";
 import { BiPlus, BiMap, BiTime } from "react-icons/bi";
 
 export default function DetaljiSlucaja() {
@@ -33,10 +33,10 @@ export default function DetaljiSlucaja() {
     }
 
     return (
-       <Container className="my-5">
-  <Row className="g-4">
-    <Col xs={12} md={5} lg={6}>
-    <Card className="shadow-sm border-0 overflow-hidden">
+        <Container className="my-5">
+            <Row className="g-4">
+                <Col xs={12} md={5} lg={6}>
+                    <Card className="shadow-sm border-0 overflow-hidden">
                         <Card.Img
                             variant="top"
                             src={prijava.slika || `${import.meta.env.BASE_URL}nemaSlike.svg`}
@@ -46,12 +46,12 @@ export default function DetaljiSlucaja() {
                         <Card.Body>
                             <h2 className="fw-bold mb-2">{prijava.zivotinja_ime || "Nepoznato ime"}</h2>
                             <p className="text-secondary mb-3">{prijava.zivotinja_opis}</p>
-                            
+
                             <div className="d-flex align-items-center gap-2 text-muted small mb-2">
                                 <BiMap size={18} />
                                 <span>{prijava.lokacija?.opis || prijava.lokacija_opis || "Nepoznata lokacija"}</span>
                             </div>
-                            
+
                             <div className="d-flex align-items-center gap-2 text-muted small">
                                 <BiTime size={18} />
                                 <FormatDatuma datum={prijava.datum} prikazDatuma="Nepoznato" />
@@ -63,9 +63,9 @@ export default function DetaljiSlucaja() {
                 <Col xs={12} md={7} lg={6}>
                     <div className="d-flex justify-content-between align-items-center mb-3">
                         <h4 className="fw-bold mb-0">🐾 Tragovi i viđenja</h4>
-                        <Link 
-                            to={`/prijave/${id}/tragovi/dodaj`}
-                            state={{ povratak: `/detalji-slucaja/${id}` }}
+                        <Link
+                            to={putanja(RouteNames.TRAG_NOVI, id)}
+                            state={{ povratak: putanja(RouteNames.DETALJI_SLUCAJA, id) }}
                             className="btn btn-success btn-sm d-flex align-items-center gap-1 fw-medium text-decoration-none shadow-sm px-3 py-2"
                         >
                             <BiPlus size={18} /> Novi trag
@@ -92,7 +92,7 @@ export default function DetaljiSlucaja() {
                         </ListGroup>
                     )}
 
-  <div className="mt-4">
+                    <div className="mt-4">
                         <Link to={RouteNames.KATALOG} className="btn btn-outline-secondary">
                             ← Natrag na Katalog
                         </Link>

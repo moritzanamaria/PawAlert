@@ -7,6 +7,7 @@ import { hr } from "date-fns/locale/hr";
 import DatePicker, { registerLocale } from "react-datepicker";
 import LokacijaPicker from "../../components/LokacijaPicker";
 import { validirajLokaciju } from "../../utils/lokacija";
+import { RouteNames, putanja } from "../../constants";
 
 registerLocale("hr", hr);
 
@@ -53,7 +54,7 @@ export default function TragPromjena() {
     async function promjeni(podaci) {
         try {
             await TragoviService.promjeni(params.id, podaci)
-            navigate(`/prijave/${trag.prijava}/tragovi`)
+            navigate(putanja(RouteNames.TRAG_PREGLED, trag.prijava))
         } catch (error) {
             console.error("Greška pri promjeni:", error);
         }
@@ -136,7 +137,7 @@ export default function TragPromjena() {
                         </Row>
                         <div className="d-flex justify-content-between align-items-center pt-2">
 
-                            <Link to={`/prijave/${trag.prijava}/tragovi`} className="btn btn-outline-secondary px-4 fw-medium">Odustani</Link>
+                            <Link to={putanja(RouteNames.TRAG_PREGLED, trag.prijava)} className="btn btn-outline-secondary px-4 fw-medium">Odustani</Link>
 
                             <Button type="submit" variant="success" className="px-5 fw-bold">Spremi</Button>
                         </div>

@@ -22,14 +22,11 @@ export const RouteNames = {
   GENERIRANJE_PODATAKA: '/generiranje-podatka',
 };
 
+export const putanja = (ruta, id) => ruta.replace(":id", id)
+
 export const CENTAR_OSIJEK = [45.5550, 18.6955];
 
 export const IME_APLIKACIJE = 'PawAlert'
-
-export const BojeStatusa = {
-  otvorena: "bg-success",
-  zatvorena: "bg-secondary",
-};
 
 
 // localStorage   memorija

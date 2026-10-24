@@ -3,7 +3,7 @@ import prijaveService from "../../services/prijave/prijaveService";
 import VrsteService from "../../services/vrste/VrsteService";
 import TipService from "../../services/tip/TipService";
 import TragoviService from "../../services/tragovi/TragoviService";
-import { RouteNames } from "../../constants";
+import { RouteNames, putanja } from "../../constants";
 import { Badge, Button, Card, Container, Table, ButtonGroup, Row, Col } from "react-bootstrap";
 import FormatDatuma from "../../components/FormatDatuma";
 import PretragaInput from "../../components/PretragaInput";
@@ -183,10 +183,10 @@ export default function PrijavePregled() {
                   </td>
                   <td className="text-center pe-4">
                     <ButtonGroup size="sm">
-                      <Link to={`/prijave/${prijava.id}/tragovi`} className="btn btn-outline-primary" title="Tragovi">
+                      <Link to={putanja(RouteNames.TRAG_PREGLED, prijava.id)} className="btn btn-outline-primary" title="Tragovi">
                         <BiSearch size={16} /> Tragovi
                       </Link>
-                      <Button variant="outline-warning" onClick={() => navigate(`/prijave/${prijava.id}`)} title="Uredi">
+                      <Button variant="outline-warning" onClick={() => navigate(putanja(RouteNames.PRIJAVA_PROMJENA, prijava.id))} title="Uredi">
                         <BiPencil size={16} />
                       </Button>
                       <Button variant="outline-danger" onClick={() => obrisi(prijava.id)} title="Obriši">
