@@ -6,6 +6,7 @@ import prijaveService from "../services/prijave/prijaveService"
 import TragoviService from "../services/tragovi/TragoviService"
 import FormatDatuma from "../components/FormatDatuma";
 import { BiPlus, BiMap, BiTime } from "react-icons/bi";
+import TragoviMapa from "../components/TragoviMapa";
 
 export default function DetaljiSlucaja() {
     const { id } = useParams()
@@ -71,7 +72,9 @@ export default function DetaljiSlucaja() {
                             <BiPlus size={18} /> Novi trag
                         </Link>
                     </div>
-
+                    <div className="mb-3 shadow-sm rounded-3 overflow-hidden">
+                        <TragoviMapa prijava={prijava} tragovi={tragovi} />
+                    </div>
                     {tragovi.length === 0 ? (
                         <Card className="border-0 shadow-sm p-4 text-center text-muted bg-light">
                             <p className="mb-0">Još nema zabilježenih tragova za ovaj slučaj.</p>

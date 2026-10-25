@@ -5,7 +5,7 @@ import prijaveService from "../services/prijave/prijaveService";
 import VrsteService from "../services/vrste/VrsteService";
 import TipService from "../services/tip/TipService";
 import FilterPrijava from "../components/FilterPrijava";
-import { filtrirajPrijave, PRAZNI_FILTERI } from "../utils/filterHelpers";
+import { filtrirajPrijave, PRAZNI_FILTERI, jeZastarjela } from "../utils/filterHelpers";
 import FormatDatuma from "../components/FormatDatuma";
 import { RouteNames } from "../constants";
 import { BiPlus } from "react-icons/bi";
@@ -14,7 +14,7 @@ export default function Katalog() {
   const [prijave, setPrijave] = useState([]);
   const [vrste, setVrste] = useState([]);
   const [tipovi, setTipovi] = useState([]);
-const [filteri, setFilteri] = useState(PRAZNI_FILTERI);
+  const [filteri, setFilteri] = useState(PRAZNI_FILTERI);
   const [sortiranje, setSortiranje] = useState("najnovije");
 
   useEffect(() => {
@@ -24,10 +24,10 @@ const [filteri, setFilteri] = useState(PRAZNI_FILTERI);
   }, []);
 
   const prikazanePrijave = filtrirajPrijave(prijave, filteri).sort((a, b) =>
-  sortiranje === "najstarije"
-    ? new Date(a.datum) - new Date(b.datum)
-    : new Date(b.datum) - new Date(a.datum)
-);
+    sortiranje === "najstarije"
+      ? new Date(a.datum) - new Date(b.datum)
+      : new Date(b.datum) - new Date(a.datum)
+  );
   const getNazivVrste = (id) => vrste.find((v) => v.id === id)?.naziv ?? "";
   const getNazivTipa = (id) => tipovi.find((t) => t.id === id)?.naziv ?? "";
 
@@ -98,21 +98,22 @@ const [filteri, setFilteri] = useState(PRAZNI_FILTERI);
             <BiPlus size={20} /> Nova prijava
           </Link>
         </Card.Header>
-    <div className="px-4 pb-3">
-  <FilterPrijava
-    filteri={filteri}
-    setFilteri={setFilteri}
-    vrste={vrste}
-    tipovi={tipovi}
-    sortiranje={sortiranje}
-    setSortiranje={setSortiranje}
-  />
-</div>
+        <div className="px-4 pb-3">
+          <FilterPrijava
+            filteri={filteri}
+            setFilteri={setFilteri}
+            vrste={vrste}
+            tipovi={tipovi}
+            sortiranje={sortiranje}
+            setSortiranje={setSortiranje}
+          />
+        </div>
       </Card>
       <Row className="g-4">
         {prikazanePrijave.map((prijava) => (
           <Col xs={12} md={4} key={prijava.id}>
-            <Card className={`h-100 shadow-sm rounded-3 ${prijava.hitno ? "border border-danger border-2" : "border-0"}`}>
+            <Card className={`h-100 rounded-3 ${prijava.hitno ? "border border-danger border-3" : "border-0 shadow-sm"}`}
+            style={prijava.hitno ? {boxShadow: "0 0 0 .25rem rgba(220,53,69,.15)"} : undefined} >
               {prijava.slika && (
                 <Card.Img
                   variant="top"
@@ -138,7 +139,10 @@ const [filteri, setFilteri] = useState(PRAZNI_FILTERI);
                 <Card.Text className="small text-secondary mb-3 flex-grow-1">
                   📍 <strong>Lokacija:</strong> {prijava.lokacija?.opis || prijava.lokacija_opis || "Nepoznata lokacija"}
                   <br />
-                  🕒 <strong>Vrijeme:</strong> <FormatDatuma datum={prijava.datum} prikazDatuma="Nepoznato" />
+                  🕒 <strong>Vrijeme:</strong> {" "} <FormatDatuma datum={prijava.datum} prikazDatuma="Nepoznato" relativno />
+                  {jeZastarjela(prijava) && (
+                    <span className="text-warning-emphasis fw-medium"> zastarjelo </span>
+                  )}
                 </Card.Text>
 
                 <Link

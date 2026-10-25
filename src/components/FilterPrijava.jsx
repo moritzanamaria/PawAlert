@@ -88,7 +88,7 @@ export default function FilterPrijava({
               )}
 
               {ima("status") && (
-                <Col xs={12} md>
+                <Col xs={6} md>
                   <label htmlFor="statusSelect" className="form-label small fw-bold text-muted mb-1">Status</label>
                   <Form.Select id="statusSelect" size="sm" value={filteri.status} onChange={(e) => promijeni("status", e.target.value)}>
                     <option value="">Svi statusi</option>

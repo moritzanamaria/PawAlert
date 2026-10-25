@@ -76,13 +76,13 @@ export default function GeneriranjePodataka() {
                 tip_prijave: randomTip.id,
                 status: faker.helpers.arrayElement(['otvorena', 'zatvorena']),
                 lokacija: {
-                    lat: faker.number.float({ min: 45.5400, max: 45.5750, precision: 0.0001 }),
-                    lng: faker.number.float({ min: 18.6400, max: 18.7200, precision: 0.0001 }),
+                    lat: faker.number.float({ min: 45.5400, max: 45.5750, fractionDigits: 4 }),
+                    lng: faker.number.float({ min: 18.6400, max: 18.7200, fractionDigits: 4 }),
                     opis: `Osijek, ${ulica} ${faker.number.int({ min: 1, max: 120 })}`
                 },
                 datum: faker.date.recent({ days: 30 }).toISOString(),
                 slika: 'https://picsum.photos/400/300',
-                hitno: faker.datatype.boolean(0.3)
+                hitno: faker.datatype.boolean({probability: 0.3})
             });
         }
     };
