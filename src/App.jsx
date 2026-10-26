@@ -18,11 +18,12 @@ import Katalog from "./pages/Katalog"
 import DetaljiSlucaja from "./pages/DetaljiSlucaja"
 import GeneriranjePodataka from "./pages/GeneriranjePodataka"
 import ScrollToTop from "./components/ScrollToTop";
+import { Container } from "react-bootstrap"
 
 
 export default function App() {
   return (
-    <div className="container my-1">
+    <Container>
       <ScrollToTop />
       <Navbar />
       <Routes>
@@ -46,6 +47,6 @@ export default function App() {
       <hr />
       <div> &copy; {IME_APLIKACIJE}
       </div>
-    </div>
+    </Container>
   )
 }

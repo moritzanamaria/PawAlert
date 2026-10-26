@@ -26,7 +26,7 @@ function Sidebar({ prijave = [] }) {
         <p className="text-muted small mb-3">
           Pratite lokacije prijavljenih životinja u stvarnom vremenu na području Osijeka.
         </p>
-        <div className="badge bg-primary fs-6 p-2 mx-auto" style={{ width: "fit-content" }}>
+        <div className="badge bg-secondary fs-6 p-2 mx-auto" style={{ width: "fit-content" }}>
           Ukupno prijava: {prijave.length}
         </div>
       </div>

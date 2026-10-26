@@ -39,7 +39,7 @@ function Home() {
 
   return (
     <Container className="py-1">
-      <div className="bg-white shadow-sm rounded-4 border-start border-success border-5 p-4 mb-4">
+      <div className="bg-white shadow-sm rounded-3 border-start border-secondary border-5 p-3 mb-2">
         <Row className="align-items-center g-3">
           <Col xs={12} md>
             <h1 className="h3 fw-bold text-dark mb-1">
