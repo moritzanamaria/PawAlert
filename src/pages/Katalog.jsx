@@ -9,11 +9,13 @@ import { filtrirajPrijave, PRAZNI_FILTERI, jeZastarjela } from "../utils/filterH
 import FormatDatuma from "../components/FormatDatuma";
 import { RouteNames } from "../constants";
 import { BiPlus } from "react-icons/bi";
+import OznakeService from "../services/oznake/OznakeService";
 
 export default function Katalog() {
   const [prijave, setPrijave] = useState([]);
   const [vrste, setVrste] = useState([]);
   const [tipovi, setTipovi] = useState([]);
+  const [oznake, setOznake] = useState([]);
   const [filteri, setFilteri] = useState(PRAZNI_FILTERI);
   const [sortiranje, setSortiranje] = useState("najnovije");
 
@@ -21,6 +23,7 @@ export default function Katalog() {
     prijaveService.get().then((res) => setPrijave(res.data || res));
     VrsteService.get().then((res) => setVrste(res.data || res));
     TipService.get().then((res) => setTipovi(res.data || res));
+    OznakeService.get().then((res) => setOznake(res.data || res));
   }, []);
 
   const prikazanePrijave = filtrirajPrijave(prijave, filteri).sort((a, b) =>
@@ -104,6 +107,7 @@ export default function Katalog() {
             setFilteri={setFilteri}
             vrste={vrste}
             tipovi={tipovi}
+            oznake={oznake}
             sortiranje={sortiranje}
             setSortiranje={setSortiranje}
           />

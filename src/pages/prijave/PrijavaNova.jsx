@@ -10,6 +10,7 @@ import { hr } from "date-fns/locale";
 import { useEffect, useState } from "react";
 import LokacijaPicker from "../../components/LokacijaPicker";
 import { validirajLokaciju } from "../../utils/lokacija";
+import OznakeService from "../../services/oznake/OznakeService";
 
 registerLocale("hr", hr);
 
@@ -20,27 +21,40 @@ export default function PrijavaNova() {
     const [datum, setDatum] = useState(new Date());
     const [vrste, setVrste] = useState([]);
     const [tipovi, setTipovi] = useState([]);
+    const [oznake, setOznake] = useState([]);
+    const [odabraneOznake, setOdabraneOznake] = useState([]);
     const [lokacija, setLokacija] = useState(null);
 
     useEffect(() => {
         async function dohvatiPodatke() {
             try {
-                const [resVrste, resTipovi] = await Promise.all([
+                const [resVrste, resTipovi, resOznake] = await Promise.all([
                     VrsteService.get(),
-                    TipService.get()
+                    TipService.get(),
+                    OznakeService.get()
                 ]);
 
                 const vData = Array.isArray(resVrste) ? resVrste : (resVrste?.data ?? []);
                 const tData = Array.isArray(resTipovi) ? resTipovi : (resTipovi?.data ?? []);
+                const oData = Array.isArray(resOznake) ? resOznake : (resOznake?.data ?? []);
 
                 setVrste(Array.isArray(vData) ? vData : []);
                 setTipovi(Array.isArray(tData) ? tData : []);
+                setOznake(Array.isArray(oData) ? oData : []);
             } catch (error) {
                 console.error("Greška pri dohvatu podataka:", error);
             }
         }
         dohvatiPodatke();
     }, []);
+
+    const handleOznakaChange = (id) => {
+        if (odabraneOznake.includes(id)) {
+            setOdabraneOznake(odabraneOznake.filter((item) => item !== id));
+        } else {
+            setOdabraneOznake([...odabraneOznake, id]);
+        }
+    };
 
     async function dodaj(prijava) {
         await prijaveService.dodaj(prijava).then(() => {
@@ -114,7 +128,8 @@ export default function PrijavaNova() {
             lokacija: { ...lokacija, opis: lokacija.opis.trim() },
             datum: datum.toISOString(),
             slika: slika,
-            hitno: podaci.get('hitno') === 'on'
+            hitno: podaci.get('hitno') === 'on',
+            oznake: odabraneOznake
         })
     }
 
@@ -175,7 +190,31 @@ export default function PrijavaNova() {
                             <Form.Label className="fw-medium">Opis</Form.Label>
                             <Form.Control as="textarea" rows={3} name="zivotinja_opis" placeholder="Boja krzna, posebne oznake, ponašanje, ozljede..." />
                         </Form.Group>
-
+                        <h5 className="text-secondary fw-bold mb-3 border-bottom pb-2 pt-2">
+                            Oznake (Tagovi)
+                        </h5>
+                        <div className="mb-4 p-3 bg-light rounded-3 border">
+                            <div className="d-flex flex-wrap gap-3">
+                                {oznake && oznake.length > 0 ? (
+                                    oznake.map((oznaka) => (
+                                        <Form.Check
+                                            key={oznaka.id}
+                                            type="checkbox"
+                                            id={`oznaka-${oznaka.id}`}
+                                            label={
+                                                <span style={{ color: oznaka.boja || "inherit", fontWeight: "600" }}>
+                                                    {oznaka.naziv}
+                                                </span>
+                                            }
+                                            checked={odabraneOznake.includes(oznaka.id)}
+                                            onChange={() => handleOznakaChange(oznaka.id)}
+                                        />
+                                    ))
+                                ) : (
+                                    <span className="text-muted small">Nema definiranih oznaka.</span>
+                                )}
+                            </div>
+                        </div>
                         <h5 className="text-secondary fw-bold mb-3 border-bottom pb-2 pt-2">
                             2. Detalji prijave i lokacija
                         </h5>

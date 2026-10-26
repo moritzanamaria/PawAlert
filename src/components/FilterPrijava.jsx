@@ -5,13 +5,14 @@ import PretragaInput from "./PretragaInput";
 import VrstaSelect from "./VrstaSelect";
 import { PRAZNI_FILTERI } from "../utils/filterHelpers";
 
-const SVA_POLJA = ["pretraga", "vrsta", "tip", "status", "hitno"];
+const SVA_POLJA = ["pretraga", "vrsta", "tip", "status", "hitno", "oznake"];
 
 export default function FilterPrijava({
   filteri,
   setFilteri,
   vrste = [],
   tipovi = [],
+  oznake = [],
   polja = SVA_POLJA,
   sortiranje,
   setSortiranje,
@@ -21,13 +22,14 @@ export default function FilterPrijava({
   const promijeni = (kljuc, vrijednost) => setFilteri({ ...filteri, [kljuc]: vrijednost });
   const ima = (polje) => polja.includes(polje);
 
-  const imaOpcije = ima("vrsta") || ima("tip") || ima("status") || ima("hitno") || Boolean(setSortiranje);
+  const imaOpcije = ima("vrsta") || ima("tip") || ima("oznake") || ima("status") || ima("hitno") || Boolean(setSortiranje);
 
   const brojAktivnih = [
     ima("vrsta") && filteri.vrsta,
     ima("tip") && filteri.tip,
     ima("status") && filteri.status,
     ima("hitno") && filteri.samoHitne,
+    ima("oznake") && filteri.oznake
   ].filter(Boolean).length;
 
   return (
@@ -66,7 +68,7 @@ export default function FilterPrijava({
           <div id="filter-opcije">
             <Row className="g-3 mt-1 align-items-end">
               {ima("vrsta") && (
-                <Col xs={12} md>
+                <Col xs={6} md>
                   <VrstaSelect
                     vrsta={filteri.vrsta}
                     setVrsta={(v) => promijeni("vrsta", v)}
@@ -76,12 +78,24 @@ export default function FilterPrijava({
               )}
 
               {ima("tip") && (
-                <Col xs={12} md>
+                <Col xs={6} md>
                   <label htmlFor="tipSelect" className="form-label small fw-bold text-muted mb-1">Tip</label>
                   <Form.Select id="tipSelect" size="sm" value={filteri.tip} onChange={(e) => promijeni("tip", e.target.value)}>
                     <option value="">Svi tipovi</option>
                     {tipovi.map((t) => (
                       <option key={t.id} value={t.id}>{t.naziv}</option>
+                    ))}
+                  </Form.Select>
+                </Col>
+              )}
+
+              {ima("oznake") && (
+                <Col xs={6} md>
+                  <label htmlFor="oznakaSelect" className="form-label small fw-bold text-muted mb-1">Oznaka</label>
+                  <Form.Select id="oznakaSelect" size="sm" value={filteri.oznake || ""} onChange={(e) => promijeni("oznake", e.target.value)}>
+                    <option value="">Sve oznake</option>
+                    {oznake.map((o) => (
+                      <option key={o.id} value={o.id}>{o.naziv}</option>
                     ))}
                   </Form.Select>
                 </Col>
@@ -99,7 +113,7 @@ export default function FilterPrijava({
               )}
 
               {setSortiranje && (
-                <Col xs={12} md>
+                <Col xs={6} md>
                   <label htmlFor="sortSelect" className="form-label small fw-bold text-muted mb-1">Sortiranje</label>
                   <Form.Select id="sortSelect" size="sm" value={sortiranje} onChange={(e) => setSortiranje(e.target.value)}>
                     <option value="najnovije">Najnovije prvo</option>
@@ -109,7 +123,7 @@ export default function FilterPrijava({
               )}
 
               {ima("hitno") && (
-                <Col xs={12} md="auto">
+                <Col xs={6} md="auto">
                   <Form.Check
                     type="checkbox"
                     id="samoHitne"

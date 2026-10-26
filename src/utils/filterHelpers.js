@@ -5,12 +5,13 @@ export const PRAZNI_FILTERI = {
   pretraga: "",
   vrsta: "",
   tip: "",
+  oznake: "",
   status: "",
   samoHitne: false,
 }
 
 export function filtrirajPrijave(prijave = [], filteri = PRAZNI_FILTERI) {
-  const { pretraga = "", vrsta = "", tip = "", status = "", samoHitne = false } = filteri
+  const { pretraga = "", vrsta = "", tip = "", oznake = "", status = "", samoHitne = false } = filteri
   const pojam = pretraga.toLowerCase()
 
   return prijave.filter((p) => {
@@ -21,8 +22,11 @@ export function filtrirajPrijave(prijave = [], filteri = PRAZNI_FILTERI) {
     const zadovoljavaTip = !tip || String(p.tip_prijave) === String(tip)
     const zadovoljavaStatus = !status || p.status === status
     const zadovoljavaHitno = !samoHitne || Boolean(p.hitno);
-
-    return zadovoljavaPretragu && zadovoljavaVrstu && zadovoljavaTip && zadovoljavaStatus && zadovoljavaHitno;
+    const zadovoljavaOznaku = !oznake || (p.oznake && p.oznake.some(o => {
+      const idOznake = typeof o === "object" ? o.id : o;
+      return String(idOznake) === String(oznake);
+    }));
+    return zadovoljavaPretragu && zadovoljavaVrstu && zadovoljavaTip && zadovoljavaStatus && zadovoljavaHitno && zadovoljavaOznaku;
   });
 }
 

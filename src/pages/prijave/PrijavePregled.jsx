@@ -10,6 +10,7 @@ import FilterPrijava from "../../components/FilterPrijava";
 import { filtrirajPrijave, PRAZNI_FILTERI } from "../../utils/filterHelpers";
 import { Link, useNavigate } from "react-router-dom";
 import { BiPlus, BiPencil, BiTrash, BiSearch } from "react-icons/bi";
+import OznakeService from "../../services/oznake/OznakeService";
 
 const toArray = (res) => {
   const data = Array.isArray(res) ? res : (res?.data ?? []);
@@ -20,20 +21,23 @@ export default function PrijavePregled() {
   const [prijave, setPrijave] = useState([])
   const [vrste, setVrste] = useState([]);
   const [tipovi, setTipovi] = useState([]);
+  const [oznake, setOznake] = useState([]);
   const [filteri, setFilteri] = useState(PRAZNI_FILTERI);
   const navigate = useNavigate()
 
   useEffect(() => {
     async function dohvatiPodatke() {
       try {
-        const [resPrijave, resVrste, resTipovi] = await Promise.all([
+        const [resPrijave, resVrste, resTipovi, resOznake] = await Promise.all([
           prijaveService.get(),
           VrsteService.get(),
-          TipService.get()
+          TipService.get(),
+          OznakeService.get()
         ]);
         setPrijave(toArray(resPrijave));
         setVrste(toArray(resVrste));
         setTipovi(toArray(resTipovi));
+        setOznake(toArray(resOznake));
       } catch (error) {
         console.error("Greška pri dohvatu podataka:", error);
       }
@@ -135,7 +139,7 @@ export default function PrijavePregled() {
           </Link>
         </Card.Header>
         <div className="px-4 py-3 order-top">
-        <FilterPrijava filteri={filteri} setFilteri={setFilteri} vrste={vrste} tipovi={tipovi} />
+        <FilterPrijava filteri={filteri} setFilteri={setFilteri} vrste={vrste} tipovi={tipovi} oznake={oznake} />
 </div>
         <Card.Body className="p-0">
           <Table responsive hover className="align-middle mb-0 border-top">

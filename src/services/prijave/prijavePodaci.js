@@ -9,6 +9,8 @@ export const prijave = [
     cipirana: true,
     tip_prijave: 2,
     status: "otvorena",
+    hitno: false,
+    oznake: [2, 3],
     lokacija: {
       lat: 45.5550,
       lng: 18.6955,
@@ -27,6 +29,8 @@ export const prijave = [
     cipirana: false,
     tip_prijave: 1,
     status: "otvorena",
+    hitno: true,
+    oznake: [1, 4],
     lokacija: {
       lat: 45.5610,
       lng: 18.6800,
@@ -46,6 +50,7 @@ export const prijave = [
     tip_prijave: 2,
     status: "zatvorena",
     hitno: false,
+    oznake: [2, 3],
     lokacija: {
       lat: 45.5480,
       lng: 18.7100,
@@ -65,6 +70,7 @@ export const prijave = [
     tip_prijave: 1,
     status: "otvorena",
     hitno: true,
+    oznake: [2, 4],
     lokacija: {
       lat: 45.5390,
       lng: 18.6450,
@@ -84,6 +90,7 @@ export const prijave = [
     tip_prijave: 1,
     status: "zatvorena",
     hitno: false,
+    oznake: [1, 3],
     lokacija: {
       lat: 45.5620,
       lng: 18.7050,
@@ -93,4 +100,5 @@ export const prijave = [
     slika: "https://images.unsplash.com/photo-1533738363-b7f9aef128ce?w=500"
   },
 ];
+
 

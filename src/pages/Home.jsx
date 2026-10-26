@@ -9,25 +9,29 @@ import { filtrirajPrijave, PRAZNI_FILTERI } from "../utils/filterHelpers";
 import { Col, Container, Row } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import { RouteNames } from "../constants";
+import OznakeService from "../services/oznake/OznakeService";
 
 function Home() {
   const [prijave, setPrijave] = useState([]);
   const [vrste, setVrste] = useState([]);
   const [filteri, setFilteri] = useState(PRAZNI_FILTERI);
   const [tipovi, setTipovi] = useState([]);
+  const [oznake, setOznake] = useState([]);
 
   useEffect(() => {
 
     async function dohvatiPodatke() {
       try {
-        const [rezPrijave, rezVrste, rezTipovi] = await Promise.all([
+        const [rezPrijave, rezVrste, rezTipovi, rezOznake] = await Promise.all([
           prijaveService.get(),
           VrsteService.get(),
           TipService.get(),
+          OznakeService.get(),
         ]);
         setPrijave(rezPrijave.data || rezPrijave);
         setVrste(rezVrste.data || rezVrste);
-        setTipovi(rezTipovi.data || rezTipovi)
+        setTipovi(rezTipovi.data || rezTipovi);
+        setOznake(rezOznake.data || rezOznake);
       } catch (error) {
         console.error("Greška pri dohvaćanju podataka:", error);
       }
@@ -69,6 +73,7 @@ function Home() {
           setFilteri={setFilteri}
           vrste={vrste}
           tipovi={tipovi}
+          oznake={oznake}
         />
       </div>
 

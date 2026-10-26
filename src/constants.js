@@ -5,7 +5,7 @@ export const RouteNames = {
   PRIJAVA_PROMJENA: "/prijave/:id",
 
   TIPOVI_I_VRSTE_PREGLED: "/tip-i-vrste-pregled",
-  
+
   TIP_NOVI: "/tip/dodaj",
   TIP_PROMJENA: "/tip/:id",
 
@@ -18,6 +18,10 @@ export const RouteNames = {
 
   KATALOG: "/katalog",
   DETALJI_SLUCAJA: '/detalji-slucaja/:id',
+
+  OZNAKE_PREGLED: "/oznake",
+  OZNAKA_NOVA: "/oznake/nova",
+  OZNAKA_PROMJENA: "/oznake/promjena/:id",
 
   GENERIRANJE_PODATAKA: '/generiranje-podatka',
 };

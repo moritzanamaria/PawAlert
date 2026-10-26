@@ -10,6 +10,7 @@ import "react-datepicker/dist/react-datepicker.css";
 import { hr } from "date-fns/locale";
 import LokacijaPicker from "../../components/LokacijaPicker";
 import { validirajLokaciju } from "../../utils/lokacija";
+import OznakeService from "../../services/oznake/OznakeService";
 
 registerLocale("hr", hr);
 
@@ -24,20 +25,24 @@ export default function PrijavaPromjena() {
     const handleDateChange = (date) => {
         setPrijava({ ...prijava, datum: date });
     };
+    const [oznake, setOznake] = useState([]);
+    const [odabraneOznake, setOdabraneOznake] = useState([]);
     const [lokacija, setLokacija] = useState(null);
 
     useEffect(() => {
         async function ucitajPodatke() {
             try {
-                const [resPrijava, resVrste, resTipovi] = await Promise.all([
+                const [resPrijava, resVrste, resTipovi, resOznake] = await Promise.all([
                     prijaveService.getById(params.id),
                     VrsteService.get(),
-                    TipService.get()
+                    TipService.get(),
+                    OznakeService.get()
                 ]);
                 const pData = resPrijava?.data ?? resPrijava;
                 const vData = Array.isArray(resVrste) ? resVrste : (resVrste?.data ?? []);
                 const tData = Array.isArray(resTipovi) ? resTipovi : (resTipovi?.data ?? []);
-                
+                const oData = Array.isArray(resOznake) ? resOznake : (resOznake?.data ?? []);
+
                 setPrijava(pData || {});
                 setCipirana(Boolean(pData?.cipirana));
                 setHitno(Boolean(pData?.hitno));
@@ -46,6 +51,7 @@ export default function PrijavaPromjena() {
                 }
                 setVrste(Array.isArray(vData) ? vData : []);
                 setTipovi(Array.isArray(tData) ? tData : []);
+                setOznake(Array.isArray(oData) ? oData: []);
             } catch (error) {
                 console.error("Greška pri dohvatu podataka prijave:", error);
             }
@@ -53,6 +59,14 @@ export default function PrijavaPromjena() {
 
         ucitajPodatke();
     }, [params.id]);
+
+     const handleOznakaChange = (id) => {
+        if (odabraneOznake.includes(id)) {
+            setOdabraneOznake(odabraneOznake.filter((item) => item !== id));
+        } else {
+            setOdabraneOznake([...odabraneOznake, id]);
+        }
+    };
 
     async function promjeni(podaciPrijave) {
         await prijaveService.promjeni(params.id, podaciPrijave).then(() => {
@@ -128,7 +142,8 @@ export default function PrijavaPromjena() {
             lokacija: { ...lokacija, opis: lokacija.opis.trim() },
             datum: odabraniDatum.toISOString(),
             slika: slika,
-            hitno: podaci.get('hitno') === 'on'
+            hitno: podaci.get('hitno') === 'on',
+            oznake: odabraneOznake
         })
     }
 
@@ -213,7 +228,31 @@ export default function PrijavaPromjena() {
                                 defaultValue={prijava.zivotinja_opis}
                             />
                         </Form.Group>
-
+                        <h5 className="text-secondary fw-bold mb-3 border-bottom pb-2 pt-2">
+                            Oznake (Tagovi)
+                        </h5>
+                        <div className="mb-4 p-3 bg-light rounded-3 border">
+                            <div className="d-flex flex-wrap gap-3">
+                                {oznake && oznake.length > 0 ? (
+                                    oznake.map((oznaka) => (
+                                        <Form.Check
+                                            key={oznaka.id}
+                                            type="checkbox"
+                                            id={`oznaka-${oznaka.id}`}
+                                            label={
+                                                <span style={{ color: oznaka.boja || "inherit", fontWeight: "600" }}>
+                                                    {oznaka.naziv}
+                                                </span>
+                                            }
+                                            checked={odabraneOznake.includes(oznaka.id)}
+                                            onChange={() => handleOznakaChange(oznaka.id)}
+                                        />
+                                    ))
+                                ) : (
+                                    <span className="text-muted small">Nema definiranih oznaka.</span>
+                                )}
+                            </div>
+                        </div>
                         <h5 className="text-secondary fw-bold mb-3 border-bottom pb-2 pt-2">
                             2. Detalji prijave i lokacija
                         </h5>
