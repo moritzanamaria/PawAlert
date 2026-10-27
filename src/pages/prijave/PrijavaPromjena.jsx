@@ -44,6 +44,7 @@ export default function PrijavaPromjena() {
                 const oData = Array.isArray(resOznake) ? resOznake : (resOznake?.data ?? []);
 
                 setPrijava(pData || {});
+                  setOdabraneOznake(Array.isArray(pData?.oznake) ? pData.oznake : []);
                 setCipirana(Boolean(pData?.cipirana));
                 setHitno(Boolean(pData?.hitno));
                 if (pData?.lokacija) {

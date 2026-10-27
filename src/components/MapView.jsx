@@ -8,7 +8,6 @@ import VrsteService from "../services/vrste/VrsteService";
 import TipService from "../services/tip/TipService";
 import OznakeService from "../services/oznake/OznakeService";
 import "../App.css"
-import { Badge } from "react-bootstrap";
 
 podesiLeafletIkone();
 
@@ -40,7 +39,7 @@ function MapView({ prijave = [], vrste: propVrste, tipovi: propTipovi, oznake: p
 
   const vrste = propVrste && propVrste.length > 0 ? propVrste : fetchedVrste;
   const tipovi = propTipovi && propTipovi.length > 0 ? propTipovi : fetchedTipovi;
-  const oznake = propOznake && propOznake.lenght > 0 ? propOznake : fetchedOznake;
+  const oznake = propOznake && propOznake.length > 0 ? propOznake : fetchedOznake;
 
   const getNazivVrste = (idOrName) => {
     const vrsta = vrste.find((v) => v.id === Number(idOrName));
@@ -50,12 +49,6 @@ function MapView({ prijave = [], vrste: propVrste, tipovi: propTipovi, oznake: p
   const getNazivTipa = (idOrName) => {
     const tip = tipovi.find((t) => t.id === Number(idOrName));
     return tip ? tip.naziv : idOrName;
-  };
-
-
-  const getNazivOznake = (idOrName) => {
-    const oznaka = oznake.find((o) => o.id === Number(idOrName));
-    return oznaka ? oznaka.naziv : idOrName;
   };
 
   return (
@@ -70,21 +63,47 @@ function MapView({ prijave = [], vrste: propVrste, tipovi: propTipovi, oznake: p
           if (!pozicija) return null;
           const vrstaVal = p.zivotinja_vrsta ?? p.vrsta_id ?? p.vrsta;
           const tipVal = p.tip_prijave ?? p.tip_id ?? p.tip;
-          const oznakaVal = p.oznake ?? p.oznake_id ?? p.oznake;
           const nazivVrste = getNazivVrste(vrstaVal);
           const nazivTipa = getNazivTipa(tipVal);
-          const nazivOznake = getNazivOznake(oznakaVal);
+
           return (
             <Marker key={p.id} position={pozicija} icon={dohvatiIkonu(tipVal)}>
               <Popup>
                 <div>
                   <strong>{p.zivotinja_ime || "Prijava"}</strong>
-                  <span>{nazivOznake}</span>
                   <br />
                   <span>Vrsta: {nazivVrste}</span>
                   <br />
                   <span>Tip: {nazivTipa}</span>
-                  <br />
+                  
+                  {p.oznake && p.oznake.length > 0 && (
+  <>
+    <br />
+    <div className="d-flex flex-wrap gap-1 mt-1">
+      {p.oznake.map((rawOznaka, idx) => {
+        
+        const o = typeof rawOznaka === "object" 
+          ? rawOznaka 
+          : oznake.find((item) => Number(item.id) === Number(rawOznaka));
+          
+        if (!o) return null;
+        return (
+          <span
+            key={o.id || idx}
+            className="badge"
+            style={{
+              backgroundColor: o.boja || "#6c757d",
+              color: "#fff",
+              fontSize: "0.75rem",
+            }}
+          >
+            {o.naziv}
+          </span>
+        );
+      })}
+    </div>
+  </>
+)}
                   <span>Lokacija: {p.lokacija?.opis || p.lokacija_opis || "-"}</span>
                   <br />
                   {p.datum && <small className="text-muted"><FormatDatuma datum={p.datum} /></small>}

@@ -2,7 +2,7 @@ import FormatDatuma from "./FormatDatuma";
 import { Link } from "react-router-dom";
 import { RouteNames, putanja } from "../constants";
 
-function Sidebar({ prijave = [] }) {
+function Sidebar({ prijave = [], oznake = [] }) {
   const najnovije = [...prijave]
     .sort((a, b) => new Date(b.datum || 0) - new Date(a.datum || 0))
     .slice(0, 3);
@@ -59,6 +59,29 @@ function Sidebar({ prijave = [] }) {
                       📍 {prijava.lokacija?.opis || prijava.lokacija_opis || "Nepoznata lokacija"}
                     </div>
                   </div>
+                  {prijava.oznake && prijava.oznake.length > 0 && (
+                      <div className="d-flex flex-wrap gap-1 mt-2">
+                        {prijava.oznake.map((idOznake) => {
+                          const o = oznake.find((item) => item.id === Number(idOznake));
+                          if (!o) return null;
+                          return (
+                            <span
+                              key={o.id}
+                              className="badge"
+                              style={{
+                                backgroundColor: o.boja || "#6c757d",
+                                color: "#fff",
+                                fontSize: "0.75rem",
+                              }}
+                            >
+                              {o.naziv}
+                            </span>
+                          );
+                        })}
+                      </div>
+                    )}
+                  </div>
+                  
                   {prijava.datum && (
                     <span className="badge bg-light text-dark border small">
                       <span className="datum">
@@ -68,7 +91,8 @@ function Sidebar({ prijave = [] }) {
                   )}
 
                 </div>
-              </div>
+              
+              
             ))
           ) : (
             <p className="text-muted small my-2">Nema dostupnih prijava.</p>

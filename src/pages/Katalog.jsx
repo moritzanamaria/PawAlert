@@ -130,14 +130,13 @@ export default function Katalog() {
                 <div className="d-flex justify-content-between align-items-start mb-2 justify-content-center col-12 col-md-auto">
                   <Card.Title className="mb-0 fw-bold fs-4">
                     {prijava.zivotinja_ime}
+                    <br />
+                    {getNazivVrste(prijava.zivotinja_vrsta)}
                   </Card.Title>
-                  <Badge bg={/nestan|izgublj/i.test(getNazivTipa(prijava.tip_prijave)) ? "danger" : "info"} className="fs-6 text-wrap text-start mw-100" style={{ whiteSpace: "normal", lineHeight: 1.3 }}>
-                    {getNazivTipa(prijava.tip_prijave)}
-                  </Badge>
                 </div>
 
                 <Card.Subtitle className="mb-3 text-muted">
-                  {getNazivVrste(prijava.zivotinja_vrsta)}
+                      {getNazivTipa(prijava.tip_prijave)}
                 </Card.Subtitle>
 
                 <Card.Text className="small text-secondary mb-3 flex-grow-1">
@@ -147,6 +146,27 @@ export default function Katalog() {
                   {jeZastarjela(prijava) && (
                     <span className="text-warning-emphasis fw-medium"> zastarjelo </span>
                   )}
+                  {prijava.oznake && prijava.oznake.length > 0 && (
+                  <div className="d-flex flex-wrap gap-1 mb-3">
+                    {prijava.oznake.map((idOznake, idx) => {
+                      const o = oznake.find((item) => Number(item.id) === Number(idOznake));
+                      if (!o) return null;
+                      return (
+                        <span
+                          key={o.id || idx}
+                          className="badge"
+                          style={{
+                            backgroundColor: o.boja || "#6c757d",
+                            color: "#fff",
+                            fontSize: "0.75rem",
+                          }}
+                        >
+                          {o.naziv}
+                        </span>
+                      );
+                    })}
+                  </div>
+                )}
                 </Card.Text>
 
                 <Link

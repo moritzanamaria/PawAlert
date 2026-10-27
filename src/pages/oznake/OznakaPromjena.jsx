@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { Link, useNavigate, useParams, useLocation } from "react-router-dom";
 import { Button, Card, Col, Container, Form, Row } from "react-bootstrap";
 import OznakeService from "../../services/oznake/OznakeService";
-import { RouteNames, putanja } from "../../constants";
+import { RouteNames } from "../../constants";
 
 export default function OznakaPromjena() {
     const navigate = useNavigate();

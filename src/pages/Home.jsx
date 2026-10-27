@@ -79,12 +79,14 @@ function Home() {
 
       <Row className="g-4 align-items-stretch">
         <Col xs={12} md={5} lg={4}>
-          <Sidebar prijave={filtriranePrijave} />
+          <Sidebar prijave={filtriranePrijave}
+              oznake={oznake} />
         </Col>
 
         <Col xs={12} md={7} lg={8}>
           <div className="card shadow-sm border-0 rounded-4 overflow-hidden h-100">
-            <MapView prijave={filtriranePrijave} />
+            <MapView prijave={filtriranePrijave}
+              oznake={oznake}/>
           </div>
         </Col>
       </Row>

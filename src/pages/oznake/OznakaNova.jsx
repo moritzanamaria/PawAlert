@@ -2,7 +2,7 @@ import { Link, useNavigate, useLocation } from "react-router-dom";
 import { Button, Card, Col, Container, Form, Row } from "react-bootstrap";
 import OznakeService from "../../services/oznake/OznakeService";
 import { useState } from "react";
-import { RouteNames, putanja } from "../../constants";
+import { RouteNames } from "../../constants";
 
 export default function OznakaNova() {
     const navigate = useNavigate();
@@ -67,7 +67,7 @@ export default function OznakaNova() {
                                     type="text"
                                     value={naziv}
                                     onChange={(e) => setNaziv(e.target.value)}
-                                    placeholder="npr. Hitno, Ozlijeđen, Čipiran..."
+                                    placeholder="npr.  Preplašen, Crna, Ima ogrlicu..."
                                     required
                                 />
                             </Form.Group>
