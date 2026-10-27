@@ -117,7 +117,7 @@ export default function Katalog() {
         {prikazanePrijave.map((prijava) => (
           <Col xs={12} md={4} key={prijava.id}>
             <Card className={`h-100 rounded-3 ${prijava.hitno ? "border border-danger border-3" : "border-0 shadow-sm"}`}
-            style={prijava.hitno ? {boxShadow: "0 0 0 .25rem rgba(220,53,69,.15)"} : undefined} >
+              style={prijava.hitno ? { boxShadow: "0 0 0 .25rem rgba(220,53,69,.15)" } : undefined} >
               {prijava.slika && (
                 <Card.Img
                   variant="top"
@@ -130,44 +130,46 @@ export default function Katalog() {
                 <div className="d-flex justify-content-between align-items-start mb-2 justify-content-center col-12 col-md-auto">
                   <Card.Title className="mb-0 fw-bold fs-4">
                     {prijava.zivotinja_ime}
-                    <br />
-                    {getNazivVrste(prijava.zivotinja_vrsta)}
                   </Card.Title>
                 </div>
 
                 <Card.Subtitle className="mb-3 text-muted">
-                      {getNazivTipa(prijava.tip_prijave)}
+                  {getNazivTipa(prijava.tip_prijave)}
                 </Card.Subtitle>
 
                 <Card.Text className="small text-secondary mb-3 flex-grow-1">
+                  <strong className="text-success">                    {getNazivVrste(prijava.zivotinja_vrsta)}
+                  </strong>
+                  <br />
                   📍 <strong>Lokacija:</strong> {prijava.lokacija?.opis || prijava.lokacija_opis || "Nepoznata lokacija"}
                   <br />
                   🕒 <strong>Vrijeme:</strong> {" "} <FormatDatuma datum={prijava.datum} prikazDatuma="Nepoznato" relativno />
                   {jeZastarjela(prijava) && (
                     <span className="text-warning-emphasis fw-medium"> zastarjelo </span>
                   )}
-                  {prijava.oznake && prijava.oznake.length > 0 && (
-                  <div className="d-flex flex-wrap gap-1 mb-3">
-                    {prijava.oznake.map((idOznake, idx) => {
-                      const o = oznake.find((item) => Number(item.id) === Number(idOznake));
-                      if (!o) return null;
-                      return (
-                        <span
-                          key={o.id || idx}
-                          className="badge"
-                          style={{
-                            backgroundColor: o.boja || "#6c757d",
-                            color: "#fff",
-                            fontSize: "0.75rem",
-                          }}
-                        >
-                          {o.naziv}
-                        </span>
-                      );
-                    })}
-                  </div>
-                )}
                 </Card.Text>
+                
+                 {prijava.oznake && prijava.oznake.length > 0 && (
+                    <div className="d-flex flex-wrap gap-1 mb-3 p-2">
+                      {prijava.oznake.map((idOznake, idx) => {
+                        const o = oznake.find((item) => Number(item.id) === Number(idOznake));
+                        if (!o) return null;
+                        return (
+                          <span
+                            key={o.id || idx}
+                            className="badge"
+                            style={{
+                              backgroundColor: o.boja || "#6c757d",
+                              color: "#fff",
+                              fontSize: "0.75rem",
+                            }}
+                          >
+                            {o.naziv}
+                          </span>
+                        );
+                      })}
+                    </div>
+                  )}
 
                 <Link
                   to={RouteNames.DETALJI_SLUCAJA.replace(':id', prijava.id)}

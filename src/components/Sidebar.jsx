@@ -33,8 +33,7 @@ function Sidebar({ prijave = [], oznake = [] }) {
 
       <div className="card shadow-sm border-0 p-3 flex-grow-1">
         <div className="d-flex justify-content-between align-items-center mb-3">
-          <h6 className="fw-bold mb-0">Najnovije dojave</h6>
-          <span className="badge bg-danger rounded-pill">Uživo</span>
+          <h4 className="fw-bold mb-0">Najnovije dojave</h4>
         </div>
 
         <div className="list-group list-group-flush">
@@ -60,7 +59,7 @@ function Sidebar({ prijave = [], oznake = [] }) {
                     </div>
                   </div>
                   {prijava.oznake && prijava.oznake.length > 0 && (
-                      <div className="d-flex flex-wrap gap-1 mt-2">
+                      <div className="d-flex flex-column align-items-end gap-2">
                         {prijava.oznake.map((idOznake) => {
                           const o = oznake.find((item) => item.id === Number(idOznake));
                           if (!o) return null;

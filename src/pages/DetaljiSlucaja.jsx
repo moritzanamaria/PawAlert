@@ -7,23 +7,77 @@ import TragoviService from "../services/tragovi/TragoviService"
 import FormatDatuma from "../components/FormatDatuma";
 import { BiPlus, BiMap, BiTime } from "react-icons/bi";
 import TragoviMapa from "../components/TragoviMapa";
+import OznakeService from "../services/oznake/OznakeService"
 
 export default function DetaljiSlucaja() {
     const { id } = useParams()
     const [prijava, setPrijava] = useState(null)
     const [tragovi, setTragovi] = useState([])
+    const [oznake, setOznake] = useState([])
 
     useEffect(() => {
         async function ucitaj() {
-            const odgovor = await prijaveService.getById(id)
-            setPrijava(odgovor.data ?? null)
-            const t = await TragoviService.getByPrijava(id)
-            setTragovi(t.data)
+          try {
+                const [odgovor, t, resOznake] = await Promise.all([
+                    prijaveService.getById(id),
+                    TragoviService.getByPrijava(id),
+                    OznakeService.get()
+                ])
+                setPrijava(odgovor.data ?? null)
+                setTragovi(t.data ?? [])
+                setOznake(resOznake.data ?? [])
+            } catch (error) {
+                console.error("Greška pri dohvatu podataka:", error)
+            }
         }
         ucitaj()
     }, [id])
 
+    const renderOznaka = () => {
+    if (!prijava || oznake.length === 0) return null;
 
+    // Podržava oznake spremljene kao niz ID-eva
+    // ili kao pojedinačni ID oznake.
+    const oznakePrijave = prijava.oznake ?? (
+        prijava.oznaka_id != null
+            ? [prijava.oznaka_id]
+            : prijava.oznaka != null
+                ? [prijava.oznaka]
+                : []
+    );
+
+    const oznakeZaPrikaz = oznakePrijave
+        .map((stavka) => {
+            const oznakaId =
+                typeof stavka === "object"
+                    ? stavka.id
+                    : stavka;
+
+            return oznake.find(
+                (o) => String(o.id) === String(oznakaId)
+            );
+        })
+        .filter(Boolean);
+
+    if (oznakeZaPrikaz.length === 0) return null;
+
+    return (
+        <div className="d-flex flex-wrap gap-2 mb-3">
+            {oznakeZaPrikaz.map((oznaka) => (
+                <span
+                    key={oznaka.id}
+                    style={{
+                        backgroundColor: oznaka.boja || "#6c757d",
+                        color: "#fff"
+                    }}
+                    className="px-2 py-1 fs-6 rounded-pill"
+                >
+                    {oznaka.naziv}
+                </span>
+            ))}
+        </div>
+    );
+};
     if (!prijava) {
         return (
             <Container className="my-4">
@@ -46,6 +100,7 @@ export default function DetaljiSlucaja() {
                         />
                         <Card.Body>
                             <h2 className="fw-bold mb-2">{prijava.zivotinja_ime || "Nepoznato ime"}</h2>
+                           <div> {renderOznaka()} </div>
                             <p className="text-secondary mb-3">{prijava.zivotinja_opis}</p>
 
                             <div className="d-flex align-items-center gap-2 text-muted small mb-2">
