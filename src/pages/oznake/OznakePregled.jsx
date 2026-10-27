@@ -10,6 +10,25 @@ const toArray = (res) => {
   return Array.isArray(data) ? data : [];
 };
 
+const getImeBoje = (hex) => {
+  if (!hex) return "Nema boje";
+  
+  const rjecnikBoja = {
+ "#6f42c1": "Ljubičasta",
+  "#198754": "Zelena",
+  "#dc3545": "Crvena",
+  "#fd7e14": "Narančasta",
+  "#0d6efd": "Plava",
+  "#212529": "Crna",
+  "#6c757d": "Siva",
+  "#8d5524": "Smeđa",
+  "#d63384": "Ružičasta",
+  "#0aa2c0": "Tirkizna"
+  };
+
+  return rjecnikBoja[hex.toLowerCase()] || "Prilagođena boja";
+};
+
 export default function OznakePregled() {
   const navigate = useNavigate();
   const [oznake, setOznake] = useState([]);
@@ -38,6 +57,8 @@ export default function OznakePregled() {
       console.error("Greška pri brisanju:", error);
     }
   }
+
+  
 
   return (
     <Container className="my-5">
@@ -77,6 +98,7 @@ export default function OznakePregled() {
               <tr>
                 <th className="ps-4" style={{ width: "80px" }}>ID</th>
                 <th>Naziv oznake</th>
+                <th>Boja (tekst)</th>
                 <th>Boja (Vizualni prikaz)</th>
                 <th className="text-center pe-4" style={{ minWidth: "180px" }}>
                   Akcija
@@ -91,6 +113,11 @@ export default function OznakePregled() {
                     <td>
                       <span className="fw-bold" style={{ color: oznaka.boja || "inherit" }}>
                         {oznaka.naziv}
+                      </span>
+                    </td>
+                    <td>
+                      <span className="text-dark fw-medium">
+                        {getImeBoje(oznaka.boja)}
                       </span>
                     </td>
                     <td>
