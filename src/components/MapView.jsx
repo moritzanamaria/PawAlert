@@ -75,35 +75,35 @@ function MapView({ prijave = [], vrste: propVrste, tipovi: propTipovi, oznake: p
                   <span>Vrsta: {nazivVrste}</span>
                   <br />
                   <span>Tip: {nazivTipa}</span>
-                  
+
                   {p.oznake && p.oznake.length > 0 && (
-  <>
-    <br />
-    <div className="d-flex flex-wrap gap-1 mt-1">
-      {p.oznake.map((rawOznaka, idx) => {
-        
-        const o = typeof rawOznaka === "object" 
-          ? rawOznaka 
-          : oznake.find((item) => Number(item.id) === Number(rawOznaka));
-          
-        if (!o) return null;
-        return (
-          <span
-            key={o.id || idx}
-            className="badge"
-            style={{
-              backgroundColor: o.boja || "#6c757d",
-              color: "#fff",
-              fontSize: "0.75rem",
-            }}
-          >
-            {o.naziv}
-          </span>
-        );
-      })}
-    </div>
-  </>
-)}
+                    <>
+                      <br />
+                      <div className="d-flex flex-wrap gap-1 mt-1">
+                        {p.oznake.map((rawOznaka, idx) => {
+
+                          const o = typeof rawOznaka === "object"
+                            ? rawOznaka
+                            : oznake.find((item) => Number(item.id) === Number(rawOznaka));
+
+                          if (!o) return null;
+                          return (
+                            <span
+                              key={o.id || idx}
+                              className="badge"
+                              style={{
+                                backgroundColor: o.boja || "#6c757d",
+                                color: "#fff",
+                                fontSize: "0.75rem",
+                              }}
+                            >
+                              {o.naziv}
+                            </span>
+                          );
+                        })}
+                      </div>
+                    </>
+                  )}
                   <span>Lokacija: {p.lokacija?.opis || p.lokacija_opis || "-"}</span>
                   <br />
                   {p.datum && <small className="text-muted"><FormatDatuma datum={p.datum} /></small>}
@@ -113,12 +113,19 @@ function MapView({ prijave = [], vrste: propVrste, tipovi: propTipovi, oznake: p
           );
         })}
       </MapContainer>
-      <div className="legenda-tipova p-2 small">
+      <div className="row g-1">
         {tipovi.map((t) => (
-          <div key={t.id} className="legenda-stavka">
+          <div key={t.id} className="col-6 col-md-4 col-lg-3 d-flex align-items-center">
             <span
               className="legenda-tocka"
-              style={{ background: bojaTipa(t.id) }}
+              style={{
+                backgroundColor: bojaTipa(t.id) || "#6c757d",
+                display: "inline-block",
+                width: "12px",
+                height: "12px",
+                borderRadius: "50%",
+                marginRight: "6px"
+              }}
             />
             <span>{t.naziv}</span>
           </div>

@@ -51,8 +51,8 @@ export default function GeneriranjePodataka() {
     };
 
     const generirajOznake = async (broj) => {
-        const naziviOznaka = ['Hitno', 'Ozlijeđen', 'Čipiran', 'Mladunče', 'Preplašen', 'Traži se vlasnik', 'Agresivan', 'Miran'];
-        const bojeOznaka = ['#dc3545', '#fd7e14', '#198754', '#0d6efd', '#6c757d', '#ffc107', '#6610f2', '#d63384'];
+        const naziviOznaka = ['Ima ogrlicu', 'Ozlijeđen', 'Star', 'Mladunče', 'Preplašen', 'Traži se vlasnik', 'Agresivan', 'Miran'];
+        const bojeOznaka =  ['#fd7e14','#dc3545', '#198754', '#0d6efd', '#6c757d', '#ffc107', '#6610f2', '#d63384'];
 
         for (let i = 0; i < broj; i++) {
             await OznakeService.dodaj({
@@ -321,7 +321,7 @@ export default function GeneriranjePodataka() {
             await generirajTragove(brojTragova);
             setPoruka({
                 tip: 'success',
-                tekst: `Uspješno generirano: ${brojVrsta} vrsta, ${brojTipova} tipova, ${brojPrijava} prijava i ${brojTragova} tragova!`
+                tekst: `Uspješno generirano: ${brojVrsta} vrsta, ${brojTipova} tipova, ${brojPrijava} prijava, ${brojTragova} tragova i ${brojOznaka} oznaka!`
             });
         } catch (error) {
             setPoruka({ tip: 'danger', tekst: 'Greška pri generiranju svih podataka: ' + error.message });
@@ -331,7 +331,7 @@ export default function GeneriranjePodataka() {
     };
 
     const handleObrisiSve = async () => {
-        if (!window.confirm('Jeste li sigurni da želite obrisati SVE podatke (tragove, prijave, tipove i vrste)?')) return;
+        if (!window.confirm('Jeste li sigurni da želite obrisati SVE podatke (tragove, prijave, tipove, vrste i oznake)?')) return;
         setLoading(true);
         setPoruka(null);
 
@@ -368,7 +368,7 @@ export default function GeneriranjePodataka() {
 
             setPoruka({
                 tip: 'success',
-                tekst: `Uspješno obrisano: ${tragovi.length} tragova, ${prijave.length} prijava, ${tipovi.length} tipova i ${vrste.length} vrsta!`
+                tekst: `Uspješno obrisano: ${tragovi.length} tragova, ${prijave.length} prijava, ${tipovi.length} tipova, ${vrste.length} vrsta i ${oznake.length} oznaka!`
             });
         } catch (error) {
             setPoruka({ tip: 'danger', tekst: 'Greška pri brisanju svih podataka: ' + error.message });
