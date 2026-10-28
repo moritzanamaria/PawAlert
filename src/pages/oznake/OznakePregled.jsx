@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import OznakeService from "../../services/oznake/OznakeService"; 
+import OznakeService from "../../services/oznake/OznakeService";
 import { RouteNames, putanja } from "../../constants";
 import { Badge, Button, Card, Container, Table, ButtonGroup } from "react-bootstrap";
 import { Link, useNavigate } from "react-router-dom";
@@ -10,24 +10,6 @@ const toArray = (res) => {
   return Array.isArray(data) ? data : [];
 };
 
-const getImeBoje = (hex) => {
-  if (!hex) return "Nema boje";
-  
-  const rjecnikBoja = {
- "#6f42c1": "Ljubičasta",
-  "#198754": "Zelena",
-  "#dc3545": "Crvena",
-  "#fd7e14": "Narančasta",
-  "#0d6efd": "Plava",
-  "#212529": "Crna",
-  "#6c757d": "Siva",
-  "#8d5524": "Smeđa",
-  "#d63384": "Ružičasta",
-  "#0aa2c0": "Tirkizna"
-  };
-
-  return rjecnikBoja[hex.toLowerCase()] || "Prilagođena boja";
-};
 
 export default function OznakePregled() {
   const navigate = useNavigate();
@@ -58,7 +40,7 @@ export default function OznakePregled() {
     }
   }
 
-  
+
 
   return (
     <Container className="my-5">
@@ -78,13 +60,13 @@ export default function OznakePregled() {
           </div>
           <div className="d-flex gap-2 flex-wrap">
             <Link
-              to={RouteNames.NADZORNA_PLOCA || "/"}
+              to={RouteNames.OZNAKE_PREGLED || "/oznake"}
               className="btn btn-outline-secondary d-flex align-items-center gap-1 shadow-sm px-3 py-2"
             >
               <BiArrowBack size={18} /> Početna
             </Link>
             <Link
-              to={RouteNames.OZNAKA_NOVA || "/oznake/nova"} // Prilagodite RouteName prema vašim konstantama
+              to={RouteNames.OZNAKA_NOVA || "/oznake/nova"}
               className="btn btn-success d-flex align-items-center gap-1 shadow-sm px-3 py-2"
             >
               <BiPlus size={20} /> Nova oznaka
@@ -96,10 +78,7 @@ export default function OznakePregled() {
           <Table bordered responsive hover className="align-middle mb-0 border-top">
             <thead className="table-light">
               <tr>
-                <th className="ps-4" style={{ width: "80px" }}>ID</th>
                 <th>Naziv oznake</th>
-                <th>Boja (tekst)</th>
-                <th>Boja (Vizualni prikaz)</th>
                 <th className="text-center pe-4" style={{ minWidth: "180px" }}>
                   Akcija
                 </th>
@@ -109,31 +88,14 @@ export default function OznakePregled() {
               {oznake && oznake.length > 0 ? (
                 oznake.map((oznaka) => (
                   <tr key={oznaka.id}>
-                    <td className="ps-4 fw-semibold text-dark">{oznaka.id}</td>
-                    <td>
-                      <span className="fw-bold" style={{ color: oznaka.boja || "inherit" }}>
+                    <td className="text-center"><span className="fw-bold badge d-inline-flex align-items-center px-2.5 py-1.5" 
+                      style={{  
+                            backgroundColor: oznaka.boja || "#6c757d",
+                            color: "#ffffff",
+                            border: "2px solid rgba(0, 0, 0, 0.1)",
+                            textShadow: "1px 1px 2px rgba(0,0,0,0.4)" }}>
                         {oznaka.naziv}
                       </span>
-                    </td>
-                    <td>
-                      <span className="text-dark fw-medium">
-                        {getImeBoje(oznaka.boja)}
-                      </span>
-                    </td>
-                    <td>
-                      <div className="d-flex align-items-center gap-2">
-                        <span
-                          style={{
-                            display: "inline-block",
-                            width: "20px",
-                            height: "20px",
-                            borderRadius: "50%",
-                            backgroundColor: oznaka.boja || "#6c757d",
-                            border: "1px solid #dee2e6"
-                          }}
-                        ></span>
-                        <span className="text-muted small">{oznaka.boja || "Nema definirane boje"}</span>
-                      </div>
                     </td>
                     <td className="text-center pe-4">
                       <ButtonGroup size="sm">
