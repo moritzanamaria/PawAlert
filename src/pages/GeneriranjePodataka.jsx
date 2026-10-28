@@ -6,6 +6,7 @@ import TragoviService from '../services/tragovi/TragoviService';
 import TipService from '../services/tip/TipService';
 import VrsteService from '../services/vrste/VrsteService';
 import OznakeService from '../services/oznake/OznakeService';
+import { DATA_SOURCE } from '../constants';
 
 export default function GeneriranjePodataka() {
     const [brojVrsta, setBrojVrsta] = useState(5);
@@ -376,7 +377,17 @@ export default function GeneriranjePodataka() {
             setLoading(false);
         }
     };
-
+if (DATA_SOURCE === 'memorija') {
+        return (
+            <Container className="mt-4">
+                <Card className="shadow-sm border-0 rounded-3 p-4 text-center">
+                    <h3 className='shadow-sm p-4' style={{color: 'olive', background: 'antiquewhite'}}>Trenutno ste na memoriji te ne možete generirati podatke</h3>
+                    <h5 className='text-muted p-5' style={{fontStyle: "italic"}}>Pogledaj pregled prijava da vidiš podatke koji su na memoriji te ih tamo po potrebi ažuriraj </h5>
+                
+                </Card>
+            </Container>
+        );
+    }
 
     return (
         <Container>
