@@ -11,6 +11,8 @@
   },
   "dependencies": {
     "@faker-js/faker": "^10.6.0",
+    "@uiw/react-color": "^2.10.3",
+    "@uiw/react-color-wheel": "^2.10.3",
     "axios": "^1.20.0",
     "bootstrap": "^5.3.8",
     "date-fns": "^4.4.0",

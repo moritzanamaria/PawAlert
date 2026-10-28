@@ -36,4 +36,4 @@ export const ZASTARJELO_DANA = 30
 
 
 // localStorage   memorija
-export const DATA_SOURCE = 'memorija'
+export const DATA_SOURCE = 'localStorage'

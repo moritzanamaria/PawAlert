@@ -3,6 +3,8 @@ import { Button, Card, Col, Container, Form, Row } from "react-bootstrap";
 import OznakeService from "../../services/oznake/OznakeService";
 import { useState } from "react";
 import { RouteNames } from "../../constants";
+import Wheel from "@uiw/react-color-wheel";
+import { ShadeSlider, hsvaToHex, hexToHsva } from "@uiw/react-color";
 
 export default function OznakaNova() {
     const navigate = useNavigate();
@@ -10,8 +12,11 @@ export default function OznakaNova() {
     const povratak = location.state?.povratak ?? RouteNames.OZNAKE_PREGLED;
 
     const [naziv, setNaziv] = useState("");
-    const [boja, setBoja] = useState("#0d6efd"); // Zadana plava boja
-    const [bojaTeksta, setBojaTeksta] = useState("#ffffff");
+  const [bojaHsva, setBojaHsva] = useState(hexToHsva("#0d6efd"));
+    const [bojaTekstaHsva, setBojaTekstaHsva] = useState(hexToHsva("#ffffff"));
+
+    const bojaHex = hsvaToHex(bojaHsva);
+    const bojaTekstaHex = hsvaToHex(bojaTekstaHsva);
 
     async function dodaj(oznaka) {
         try {
@@ -37,8 +42,8 @@ export default function OznakaNova() {
 
         dodaj({
             naziv: trimmedNaziv,
-            boja: boja,
-            boja_teksta: bojaTeksta,
+           boja: bojaHex,
+            boja_teksta: bojaTekstaHex,
         });
     }
 
@@ -63,7 +68,7 @@ export default function OznakaNova() {
                 <Card.Body className="p-4">
                     <Form onSubmit={obradiSubmit}>
                         <Row className="mb-3">
-                            <Form.Group as={Col} md={6} controlId="naziv" className="mb-3">
+                            <Form.Group as={Col} md={12} controlId="naziv" className="mb-3">
                                 <Form.Label className="fw-medium">Naziv oznake</Form.Label>
                                 <Form.Control
                                     type="text"
@@ -73,37 +78,52 @@ export default function OznakaNova() {
                                     required
                                 />
                             </Form.Group>
+</Row>
 
-                            <Form.Group as={Col} md={3} controlId="boja" className="mb-3">
-                                <Form.Label className="fw-medium">Boja oznake</Form.Label>
-                                <div className="d-flex align-items-center gap-2">
-                                    <Form.Control
-                                        type="color"
-                                        value={boja}
-                                        onChange={(e) => setBoja(e.target.value)}
-                                        title="Odaberite boju oznake"
-                                        style={{ height: "38px", cursor: "pointer" }}
+                        <Row className="mb-4">
+                            <Form.Group as={Col} md={6} className="mb-3 text-center">
+                                <Form.Label className="fw-medium d-block text-start">Boja oznake</Form.Label>
+                                <div className="shadow-sm d-flex flex-column align-items-center justify-content-center p-3 rounded bg-white gap-3">
+                                    <Wheel
+                                        color={bojaHsva}
+                                        onChange={(col) => setBojaHsva((prev) => ({ ...prev, ...col.hsva }))}
+                                        width={160}
+                                        height={160}
                                     />
-                                    <span className="text-muted small font-monospace">{boja}</span>
+                                    <div className="w-100 px-2">
+                                        <span className="text-muted small d-block text-start mb-1">Svjetlina:</span>
+                                        <ShadeSlider
+                                            hsva={bojaHsva}
+                                            onChange={(newColor) => setBojaHsva((prev) => ({ ...prev, ...newColor }))}
+                                            style={{ height: 16, borderRadius: 8 }}
+                                        />
+                                    </div>
                                 </div>
                             </Form.Group>
-                            <Form.Group as={Col} md={3} controlId="boja_teksta" className="mb-3">
-                                <Form.Label className="fw-medium">Boja teksta</Form.Label>
-                                <div className="d-flex align-items-center gap-2">
-                                    <Form.Control
-                                        type="color"
-                                        value={bojaTeksta}
-                                        onChange={(e) => setBojaTeksta(e.target.value)}
-                                        title="Odaberite boju teksta"
-                                        style={{ height: "38px", cursor: "pointer" }}
+
+                            <Form.Group as={Col} md={6} className="mb-3 text-center">
+                                <Form.Label className="fw-medium d-block text-start">Boja teksta</Form.Label>
+                                <div className="shadow-sm d-flex flex-column align-items-center justify-content-center p-3 rounded bg-white gap-3">
+                                    <Wheel
+                                        color={bojaTekstaHsva}
+                                        onChange={(col) => setBojaTekstaHsva((prev) => ({ ...prev, ...col.hsva }))}
+                                        width={160}
+                                        height={160}
                                     />
-                                    <span className="text-muted small font-monospace">{bojaTeksta}</span>
+                                    <div className="w-100 px-2">
+                                        <span className="text-muted small d-block text-start mb-1">Svjetlina:</span>
+                                        <ShadeSlider
+                                            hsva={bojaTekstaHsva}
+                                            onChange={(newColor) => setBojaTekstaHsva((prev) => ({ ...prev, ...newColor }))}
+                                            style={{ height: 16, borderRadius: 8 }}
+                                        />
+                                    </div>
                                 </div>
                             </Form.Group>
                         </Row>
                         <div className="mb-3">
                             <span className="text-muted small me-2">Pregled:</span>
-                            <span className="badge fs-6" style={{ backgroundColor: boja, color: bojaTeksta }}>
+                            <span className="badge fs-6" style={{ backgroundColor: bojaHex, color: bojaTekstaHex }}>
                                 {naziv.trim() || "Naziv oznake"}
                             </span>
                         </div>

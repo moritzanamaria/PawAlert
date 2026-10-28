@@ -3,6 +3,8 @@ import { Link, useNavigate, useParams, useLocation } from "react-router-dom";
 import { Button, Card, Col, Container, Form, Row } from "react-bootstrap";
 import OznakeService from "../../services/oznake/OznakeService";
 import { RouteNames } from "../../constants";
+import Wheel from "@uiw/react-color-wheel";
+import { ShadeSlider, hsvaToHex, hexToHsva } from "@uiw/react-color";
 
 export default function OznakaPromjena() {
     const navigate = useNavigate();
@@ -15,13 +17,27 @@ export default function OznakaPromjena() {
         boja: "#0d6efd",
         boja_teksta: "#ffffff",
     });
+    const [bojaHsva, setBojaHsva] = useState(hexToHsva("#0d6efd"));
+    const [bojaTekstaHsva, setBojaTekstaHsva] = useState(hexToHsva("#ffffff"));
+
+    const bojaHex = hsvaToHex(bojaHsva);
+    const bojaTekstaHex = hsvaToHex(bojaTekstaHsva);
+
 
     useEffect(() => {
         async function ucitajOznaku() {
             try {
                 const res = await OznakeService.getById(params.id);
-                const oData = res?.data ?? res;
-                setOznaka(oData || { naziv: "", boja: "#0d6efd" });
+                const podaci = res?.data ?? res;
+                if (podaci) {
+                    setOznaka(podaci);
+                   if (podaci.boja) {
+                        setBojaHsva(hexToHsva(podaci.boja));
+                    }
+                    if (podaci.boja_teksta) {
+                        setBojaTekstaHsva(hexToHsva(podaci.boja_teksta));
+                    }
+                }
             } catch (error) {
                 console.error("Greška pri učitavanju oznake:", error);
             }
@@ -56,6 +72,8 @@ export default function OznakaPromjena() {
         promjeni({
             ...oznaka,
             naziv: trimmedNaziv,
+            boja: bojaHex,
+            boja_teksta: bojaTekstaHex,
         });
     }
 
@@ -80,7 +98,7 @@ export default function OznakaPromjena() {
                 <Card.Body className="p-4">
                     <Form key={oznaka.id} onSubmit={obradiSubmit}>
                         <Row className="mb-3">
-                            <Form.Group as={Col} md={6} controlId="naziv" className="mb-3">
+                            <Form.Group as={Col} md={12} controlId="naziv" className="mb-3">
                                 <Form.Label className="fw-medium">Naziv oznake</Form.Label>
                                 <Form.Control
                                     type="text"
@@ -90,31 +108,58 @@ export default function OznakaPromjena() {
                                     required
                                 />
                             </Form.Group>
+                        </Row>
 
-                            <Form.Group as={Col} md={3} controlId="boja" className="mb-3">
-                                <Form.Label className="fw-medium">Boja oznake</Form.Label>
-                                <div className="d-flex align-items-center gap-2">
-                                    <Form.Control
-                                        type="color"
-                                        value={oznaka.boja || "#0d6efd"}
-                                        onChange={(e) => setOznaka({ ...oznaka, boja: e.target.value })}
-                                        title="Odaberite boju oznake"
-                                        style={{ height: "38px", cursor: "pointer" }}
+                        <Row className="mb-4">
+                            <Form.Group as={Col} md={6} className="mb-3 text-center">
+                                <Form.Label className="fw-medium d-block text-start">Boja oznake</Form.Label>
+                                <div className="shadow-sm d-flex flex-column align-items-center justify-content-center p-3 rounded bg-white gap-3">
+                                    <Wheel
+                                        color={bojaHsva}
+                                        onChange={(col) => setBojaHsva((prev) => ({ ...prev, ...col.hsva }))}
+                                        width={160}
+                                        height={160}
                                     />
-                                    <span className="text-muted small font-monospace">{oznaka.boja}</span>
+                                    <div className="w-100 px-2">
+                                        <span className="text-muted small d-block text-start mb-1">Svjetlina:</span>
+                                        <ShadeSlider
+                                            hsva={bojaHsva}
+                                            onChange={(newColor) => setBojaHsva((prev) => ({ ...prev, ...newColor }))}
+                                            style={{ height: 16, borderRadius: 8 }}
+                                        />
+                                    </div>
+                                    <div className="d-flex align-items-center gap-2 mt-1">
+                                        <span className="text-muted small">Odabrano:</span>
+                                        <span className="badge font-monospace px-2 py-1" style={{ backgroundColor: bojaHex, color: "#000" }}>
+                                            {bojaHex}
+                                        </span>
+                                    </div>
                                 </div>
                             </Form.Group>
-                            <Form.Group as={Col} md={3} controlId="boja_teksta" className="mb-3">
-                                <Form.Label className="fw-medium">Boja teksta</Form.Label>
-                                <div className="d-flex align-items-center gap-2">
-                                    <Form.Control
-                                        type="color"
-                                        value={oznaka.boja_teksta || "#ffffff"}
-                                        onChange={(e) => setOznaka({ ...oznaka, boja_teksta: e.target.value })}
-                                        title="Odaberite boju teksta"
-                                        style={{ height: "38px", cursor: "pointer" }}
+
+                            <Form.Group as={Col} md={6} className="mb-3 text-center">
+                                <Form.Label className="fw-medium d-block text-start">Boja teksta</Form.Label>
+                                <div className="shadow-sm d-flex flex-column align-items-center justify-content-center p-3 rounded bg-white gap-3">
+                                    <Wheel
+                                        color={bojaTekstaHsva}
+                                        onChange={(col) => setBojaTekstaHsva((prev) => ({ ...prev, ...col.hsva }))}
+                                        width={160}
+                                        height={160}
                                     />
-                                    <span className="text-muted small font-monospace">{oznaka.boja_teksta || "#ffffff"}</span>
+                                    <div className="w-100 px-2">
+                                        <span className="text-muted small d-block text-start mb-1">Svjetlina:</span>
+                                        <ShadeSlider
+                                            hsva={bojaTekstaHsva}
+                                            onChange={(newColor) => setBojaTekstaHsva((prev) => ({ ...prev, ...newColor }))}
+                                            style={{ height: 16, borderRadius: 8 }}
+                                        />
+                                    </div>
+                                    <div className="d-flex align-items-center gap-2 mt-1">
+                                        <span className="text-muted small">Odabrano:</span>
+                                        <span className="badge font-monospace px-2 py-1" style={{ backgroundColor: bojaTekstaHex, color: "#000" }}>
+                                            {bojaTekstaHex}
+                                        </span>
+                                    </div>
                                 </div>
                             </Form.Group>
                         </Row>
@@ -122,7 +167,7 @@ export default function OznakaPromjena() {
                             <span className="text-muted small me-2">Pregled:</span>
                             <span
                                 className="badge fs-6"
-                                style={{ backgroundColor: oznaka.boja || "#6c757d", color: oznaka.boja_teksta || "#ffffff" }}
+                                style={{ backgroundColor: bojaHex || "#6c757d", color: bojaTekstaHex || "#ffffff" }}
                             >
                                 {oznaka.naziv.trim() || "Naziv oznake"}
                             </span>

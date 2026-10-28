@@ -34,10 +34,7 @@ export default function DetaljiSlucaja() {
     }, [id])
 
     const renderOznaka = () => {
-    if (!prijava || oznake.length === 0) return null;
-
-    // Podržava oznake spremljene kao niz ID-eva
-    // ili kao pojedinačni ID oznake.
+    if (!prijava || oznake.length === 0) return 
     const oznakePrijave = prijava.oznake ?? (
         prijava.oznaka_id != null
             ? [prijava.oznaka_id]
@@ -68,7 +65,7 @@ export default function DetaljiSlucaja() {
                     key={oznaka.id}
                     style={{
                         backgroundColor: oznaka.boja || "#6c757d",
-                        color:  o.boja_teksta || "#fff"
+                        color:  oznaka.boja_teksta || "#fff"
                     }}
                     className="px-2 py-1 fs-6 rounded-pill"
                 >
