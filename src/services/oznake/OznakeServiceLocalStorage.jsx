@@ -1,12 +1,12 @@
-import { OznakePodaci } from "./OznakePodaci"; 
+import { oznake } from "./OznakePodaci"; 
 
 const STORAGE_KEY = 'oznake';
 
 function dohvatiSveIzStorage() {
   const podaci = localStorage.getItem(STORAGE_KEY);
   if (!podaci) {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(OznakePodaci));
-    return OznakePodaci;
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(oznake));
+    return oznake;
   }
   return JSON.parse(podaci);
 }

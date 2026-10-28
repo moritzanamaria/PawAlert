@@ -1,4 +1,4 @@
-export const OznakePodaci = [
+export const oznake = [
   { id: 1, naziv: "Preplašen", boja: "#6f42c1" },
   { id: 2, naziv: "Miran", boja: "#198754" },
   { id: 3, naziv: "Agresivan", boja: "#dc3545" },
@@ -10,5 +10,3 @@ export const OznakePodaci = [
   { id: 9, naziv: "Šarena", boja: "#d63384" },
   { id: 10, naziv: "Ima ogrlicu", boja: "#0aa2c0" }
 ];
-
-export const oznake = OznakePodaci;
