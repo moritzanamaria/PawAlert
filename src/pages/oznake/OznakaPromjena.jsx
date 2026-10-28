@@ -13,6 +13,7 @@ export default function OznakaPromjena() {
     const [oznaka, setOznaka] = useState({
         naziv: "",
         boja: "#0d6efd",
+        boja_teksta: "#ffffff",
     });
 
     useEffect(() => {
@@ -79,7 +80,7 @@ export default function OznakaPromjena() {
                 <Card.Body className="p-4">
                     <Form key={oznaka.id} onSubmit={obradiSubmit}>
                         <Row className="mb-3">
-                            <Form.Group as={Col} md={8} controlId="naziv" className="mb-3">
+                            <Form.Group as={Col} md={6} controlId="naziv" className="mb-3">
                                 <Form.Label className="fw-medium">Naziv oznake</Form.Label>
                                 <Form.Control
                                     type="text"
@@ -90,7 +91,7 @@ export default function OznakaPromjena() {
                                 />
                             </Form.Group>
 
-                            <Form.Group as={Col} md={4} controlId="boja" className="mb-3">
+                            <Form.Group as={Col} md={3} controlId="boja" className="mb-3">
                                 <Form.Label className="fw-medium">Boja oznake</Form.Label>
                                 <div className="d-flex align-items-center gap-2">
                                     <Form.Control
@@ -103,7 +104,29 @@ export default function OznakaPromjena() {
                                     <span className="text-muted small font-monospace">{oznaka.boja}</span>
                                 </div>
                             </Form.Group>
+                            <Form.Group as={Col} md={3} controlId="boja_teksta" className="mb-3">
+                                <Form.Label className="fw-medium">Boja teksta</Form.Label>
+                                <div className="d-flex align-items-center gap-2">
+                                    <Form.Control
+                                        type="color"
+                                        value={oznaka.boja_teksta || "#ffffff"}
+                                        onChange={(e) => setOznaka({ ...oznaka, boja_teksta: e.target.value })}
+                                        title="Odaberite boju teksta"
+                                        style={{ height: "38px", cursor: "pointer" }}
+                                    />
+                                    <span className="text-muted small font-monospace">{oznaka.boja_teksta || "#ffffff"}</span>
+                                </div>
+                            </Form.Group>
                         </Row>
+                        <div className="mb-3">
+                            <span className="text-muted small me-2">Pregled:</span>
+                            <span
+                                className="badge fs-6"
+                                style={{ backgroundColor: oznaka.boja || "#6c757d", color: oznaka.boja_teksta || "#ffffff" }}
+                            >
+                                {oznaka.naziv.trim() || "Naziv oznake"}
+                            </span>
+                        </div>
 
                         <div className="d-flex justify-content-between align-items-center pt-2">
                             <Link to={povratak} className="btn btn-outline-secondary px-4 fw-medium">

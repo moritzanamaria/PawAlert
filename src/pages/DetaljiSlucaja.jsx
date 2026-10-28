@@ -68,7 +68,7 @@ export default function DetaljiSlucaja() {
                     key={oznaka.id}
                     style={{
                         backgroundColor: oznaka.boja || "#6c757d",
-                        color: "#fff"
+                        color:  o.boja_teksta || "#fff"
                     }}
                     className="px-2 py-1 fs-6 rounded-pill"
                 >

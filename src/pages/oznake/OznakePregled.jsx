@@ -91,9 +91,9 @@ export default function OznakePregled() {
                     <td className="text-center"><span className="fw-bold badge d-inline-flex align-items-center px-2.5 py-1.5" 
                       style={{  
                             backgroundColor: oznaka.boja || "#6c757d",
-                            color: "#ffffff",
+                            color:  oznaka.boja_teksta || "#fff",
                             border: "2px solid rgba(0, 0, 0, 0.1)",
-                            textShadow: "1px 1px 2px rgba(0,0,0,0.4)" }}>
+                           }}>
                         {oznaka.naziv}
                       </span>
                     </td>

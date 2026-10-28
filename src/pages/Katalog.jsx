@@ -160,7 +160,7 @@ export default function Katalog() {
                             className="badge"
                             style={{
                               backgroundColor: o.boja || "#6c757d",
-                              color: "#fff",
+                              color:  o.boja_teksta || "#fff",
                               fontSize: "0.75rem",
                             }}
                           >
