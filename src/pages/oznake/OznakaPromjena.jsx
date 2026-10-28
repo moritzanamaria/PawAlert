@@ -128,12 +128,6 @@ export default function OznakaPromjena() {
                                             style={{ height: 16, borderRadius: 8 }}
                                         />
                                     </div>
-                                    <div className="d-flex align-items-center gap-2 mt-1">
-                                        <span className="text-muted small">Odabrano:</span>
-                                        <span className="badge font-monospace px-2 py-1" style={{ backgroundColor: bojaHex, color: "#000" }}>
-                                            {bojaHex}
-                                        </span>
-                                    </div>
                                 </div>
                             </Form.Group>
 
@@ -153,12 +147,6 @@ export default function OznakaPromjena() {
                                             onChange={(newColor) => setBojaTekstaHsva((prev) => ({ ...prev, ...newColor }))}
                                             style={{ height: 16, borderRadius: 8 }}
                                         />
-                                    </div>
-                                    <div className="d-flex align-items-center gap-2 mt-1">
-                                        <span className="text-muted small">Odabrano:</span>
-                                        <span className="badge font-monospace px-2 py-1" style={{ backgroundColor: bojaTekstaHex, color: "#000" }}>
-                                            {bojaTekstaHex}
-                                        </span>
                                     </div>
                                 </div>
                             </Form.Group>
