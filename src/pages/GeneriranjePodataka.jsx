@@ -54,11 +54,12 @@ export default function GeneriranjePodataka() {
     const generirajOznake = async (broj) => {
         const naziviOznaka = ['Ima ogrlicu', 'Ozlijeđen', 'Star', 'Mladunče', 'Preplašen', 'Traži se vlasnik', 'Agresivan', 'Miran'];
         const bojeOznaka =  ['#fd7e14','#dc3545', '#198754', '#0d6efd', '#6c757d', '#ffc107', '#6610f2', '#d63384'];
-
+const bojeTekstaOznaka = ['#0F52BA', '#FFD1DC', '#36454F', '#ffffff', '#cccccc', '#000000'];
         for (let i = 0; i < broj; i++) {
             await OznakeService.dodaj({
                 naziv: naziviOznaka[i % naziviOznaka.length] + (i >= naziviOznaka.length ? ` ${Math.floor(i / naziviOznaka.length) + 1}` : ''),
-                boja: bojeOznaka[i % bojeOznaka.length]
+                boja: bojeOznaka[i % bojeOznaka.length],
+                boja_teksta: faker.helpers.arrayElement(bojeTekstaOznaka)
             });
         }
     };
