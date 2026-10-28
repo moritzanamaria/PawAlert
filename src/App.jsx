@@ -1,4 +1,4 @@
-import { Routes, Route } from "react-router-dom"
+import { Routes, Route, Navigate } from "react-router-dom"
 import Pocetna from "./pages/Home"
 import PrijavePregled from "./pages/prijave/PrijavePregled"
 import PrijavaNova from "./pages/prijave/PrijavaNova"
@@ -11,7 +11,6 @@ import VrstaPromjena from "./pages/tipovi_vrste/VrstaPromjena"
 import TragPregled from "./pages/tragovi/TragPregled"
 import TragNovi from "./pages/tragovi/TragNovi"
 import TragPromjena from "./pages/tragovi/TragPromjena"
-
 import Navbar from "./components/Navbar"
 import { IME_APLIKACIJE, RouteNames } from "./constants"
 import Katalog from "./pages/Katalog"
@@ -48,6 +47,7 @@ export default function App() {
         <Route path={RouteNames.OZNAKA_NOVA} element={<OznakaNova />} />
         <Route path={RouteNames.OZNAKA_PROMJENA} element={<OznakaPromjena />} />
         <Route path={RouteNames.GENERIRANJE_PODATAKA} element={<GeneriranjePodataka />} />
+        <Route path="*" element={<Navigate to={RouteNames.HOME} replace />} />
       </Routes>
 
       <hr />
