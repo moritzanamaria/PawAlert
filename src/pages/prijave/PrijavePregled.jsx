@@ -190,13 +190,6 @@ export default function PrijavePregled() {
             </Pagination>
           </div>
         )}
-
-        <Card.Footer className="bg-light border-0 p-3 px-4 d-flex align-items-center justify-content-between">
-          <span className="text-muted small">
-            Ukupno prijava: <Badge pill bg="primary" className="ms-1">{prijave ? prijave.length : 0}</Badge>
-          </span>
-        </Card.Footer>
-
       </Card>
     </Container>
   )
