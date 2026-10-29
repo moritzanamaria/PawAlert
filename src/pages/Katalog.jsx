@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { Container, Row, Col, Card } from "react-bootstrap";
+import { Container, Row, Col, Card, Pagination } from "react-bootstrap";
 import prijaveService from "../services/prijave/prijaveService";
 import VrsteService from "../services/vrste/VrsteService";
 import TipService from "../services/tip/TipService";
@@ -18,6 +18,8 @@ export default function Katalog() {
   const [oznake, setOznake] = useState([]);
   const [filteri, setFilteri] = useState(PRAZNI_FILTERI);
   const [sortiranje, setSortiranje] = useState("najnovije");
+  const [trenutnaStranica, setTrenutnaStranica] = useState(1);
+  const prijavaPoStranici = 6;
 
   useEffect(() => {
     prijaveService.get().then((res) => setPrijave(res.data || res));
@@ -26,11 +28,33 @@ export default function Katalog() {
     OznakeService.get().then((res) => setOznake(res.data || res));
   }, []);
 
-  const prikazanePrijave = filtrirajPrijave(prijave, filteri).sort((a, b) =>
-    sortiranje === "najstarije"
-      ? new Date(a.datum) - new Date(b.datum)
-      : new Date(b.datum) - new Date(a.datum)
+  const filtriranePrijave = filtrirajPrijave(prijave, filteri);
+
+  const sortiranePrijave = [...filtriranePrijave].sort((a, b) =>
+  sortiranje === "najstarije"
+    ? new Date(a.datum) - new Date(b.datum)
+    : new Date(b.datum) - new Date(a.datum)
+);
+
+const ukupnoStranica = Math.ceil(
+  sortiranePrijave.length / prijavaPoStranici
+);
+
+const prikazanePrijave = sortiranePrijave.slice(
+  (trenutnaStranica - 1) * prijavaPoStranici,
+  trenutnaStranica * prijavaPoStranici
+);
+
+useEffect(() => {
+  setTrenutnaStranica(1);
+}, [filteri, sortiranje]);
+
+useEffect(() => {
+  setTrenutnaStranica((stranica) =>
+    Math.max(1, Math.min(stranica, ukupnoStranica || 1))
   );
+}, [ukupnoStranica]);
+
   const getNazivVrste = (id) => vrste.find((v) => v.id === id)?.naziv ?? "";
   const getNazivTipa = (id) => tipovi.find((t) => t.id === id)?.naziv ?? "";
 
@@ -148,28 +172,28 @@ export default function Katalog() {
                     <span className="text-warning-emphasis fw-medium"> zastarjelo </span>
                   )}
                 </Card.Text>
-                
-                 {prijava.oznake && prijava.oznake.length > 0 && (
-                    <div className="d-flex flex-wrap gap-1 mb-3 p-2">
-                      {prijava.oznake.map((idOznake, idx) => {
-                        const o = oznake.find((item) => Number(item.id) === Number(idOznake));
-                        if (!o) return null;
-                        return (
-                          <span
-                            key={o.id || idx}
-                            className="badge"
-                            style={{
-                              backgroundColor: o.boja || "#6c757d",
-                              color:  o.boja_teksta || "#fff",
-                              fontSize: "0.75rem",
-                            }}
-                          >
-                            {o.naziv}
-                          </span>
-                        );
-                      })}
-                    </div>
-                  )}
+
+                {prijava.oznake && prijava.oznake.length > 0 && (
+                  <div className="d-flex flex-wrap gap-1 mb-3 p-2">
+                    {prijava.oznake.map((idOznake, idx) => {
+                      const o = oznake.find((item) => Number(item.id) === Number(idOznake));
+                      if (!o) return null;
+                      return (
+                        <span
+                          key={o.id || idx}
+                          className="badge"
+                          style={{
+                            backgroundColor: o.boja || "#6c757d",
+                            color: o.boja_teksta || "#fff",
+                            fontSize: "0.75rem",
+                          }}
+                        >
+                          {o.naziv}
+                        </span>
+                      );
+                    })}
+                  </div>
+                )}
 
                 <Link
                   to={RouteNames.DETALJI_SLUCAJA.replace(':id', prijava.id)}
@@ -182,7 +206,62 @@ export default function Katalog() {
           </Col>
         ))}
       </Row>
+{ukupnoStranica > 1 && (
+  <div className="d-flex flex-column align-items-center mt-4 mb-3">
+    <Pagination className="mb-2 flex-wrap justify-content-center">
+      <Pagination.First
+        onClick={() => setTrenutnaStranica(1)}
+        disabled={trenutnaStranica === 1}
+      />
 
+      <Pagination.Prev
+        onClick={() =>
+          setTrenutnaStranica((stranica) => stranica - 1)
+        }
+        disabled={trenutnaStranica === 1}
+      />
+
+      {Array.from({ length: ukupnoStranica }, (_, i) => i + 1).map(
+        (stranica) => (
+          <Pagination.Item
+            key={stranica}
+            active={stranica === trenutnaStranica}
+            onClick={() => setTrenutnaStranica(stranica)}
+          >
+            {stranica}
+          </Pagination.Item>
+        )
+      )}
+
+      <Pagination.Next
+        onClick={() =>
+          setTrenutnaStranica((stranica) => stranica + 1)
+        }
+        disabled={trenutnaStranica === ukupnoStranica}
+      />
+
+      <Pagination.Last
+        onClick={() => setTrenutnaStranica(ukupnoStranica)}
+        disabled={trenutnaStranica === ukupnoStranica}
+      />
+    </Pagination>
+
+    <small className="text-muted text-center">
+      Prikazano{" "}
+      {Math.min(
+        (trenutnaStranica - 1) * prijavaPoStranici + 1,
+        sortiranePrijave.length
+      )}
+      {" – "}
+      {Math.min(
+        trenutnaStranica * prijavaPoStranici,
+        sortiranePrijave.length
+      )}
+      {" od "}
+      {sortiranePrijave.length} prijava
+    </small>
+  </div>
+)}
       {prikazanePrijave.length === 0 && (
         <div className="text-center py-5 text-muted">
           <h5>Nema prijava koje odgovaraju zadanim kriterijima.</h5>
