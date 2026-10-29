@@ -35,10 +35,26 @@ async function obrisi(id) {
   prijave.splice(index, 1)
 }
 
+async function dohvatiStranicu(stranica = 1, velicinaStranice = 8) {
+    const pocetniIndeks = (stranica - 1) * velicinaStranice; // (2-1) * 8, 1 * 8 = 8
+    const zavrsniIndeks = pocetniIndeks + velicinaStranice; // 8+8=16
+    const stranicenjePodaci = prijave.slice(pocetniIndeks, zavrsniIndeks);
+    const ukupnoStavki = prijave.length;
+    const ukupnoStranica = Math.ceil(ukupnoStavki / velicinaStranice);
+
+    return {
+        data: stranicenjePodaci,
+        ukupnoStranica: ukupnoStranica,
+        ukupnoStavki: ukupnoStavki
+    };
+}
+
+
 export default {
   get,
   getById,
   dodaj,
   promjeni,
   obrisi,
+  dohvatiStranicu
 }

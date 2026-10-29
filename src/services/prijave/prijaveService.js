@@ -3,10 +3,10 @@ import { normalizirajLokaciju } from "../../utils/lokacija";
 import prijaveServiceLocalStorage from "./prijaveServiceLocalStorage";
 import prijaveServiceMemorija from "./prijaveServiceMemorija";
 
-let Servis = 
+let Servis =
   DATA_SOURCE === 'memorija' ? prijaveServiceMemorija :
-  DATA_SOURCE === 'localStorage' ? prijaveServiceLocalStorage : 
-  null;
+    DATA_SOURCE === 'localStorage' ? prijaveServiceLocalStorage :
+      null;
 
 const PrazanServis = {
   get: async () => ({ data: [] }),
@@ -14,6 +14,7 @@ const PrazanServis = {
   dodaj: async () => { console.error('Servis nije implementiran') },
   promjeni: async () => { console.error('Servis nije implementiran') },
   obrisi: async () => { console.error('Servis nije implementiran') },
+  dohvatiStranicu: async () => ({ data: [], ukupnoStranica: 0, ukupnoStavki: 0 })
 }
 
 const AktivniServis = Servis || PrazanServis;
@@ -31,5 +32,15 @@ export default {
   },
   dodaj: (prijava) => AktivniServis.dodaj(prijava),
   promjeni: (id, prijava) => AktivniServis.promjeni(id, prijava),
-  obrisi: (id) => AktivniServis.obrisi(id)
+  obrisi: (id) => AktivniServis.obrisi(id),
+  dohvatiStranicu: async (stranica, velicinaStranice) => {
+    const res = await AktivniServis.dohvatiStranicu(stranica, velicinaStranice);
+    const lista = Array.isArray(res) ? res : (res?.data ?? []);
+
+    return {
+      data: lista.map(normalizirajLokaciju),
+      ukupnoStranica: res?.ukupnoStranica ?? 0,
+      ukupnoStavki: res?.ukupnoStavki ?? 0
+    };
+  }
 }

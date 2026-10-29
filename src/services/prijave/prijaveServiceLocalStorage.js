@@ -1,4 +1,5 @@
 const STORAGE_KEY='prijave'
+
 function dohvatiSveIzStorage(){
   const podaci = localStorage.getItem(STORAGE_KEY)
     return podaci ? JSON.parse(podaci): []
@@ -49,11 +50,29 @@ async function obrisi(id){
     
 }
 
+async function dohvatiStranicu(stranica = 1, velicinaStranice = 8) {
+  const prijave = dohvatiSveIzStorage();
+  const pocetniIndeks = (stranica - 1) * velicinaStranice;
+  const zavrsniIndeks = pocetniIndeks + velicinaStranice;
+
+  const stranicenjePodaci = prijave.slice(pocetniIndeks, zavrsniIndeks);
+  const ukupnoStavki = prijave.length;
+  const ukupnoStranica = Math.ceil(ukupnoStavki / velicinaStranice) || 1;
+
+  return {
+    data: stranicenjePodaci,
+    ukupnoStranica: ukupnoStranica,
+    ukupnoStavki: ukupnoStavki
+  };
+}
+
+
 
 export default {
   get,
   getById,
   dodaj,
   promjeni,
-  obrisi
+  obrisi,
+  dohvatiStranicu
 }

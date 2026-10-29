@@ -2,15 +2,11 @@ import { useState, useEffect } from "react";
 import prijaveService from "../../services/prijave/prijaveService";
 import VrsteService from "../../services/vrste/VrsteService";
 import TipService from "../../services/tip/TipService";
-import TragoviService from "../../services/tragovi/TragoviService";
 import { RouteNames, putanja } from "../../constants";
-import { Badge, Button, Card, Container, Table, ButtonGroup, Row, Col } from "react-bootstrap";
+import { Badge, Button, Card, Container, Table, ButtonGroup, Pagination } from "react-bootstrap";
 import FormatDatuma from "../../components/FormatDatuma";
-import FilterPrijava from "../../components/FilterPrijava";
-import { filtrirajPrijave, PRAZNI_FILTERI } from "../../utils/filterHelpers";
 import { Link, useNavigate } from "react-router-dom";
 import { BiPlus, BiPencil, BiTrash, BiSearch } from "react-icons/bi";
-import OznakeService from "../../services/oznake/OznakeService";
 
 const toArray = (res) => {
   const data = Array.isArray(res) ? res : (res?.data ?? []);
@@ -21,42 +17,55 @@ export default function PrijavePregled() {
   const [prijave, setPrijave] = useState([])
   const [vrste, setVrste] = useState([]);
   const [tipovi, setTipovi] = useState([]);
-  const [oznake, setOznake] = useState([]);
-  const [filteri, setFilteri] = useState(PRAZNI_FILTERI);
-  const navigate = useNavigate()
+  const navigate = useNavigate();
+
+  const [trenutnaStranica, postaviTrenutnuStranicu] = useState(1);
+  const [ukupnoStranica, postaviUkupnoStranica] = useState(0);
+  const velicinaStranice = 6;
 
   useEffect(() => {
-    async function dohvatiPodatke() {
+    async function dohvatiInicijalnePodatke() {
       try {
-        const [resPrijave, resVrste, resTipovi, resOznake] = await Promise.all([
-          prijaveService.get(),
+        const [ resVrste, resTipovi ] = await Promise.all([
           VrsteService.get(),
           TipService.get(),
-          OznakeService.get()
+
         ]);
-        setPrijave(toArray(resPrijave));
         setVrste(toArray(resVrste));
         setTipovi(toArray(resTipovi));
-        setOznake(toArray(resOznake));
       } catch (error) {
         console.error("Greška pri dohvatu podataka:", error);
       }
     }
-
-    dohvatiPodatke();
+    dohvatiInicijalnePodatke();
   }, []);
+
+  async function ucitajStranicu(stranica) {
+    try {
+      const odgovor = await prijaveService.dohvatiStranicu(stranica, velicinaStranice);
+      setPrijave(toArray(odgovor.data));
+      postaviUkupnoStranica(odgovor.ukupnoStranica || 0);
+    } catch (error) {
+      console.error("Greška pri dohvatu stranice prijava:", error);
+    }
+  }
+
+  useEffect(() => {
+    ucitajStranicu(trenutnaStranica);
+  }, [trenutnaStranica]);
 
   async function obrisi(id) {
     if (!confirm('Brisanjem prijave brišu se i svi njezini tragovi. Nastaviti?')) {
       return
     }
-    const res = await TragoviService.get()
-    const tragoviPrijave = (res?.data ?? res).filter(t => String(t.prijava) === String(id))
-    for (const t of tragoviPrijave) {
-      await TragoviService.obrisi(t.id)
-    }
+    
     await prijaveService.obrisi(id)
     setPrijave(prevPrijave => prevPrijave.filter(p => p.id !== id));
+    ucitajStranicu(trenutnaStranica);
+  }
+
+  function promijeniStranicu(stranica) {
+    postaviTrenutnuStranicu(stranica);
   }
 
   const getNazivVrste = (id) => {
@@ -68,66 +77,9 @@ export default function PrijavePregled() {
     const tip = tipovi.find(t => t.id === id);
     return tip ? tip.naziv : id;
   };
-
-  const filtriranePrijave = filtrirajPrijave(prijave, filteri);
-
-  const [animiraneSve, setAnimiraneSve] = useState(0);
-  const [animiraneOtvorene, setAnimiraneOtvorene] = useState(0);
-  const [animiraniHitni, setAnimiraniHitni] = useState(0);
-
-  const brojSvih = prijave.length;
-  const brojOtvorenih = prijave.filter(p => p.status === "otvorena").length;
-  const brojHitnih = prijave.filter(p => p.hitno).length;
-
-  useEffect(() => {
-    if (animiraneSve < brojSvih) {
-      const timer = setTimeout(() => {
-        setAnimiraneSve(prev => Math.min(prev + 1, brojSvih));
-      }, 100);
-      return () => clearTimeout(timer);
-    }
-  }, [animiraneSve, brojSvih]);
-
-  useEffect(() => {
-    if (animiraneOtvorene < brojOtvorenih) {
-      const timer = setTimeout(() => {
-        setAnimiraneOtvorene(prev => Math.min(prev + 1, brojOtvorenih));
-      }, 200);
-      return () => clearTimeout(timer);
-    }
-  }, [animiraneOtvorene, brojOtvorenih]);
-
-  useEffect(() => {
-    if (animiraniHitni < brojHitnih) {
-      const timer = setTimeout(() => {
-        setAnimiraniHitni(prev => Math.min(prev + 1, brojHitnih));
-      }, 300);
-      return () => clearTimeout(timer);
-    }
-  }, [animiraniHitni, brojHitnih]);
-
+  
   return (
     <Container>
-      <Row className="g-3 mb-4">
-        <Col xs={4}>
-          <div className="card shadow-sm border-0 p-3 text-center h-100 d-flex flex-column justify-content-center">
-            <div className="fs-2 fw-bold text-primary">{animiraneSve}</div>
-            <div className="text-muted small">Ukupno prijava</div>
-          </div>
-        </Col>
-        <Col xs={4}>
-          <div className="card shadow-sm border-0 p-3 text-center h-100 d-flex flex-column justify-content-center">
-            <div className="fs-2 fw-bold text-success">{animiraneOtvorene}</div>
-            <div className="text-muted small">Otvorene</div>
-          </div>
-        </Col>
-        <Col xs={4}>
-          <div className="card shadow-sm border-0 p-3 text-center h-100 d-flex flex-column justify-content-center">
-            <div className="fs-2 fw-bold text-danger">{animiraniHitni}</div>
-            <div className="text-muted small">Hitni slučajevi</div>
-          </div>
-        </Col>
-      </Row>
       <Card className="shadow-sm border-0 rounded-3">
         <Card.Header className="bg-white p-4 border-0 d-flex justify-content-between align-items-center flex-wrap gap-3">
           <div>
@@ -138,9 +90,6 @@ export default function PrijavePregled() {
             <BiPlus size={20} /> Nova prijava
           </Link>
         </Card.Header>
-        <div className="px-4 py-3 border-top">
-        <FilterPrijava filteri={filteri} setFilteri={setFilteri} vrste={vrste} tipovi={tipovi} oznake={oznake} />
-</div>
         <Card.Body className="p-0">
           <Table responsive hover className="align-middle mb-0 border-top">
             <thead className="table-light">
@@ -155,7 +104,7 @@ export default function PrijavePregled() {
               </tr>
             </thead>
             <tbody>
-              {filtriranePrijave.map((prijava) => (
+              {prijave.map((prijava) => (
                 <tr key={prijava.id} className={prijava.hitno ? "table-danger" : ""}>
                   <td className="ps-4 fw-semibold text-dark">
                     {prijava.zivotinja_ime || <span className="text-muted fst-italic">Nepoznato</span>}
@@ -193,7 +142,54 @@ export default function PrijavePregled() {
             </tbody>
           </Table>
         </Card.Body>
+{ukupnoStranica > 1 && (
+          <div className="d-flex justify-content-center p-3">
+            <Pagination>
+              <Pagination.First
+                onClick={() => promijeniStranicu(1)}
+                disabled={trenutnaStranica === 1}
+              />
+              <Pagination.Prev
+                onClick={() => promijeniStranicu(trenutnaStranica - 1)}
+                disabled={trenutnaStranica === 1}
+              />
 
+              {[...Array(ukupnoStranica)].map((_, indeks) => {
+                const brojStranice = indeks + 1;
+                if (
+                  brojStranice === 1 ||
+                  brojStranice === ukupnoStranica ||
+                  (brojStranice >= trenutnaStranica - 2 && brojStranice <= trenutnaStranica + 2)
+                ) {
+                  return (
+                    <Pagination.Item
+                      key={brojStranice}
+                      active={brojStranice === trenutnaStranica}
+                      onClick={() => promijeniStranicu(brojStranice)}
+                    >
+                      {brojStranice}
+                    </Pagination.Item>
+                  );
+                } else if (
+                  brojStranice === trenutnaStranica - 3 ||
+                  brojStranice === trenutnaStranica + 3
+                ) {
+                  return <Pagination.Ellipsis key={brojStranice} disabled />;
+                }
+                return null;
+              })}
+
+              <Pagination.Next
+                onClick={() => promijeniStranicu(trenutnaStranica + 1)}
+                disabled={trenutnaStranica === ukupnoStranica}
+              />
+              <Pagination.Last
+                onClick={() => promijeniStranicu(ukupnoStranica)}
+                disabled={trenutnaStranica === ukupnoStranica}
+              />
+            </Pagination>
+          </div>
+        )}
 
         <Card.Footer className="bg-light border-0 p-3 px-4 d-flex align-items-center justify-content-between">
           <span className="text-muted small">
