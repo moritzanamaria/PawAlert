@@ -31,29 +31,31 @@ export default function Katalog() {
   const filtriranePrijave = filtrirajPrijave(prijave, filteri);
 
   const sortiranePrijave = [...filtriranePrijave].sort((a, b) =>
-  sortiranje === "najstarije"
-    ? new Date(a.datum) - new Date(b.datum)
-    : new Date(b.datum) - new Date(a.datum)
-);
-
-const ukupnoStranica = Math.ceil(
-  sortiranePrijave.length / prijavaPoStranici
-);
-
-const prikazanePrijave = sortiranePrijave.slice(
-  (trenutnaStranica - 1) * prijavaPoStranici,
-  trenutnaStranica * prijavaPoStranici
-);
-
-useEffect(() => {
-  setTrenutnaStranica(1);
-}, [filteri, sortiranje]);
-
-useEffect(() => {
-  setTrenutnaStranica((stranica) =>
-    Math.max(1, Math.min(stranica, ukupnoStranica || 1))
+    sortiranje === "najstarije"
+      ? new Date(a.datum) - new Date(b.datum)
+      : new Date(b.datum) - new Date(a.datum)
   );
-}, [ukupnoStranica]);
+
+const ukupnoStranica = Math.ceil(sortiranePrijave.length / prijavaPoStranici);
+  const trenutnaStranicaSafe = ukupnoStranica > 0 ? Math.min(trenutnaStranica, ukupnoStranica) : 1;
+
+  const prikazanePrijave = sortiranePrijave.slice(
+    (trenutnaStranicaSafe - 1) * prijavaPoStranici,
+    trenutnaStranicaSafe * prijavaPoStranici
+  );
+
+  function promijeniFiltere(noviFilteri) {
+  setFilteri(noviFilteri);
+  setTrenutnaStranica(1);
+}
+function promijeniSortiranje(novo) {
+  setSortiranje(novo);
+  setTrenutnaStranica(1);
+}
+function promijeniStranicu(novaStranica) {
+    setTrenutnaStranica(novaStranica);
+  }
+
 
   const getNazivVrste = (id) => vrste.find((v) => v.id === id)?.naziv ?? "";
   const getNazivTipa = (id) => tipovi.find((t) => t.id === id)?.naziv ?? "";
@@ -128,12 +130,12 @@ useEffect(() => {
         <div className="px-4 pb-3">
           <FilterPrijava
             filteri={filteri}
-            setFilteri={setFilteri}
+            setFilteri={promijeniFiltere}
             vrste={vrste}
             tipovi={tipovi}
             oznake={oznake}
             sortiranje={sortiranje}
-            setSortiranje={setSortiranje}
+            setSortiranje={promijeniSortiranje}
           />
         </div>
       </Card>
@@ -207,61 +209,69 @@ useEffect(() => {
         ))}
       </Row>
 {ukupnoStranica > 1 && (
-  <div className="d-flex flex-column align-items-center mt-4 mb-3">
-    <Pagination className="mb-2 flex-wrap justify-content-center">
-      <Pagination.First
-        onClick={() => setTrenutnaStranica(1)}
-        disabled={trenutnaStranica === 1}
-      />
+        <div className="d-flex flex-column align-items-center mt-4 mb-3">
+          <Pagination className="mb-2 justify-content-center">
+            <Pagination.First
+              onClick={() => promijeniStranicu(1)}
+              disabled={trenutnaStranica === 1}
+            />
+            <Pagination.Prev
+              onClick={() => promijeniStranicu(trenutnaStranica - 1)}
+              disabled={trenutnaStranica === 1}
+            />
 
-      <Pagination.Prev
-        onClick={() =>
-          setTrenutnaStranica((stranica) => stranica - 1)
-        }
-        disabled={trenutnaStranica === 1}
-      />
+            {[...Array(ukupnoStranica)].map((_, indeks) => {
+              const brojStranice = indeks + 1;
+              if (
+                brojStranice === 1 ||
+                brojStranice === ukupnoStranica ||
+                (brojStranice >= trenutnaStranica - 2 && brojStranice <= trenutnaStranica + 2)
+              ) {
+                return (
+                  <Pagination.Item
+                    key={brojStranice}
+                    active={brojStranice === trenutnaStranica}
+                    onClick={() => promijeniStranicu(brojStranice)}
+                  >
+                    {brojStranice}
+                  </Pagination.Item>
+                );
+              } else if (
+                brojStranice === trenutnaStranica - 3 ||
+                brojStranice === trenutnaStranica + 3
+              ) {
+                return <Pagination.Ellipsis key={brojStranice} disabled />;
+              }
+              return null;
+            })}
 
-      {Array.from({ length: ukupnoStranica }, (_, i) => i + 1).map(
-        (stranica) => (
-          <Pagination.Item
-            key={stranica}
-            active={stranica === trenutnaStranica}
-            onClick={() => setTrenutnaStranica(stranica)}
-          >
-            {stranica}
-          </Pagination.Item>
-        )
+            <Pagination.Next
+              onClick={() => promijeniStranicu(trenutnaStranica + 1)}
+              disabled={trenutnaStranica === ukupnoStranica}
+            />
+            <Pagination.Last
+              onClick={() => promijeniStranicu(ukupnoStranica)}
+              disabled={trenutnaStranica === ukupnoStranica}
+            />
+          </Pagination>
+
+          <small className="text-muted text-center">
+            Prikazano{" "}
+            {Math.min(
+              (trenutnaStranica - 1) * prijavaPoStranici + 1,
+              sortiranePrijave.length
+            )}
+            {" – "}
+            {Math.min(
+              trenutnaStranica * prijavaPoStranici,
+              sortiranePrijave.length
+            )}
+            {" od "}
+            {sortiranePrijave.length} prijava
+          </small>
+        </div>
       )}
 
-      <Pagination.Next
-        onClick={() =>
-          setTrenutnaStranica((stranica) => stranica + 1)
-        }
-        disabled={trenutnaStranica === ukupnoStranica}
-      />
-
-      <Pagination.Last
-        onClick={() => setTrenutnaStranica(ukupnoStranica)}
-        disabled={trenutnaStranica === ukupnoStranica}
-      />
-    </Pagination>
-
-    <small className="text-muted text-center">
-      Prikazano{" "}
-      {Math.min(
-        (trenutnaStranica - 1) * prijavaPoStranici + 1,
-        sortiranePrijave.length
-      )}
-      {" – "}
-      {Math.min(
-        trenutnaStranica * prijavaPoStranici,
-        sortiranePrijave.length
-      )}
-      {" od "}
-      {sortiranePrijave.length} prijava
-    </small>
-  </div>
-)}
       {prikazanePrijave.length === 0 && (
         <div className="text-center py-5 text-muted">
           <h5>Nema prijava koje odgovaraju zadanim kriterijima.</h5>

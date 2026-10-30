@@ -26,7 +26,7 @@ export default function PrijavePregled() {
   useEffect(() => {
     async function dohvatiInicijalnePodatke() {
       try {
-        const [ resVrste, resTipovi ] = await Promise.all([
+        const [resVrste, resTipovi] = await Promise.all([
           VrsteService.get(),
           TipService.get(),
 
@@ -40,29 +40,30 @@ export default function PrijavePregled() {
     dohvatiInicijalnePodatke();
   }, []);
 
-  async function ucitajStranicu(stranica) {
-    try {
-      const odgovor = await prijaveService.dohvatiStranicu(stranica, velicinaStranice);
-      setPrijave(toArray(odgovor.data));
-      postaviUkupnoStranica(odgovor.ukupnoStranica || 0);
-    } catch (error) {
-      console.error("Greška pri dohvatu stranice prijava:", error);
-    }
-  }
+  const [osvjezi, setOsvjezi] = useState(0);
 
   useEffect(() => {
-    ucitajStranicu(trenutnaStranica);
-  }, [trenutnaStranica]);
+    async function ucitajStranicu() {
+      try {
+        const odgovor = await prijaveService.dohvatiStranicu(trenutnaStranica, velicinaStranice);
+        setPrijave(toArray(odgovor.data));
+        postaviUkupnoStranica(odgovor.ukupnoStranica || 0);
+      } catch (error) {
+        console.error("Greška pri dohvatu stranice prijava:", error);
+      }
+    }
+    ucitajStranicu();
+  }, [trenutnaStranica, osvjezi]);
+
 
   async function obrisi(id) {
     if (!confirm('Brisanjem prijave brišu se i svi njezini tragovi. Nastaviti?')) {
       return
     }
-    
+
     await prijaveService.obrisi(id)
     setPrijave(prevPrijave => prevPrijave.filter(p => p.id !== id));
-    ucitajStranicu(trenutnaStranica);
-  }
+setOsvjezi((n) => n + 1);  }
 
   function promijeniStranicu(stranica) {
     postaviTrenutnuStranicu(stranica);
@@ -77,7 +78,7 @@ export default function PrijavePregled() {
     const tip = tipovi.find(t => t.id === id);
     return tip ? tip.naziv : id;
   };
-  
+
   return (
     <Container>
       <Card className="shadow-sm border-0 rounded-3">
@@ -142,7 +143,7 @@ export default function PrijavePregled() {
             </tbody>
           </Table>
         </Card.Body>
-{ukupnoStranica > 1 && (
+        {ukupnoStranica > 1 && (
           <div className="d-flex justify-content-center p-3">
             <Pagination>
               <Pagination.First
