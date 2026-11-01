@@ -36,7 +36,7 @@ export default function Katalog() {
       : new Date(b.datum) - new Date(a.datum)
   );
 
-const ukupnoStranica = Math.ceil(sortiranePrijave.length / prijavaPoStranici);
+  const ukupnoStranica = Math.ceil(sortiranePrijave.length / prijavaPoStranici);
   const trenutnaStranicaSafe = ukupnoStranica > 0 ? Math.min(trenutnaStranica, ukupnoStranica) : 1;
 
   const prikazanePrijave = sortiranePrijave.slice(
@@ -45,14 +45,14 @@ const ukupnoStranica = Math.ceil(sortiranePrijave.length / prijavaPoStranici);
   );
 
   function promijeniFiltere(noviFilteri) {
-  setFilteri(noviFilteri);
-  setTrenutnaStranica(1);
-}
-function promijeniSortiranje(novo) {
-  setSortiranje(novo);
-  setTrenutnaStranica(1);
-}
-function promijeniStranicu(novaStranica) {
+    setFilteri(noviFilteri);
+    setTrenutnaStranica(1);
+  }
+  function promijeniSortiranje(novo) {
+    setSortiranje(novo);
+    setTrenutnaStranica(1);
+  }
+  function promijeniStranicu(novaStranica) {
     setTrenutnaStranica(novaStranica);
   }
 
@@ -142,7 +142,7 @@ function promijeniStranicu(novaStranica) {
       <Row className="g-4">
         {prikazanePrijave.map((prijava) => (
           <Col xs={12} md={4} key={prijava.id}>
-            <Card className={`h-100 rounded-3 ${prijava.hitno ? "border border-danger border-3" : "border-0 shadow-sm"}`}
+            <Card className={`h-100 rounded-3 position-relative ${prijava.hitno ? "border border-danger border-3" : "border-0 shadow-sm"}`}
               style={prijava.hitno ? { boxShadow: "0 0 0 .25rem rgba(220,53,69,.15)" } : undefined} >
               {prijava.slika && (
                 <Card.Img
@@ -155,8 +155,12 @@ function promijeniStranicu(novaStranica) {
               <Card.Body className="d-flex flex-column">
                 <div className="d-flex justify-content-between align-items-start mb-2 justify-content-center col-12 col-md-auto">
                   <Card.Title className="mb-0 fw-bold fs-4">
-                    {prijava.zivotinja_ime}
-                  </Card.Title>
+                    <Link
+                      to={RouteNames.DETALJI_SLUCAJA.replace(':id', prijava.id)}
+                      className="stretched-link text-dark text-decoration-none"
+                    >
+                      {prijava.zivotinja_ime}
+                    </Link>                  </Card.Title>
                 </div>
 
                 <Card.Subtitle className="mb-3 text-muted">
@@ -196,19 +200,12 @@ function promijeniStranicu(novaStranica) {
                     })}
                   </div>
                 )}
-
-                <Link
-                  to={RouteNames.DETALJI_SLUCAJA.replace(':id', prijava.id)}
-                  className="btn btn-primary"
-                >
-                  Detalji i tragovi
-                </Link>
               </Card.Body>
             </Card>
           </Col>
         ))}
       </Row>
-{ukupnoStranica > 1 && (
+      {ukupnoStranica > 1 && (
         <div className="d-flex flex-column align-items-center mt-4 mb-3">
           <Pagination className="mb-2 justify-content-center">
             <Pagination.First

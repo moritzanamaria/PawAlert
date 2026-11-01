@@ -122,7 +122,7 @@ const bojeTekstaOznaka = ['#0F52BA', '#FFD1DC', '#36454F', '#ffffff', '#cccccc',
             throw new Error('Nema dostupnih prijava. Prvo generirajte prijave.');
         }
 
-        const osjeckeUlice = ['Svačićeva ulica', 'Retfala', 'Jug 2', 'Tvrđa', 'Donji grad', 'Gornji grad', 'Industrijska četvrt'];
+        const osjeckeUlice = ['Ulica Republike', 'Europska avenija', 'Gundulićeva ulica', 'Vukovarska ulica', 'Kardinala A. Stepinca', 'Strossmayerova ulica', 'Svačićeva ulica', 'Ulica J. J. Strossmayera'];
 
         for (let i = 0; i < broj; i++) {
             const randomPrijava = prijave[faker.number.int({ min: 0, max: prijave.length - 1 })];
@@ -132,8 +132,8 @@ const bojeTekstaOznaka = ['#0F52BA', '#FFD1DC', '#36454F', '#ffffff', '#cccccc',
                 prijava: randomPrijava.id,
                 opis: faker.lorem.paragraph(),
                 lokacija: {
-                    lat: faker.number.float({ min: 45.5400, max: 45.5750, precision: 0.0001 }),
-                    lng: faker.number.float({ min: 18.6400, max: 18.7200, precision: 0.0001 }),
+                    lat: faker.number.float({ min: 45.5400, max: 45.5750, fractionDigits: 4 }),
+                    lng: faker.number.float({ min: 18.6400, max: 18.7200, fractionDigits: 4 }),
                     opis: `Osijek, ${ulica} ${faker.number.int({ min: 1, max: 120 })}`
                 },
                 datum: faker.date.recent({ days: 10 }).toISOString()
@@ -193,7 +193,7 @@ const bojeTekstaOznaka = ['#0F52BA', '#FFD1DC', '#36454F', '#ffffff', '#cccccc',
 
         try {
             await generirajPrijave(brojPrijava);
-            setPoruka({ tip: 'success', tekst: `Uspješno generirano ${brojPrijava} prijava u Osijeku!` });
+            setPoruka({ tip: 'success', tekst: `Uspješno generirano ${brojPrijava} prijava!` });
         } catch (error) {
             setPoruka({ tip: 'danger', tekst: 'Greška pri generiranju prijava: ' + error.message });
         } finally {
@@ -208,7 +208,7 @@ const bojeTekstaOznaka = ['#0F52BA', '#FFD1DC', '#36454F', '#ffffff', '#cccccc',
 
         try {
             await generirajTragove(brojTragova);
-            setPoruka({ tip: 'success', tekst: `Uspješno generirano ${brojTragova} tragova u Osijeku!` });
+            setPoruka({ tip: 'success', tekst: `Uspješno generirano ${brojTragova} tragova!` });
         } catch (error) {
             setPoruka({ tip: 'danger', tekst: 'Greška pri generiranju tragova: ' + error.message });
         } finally {

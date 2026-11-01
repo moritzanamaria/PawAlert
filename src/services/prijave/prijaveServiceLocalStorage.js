@@ -13,7 +13,7 @@ function spremiUStorage(podaci) {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(podaci))
   } catch (error) {
     if (error.name === 'QuotaExceededError') {
-      throw new Error('Nema više mjesta u pregledniku. Smanji broj prijava.'), { cause: error }
+      throw new Error('Nema više mjesta u pregledniku. Smanji broj prijava.', { cause: error })
     }
     throw error
   }

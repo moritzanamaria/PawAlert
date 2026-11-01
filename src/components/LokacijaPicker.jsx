@@ -51,11 +51,16 @@ export default function LokacijaPicker({ value, onChange }) {
     const defaultLng = 18.6939;
 
     const imaValidneKoordinate = value && typeof value.lat === "number" && typeof value.lng === "number";
+
+    const imaValidanCentarOsijek = Array.isArray(CENTAR_OSIJEK) && 
+        CENTAR_OSIJEK.length === 2 && 
+        typeof CENTAR_OSIJEK[0] === "number" && 
+        typeof CENTAR_OSIJEK[1] === "number";
     
     const centarMape = imaValidneKoordinate 
         ? [value.lat, value.lng] 
-        : (CENTAR_OSIJEK && typeof CENTAR_OSIJEK.lat === "number" && typeof CENTAR_OSIJEK.lng === "number"
-            ? [CENTAR_OSIJEK.lat, CENTAR_OSIJEK.lng]
+        : (imaValidanCentarOsijek
+            ? CENTAR_OSIJEK
             : [defaultLat, defaultLng]);
 
     return (
