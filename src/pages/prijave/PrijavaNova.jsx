@@ -57,9 +57,13 @@ export default function PrijavaNova() {
     };
 
     async function dodaj(prijava) {
-        await prijaveService.dodaj(prijava).then(() => {
+        try {
+            await prijaveService.dodaj(prijava)
             navigate(povratak)
-        })
+        } catch (error) {
+            alert(error.message)
+        }
+
     }
     function obradiSubmit(e) {
         e.preventDefault()

@@ -21,6 +21,7 @@ export default function PrijavePregled() {
 
   const [trenutnaStranica, postaviTrenutnuStranicu] = useState(1);
   const [ukupnoStranica, postaviUkupnoStranica] = useState(0);
+  const [ukupnoStavki, postaviUkupnoStavki] = useState(0);
   const velicinaStranice = 6;
 
   useEffect(() => {
@@ -48,6 +49,7 @@ export default function PrijavePregled() {
         const odgovor = await prijaveService.dohvatiStranicu(trenutnaStranica, velicinaStranice);
         setPrijave(toArray(odgovor.data));
         postaviUkupnoStranica(odgovor.ukupnoStranica || 0);
+        postaviUkupnoStavki(odgovor.ukupnoStavki || 0);
       } catch (error) {
         console.error("Greška pri dohvatu stranice prijava:", error);
       }
@@ -143,9 +145,10 @@ setOsvjezi((n) => n + 1);  }
             </tbody>
           </Table>
         </Card.Body>
+         {ukupnoStavki > 0 && (
+          <div className="d-flex flex-column align-items-center p-3">
         {ukupnoStranica > 1 && (
-          <div className="d-flex justify-content-center p-3">
-            <Pagination>
+            <Pagination  className="mb-2 flex-wrap justify-content-center">
               <Pagination.First
                 onClick={() => promijeniStranicu(1)}
                 disabled={trenutnaStranica === 1}
@@ -189,9 +192,24 @@ setOsvjezi((n) => n + 1);  }
                 disabled={trenutnaStranica === ukupnoStranica}
               />
             </Pagination>
+        )}
+       <small className="text-muted text-center">
+              Prikazano{" "}
+              {(trenutnaStranica - 1) * velicinaStranice + 1}
+              {" – "}
+              {Math.min(trenutnaStranica * velicinaStranice, ukupnoStavki)}
+              {" od "}
+              {ukupnoStavki} prijava
+            </small>
+          </div>
+        )}
+
+        {ukupnoStavki === 0 && (
+          <div className="text-center py-5 text-muted">
+            <h5>Trenutno nema prijava.</h5>
           </div>
         )}
       </Card>
     </Container>
-  )
+  );
 }

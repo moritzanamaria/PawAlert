@@ -34,6 +34,7 @@ export const IME_APLIKACIJE = 'PawAlert'
 
 export const ZASTARJELO_DANA = 30
 
+export const MAX_PRIJAVA = 500
 
 // localStorage   memorija
 export const DATA_SOURCE = 'localStorage'

@@ -1,4 +1,5 @@
 import { prijave } from "./prijavePodaci";
+import { MAX_PRIJAVA } from "../../constants";
 
 async function get() {
   return { data: [...prijave] }
@@ -10,6 +11,9 @@ async function getById(id) {
 }
 
 async function dodaj(prijava) {
+  if (prijave.length >= MAX_PRIJAVA) {
+    throw new Error(`Dosegnut je najveći dopušteni broj prijava (${MAX_PRIJAVA}).`)
+  }
   if (prijave.length === 0) {
     prijava.id = 1
   } else {
@@ -36,17 +40,17 @@ async function obrisi(id) {
 }
 
 async function dohvatiStranicu(stranica = 1, velicinaStranice = 8) {
-    const pocetniIndeks = (stranica - 1) * velicinaStranice; // (2-1) * 8, 1 * 8 = 8
-    const zavrsniIndeks = pocetniIndeks + velicinaStranice; // 8+8=16
-    const stranicenjePodaci = prijave.slice(pocetniIndeks, zavrsniIndeks);
-    const ukupnoStavki = prijave.length;
-    const ukupnoStranica = Math.ceil(ukupnoStavki / velicinaStranice);
+  const pocetniIndeks = (stranica - 1) * velicinaStranice; // (2-1) * 8, 1 * 8 = 8
+  const zavrsniIndeks = pocetniIndeks + velicinaStranice; // 8+8=16
+  const stranicenjePodaci = prijave.slice(pocetniIndeks, zavrsniIndeks);
+  const ukupnoStavki = prijave.length;
+  const ukupnoStranica = Math.ceil(ukupnoStavki / velicinaStranice);
 
-    return {
-        data: stranicenjePodaci,
-        ukupnoStranica: ukupnoStranica,
-        ukupnoStavki: ukupnoStavki
-    };
+  return {
+    data: stranicenjePodaci,
+    ukupnoStranica: ukupnoStranica,
+    ukupnoStavki: ukupnoStavki
+  };
 }
 
 
