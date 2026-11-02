@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react"
 import { Link, useParams } from "react-router-dom"
-import { Card, Container, ListGroup, Row, Col } from "react-bootstrap"
+import { Button, Card, Container, ListGroup, Row, Col } from "react-bootstrap"
 import { RouteNames, putanja } from "../constants"
 import prijaveService from "../services/prijave/prijaveService"
 import TragoviService from "../services/tragovi/TragoviService"
@@ -8,25 +8,35 @@ import FormatDatuma from "../components/FormatDatuma";
 import { BiPlus, BiMap, BiTime, BiPrinter } from "react-icons/bi";
 import TragoviMapa from "../components/TragoviMapa";
 import OznakeService from "../services/oznake/OznakeService"
-import PrijavaPDFGenerator from "../components/PrijavaPDFGenerator"
+import VrsteService from "../services/vrste/VrsteService"
+import TipService from "../services/tip/TipService"
+import LetakModal from "../components/LetakModal"
 
 export default function DetaljiSlucaja() {
     const { id } = useParams()
     const [prijava, setPrijava] = useState(null)
     const [tragovi, setTragovi] = useState([])
     const [oznake, setOznake] = useState([])
+    const [vrste, setVrste] = useState([])
+    const [tipovi, setTipovi] = useState([])
+    const [prikaziLetak, setPrikaziLetak] = useState(false)
+
 
     useEffect(() => {
         async function ucitaj() {
-          try {
-                const [odgovor, t, resOznake] = await Promise.all([
+            try {
+                const [odgovor, t, resOznake, resVrste, resTipovi] = await Promise.all([
                     prijaveService.getById(id),
                     TragoviService.getByPrijava(id),
-                    OznakeService.get()
+                    OznakeService.get(),
+                    VrsteService.get(),
+                    TipService.get()
                 ])
                 setPrijava(odgovor.data ?? null)
                 setTragovi(t.data ?? [])
                 setOznake(resOznake.data ?? [])
+                setVrste(resVrste.data ?? resVrste ?? [])
+                setTipovi(resTipovi.data ?? resTipovi ?? [])
             } catch (error) {
                 console.error("Greška pri dohvatu podataka:", error)
             }
@@ -34,10 +44,6 @@ export default function DetaljiSlucaja() {
         ucitaj()
     }, [id])
 
-     const generirajPDF = PrijavaPDFGenerator({ prijava, tragovi });
-
-  
-   
     const renderOznaka = () => {
         if (!prijava || oznake.length === 0) return null
         const oznakePrijave = prijava.oznake ?? (
@@ -48,39 +54,39 @@ export default function DetaljiSlucaja() {
                     : []
         );
 
-    const oznakeZaPrikaz = oznakePrijave
-        .map((stavka) => {
-            const oznakaId =
-                typeof stavka === "object"
-                    ? stavka.id
-                    : stavka;
+        const oznakeZaPrikaz = oznakePrijave
+            .map((stavka) => {
+                const oznakaId = typeof stavka === "object" ? stavka.id : stavka;
+                return oznake.find((o) => String(o.id) === String(oznakaId));
+            })
+            .filter(Boolean);
 
-            return oznake.find(
-                (o) => String(o.id) === String(oznakaId)
-            );
-        })
-        .filter(Boolean);
+        if (oznakeZaPrikaz.length === 0) return null;
 
-    if (oznakeZaPrikaz.length === 0) return null;
+        return (
+            <div className="d-flex flex-wrap gap-2 mb-3">
+                {oznakeZaPrikaz.map((oznaka) => (
+                    <span
+                        key={oznaka.id}
+                        style={{
+                            backgroundColor: oznaka.boja || "#6c757d",
+                            color: oznaka.boja_teksta || "#fff"
+                        }}
+                        className="px-2 py-1 fs-6 rounded-pill"
+                    >
+                        {oznaka.naziv}
+                    </span>
+                ))}
+            </div>
+        );
+    };
 
-   
-    return (
-        <div className="d-flex flex-wrap gap-2 mb-3">
-            {oznakeZaPrikaz.map((oznaka) => (
-                <span
-                    key={oznaka.id}
-                    style={{
-                        backgroundColor: oznaka.boja || "#6c757d",
-                        color:  oznaka.boja_teksta || "#fff"
-                    }}
-                    className="px-2 py-1 fs-6 rounded-pill"
-                >
-                    {oznaka.naziv}
-                </span>
-            ))}
-        </div>
-    );
-};
+    const oznakeZaLetak = (prijava?.oznake ?? [])
+        .map((oid) => oznake.find((o) => String(o.id) === String(typeof oid === "object" ? oid.id : oid)))
+        .filter(Boolean)
+    const nazivVrste = vrste.find((v) => v.id === prijava?.zivotinja_vrsta)?.naziv ?? ""
+    const nazivTipa = tipovi.find((t) => t.id === prijava?.tip_prijave)?.naziv ?? ""
+
     if (!prijava) {
         return (
             <Container className="my-4">
@@ -103,7 +109,7 @@ export default function DetaljiSlucaja() {
                         />
                         <Card.Body>
                             <h2 className="fw-bold mb-2">{prijava.zivotinja_ime || "Nepoznato ime"}</h2>
-                           <div> {renderOznaka()} </div>
+                            <div> {renderOznaka()} </div>
                             <p className="text-secondary mb-3">{prijava.zivotinja_opis}</p>
 
                             <div className="d-flex align-items-center gap-2 text-muted small mb-2">
@@ -116,24 +122,9 @@ export default function DetaljiSlucaja() {
                                 <FormatDatuma datum={prijava.datum} prikazDatuma="Nepoznato" />
                             </div>
 
-                            <hr className="text-muted my-3" />
-                            <div className="d-flex flex-column gap-2">
-                                <span className="text-muted small fw-semibold">Preuzmi letak:</span>
-                                <div className="d-flex gap-2">
-                                    <button
-                                        onClick={() => generirajPDF(true)}
-                                        className="btn btn-primary btn-sm flex-fill d-flex align-items-center justify-content-center gap-1 shadow-sm py-2"
-                                    >
-                                        <BiPrinter size={16} /> PDF (U boji)
-                                    </button>
-                                    <button
-                                        onClick={() => generirajPDF(false)}
-                                        className="btn btn-outline-secondary btn-sm flex-fill d-flex align-items-center justify-content-center gap-1 shadow-sm py-2"
-                                    >
-                                        <BiPrinter size={16} /> PDF (Crno-bijelo)
-                                    </button>
-                                </div>
-                            </div>
+                            <Button variant="outline-dark" className="mt-3 d-flex align-items-center gap-2" onClick={() => setPrikaziLetak(true)}>
+                                <BiPrinter size={18} /> Izradi letak (PDF)
+                            </Button>
                         </Card.Body>
                     </Card>
                 </Col>
@@ -179,6 +170,14 @@ export default function DetaljiSlucaja() {
                     </div>
                 </Col>
             </Row>
+            <LetakModal
+                show={prikaziLetak}
+                onHide={() => setPrikaziLetak(false)}
+                prijava={prijava}
+                nazivTipa={nazivTipa}
+                nazivVrste={nazivVrste}
+                oznake={oznakeZaLetak}
+            />
         </Container>
     );
 }
