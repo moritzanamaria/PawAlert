@@ -5,9 +5,10 @@ import { RouteNames, putanja } from "../constants"
 import prijaveService from "../services/prijave/prijaveService"
 import TragoviService from "../services/tragovi/TragoviService"
 import FormatDatuma from "../components/FormatDatuma";
-import { BiPlus, BiMap, BiTime } from "react-icons/bi";
+import { BiPlus, BiMap, BiTime, BiPrinter } from "react-icons/bi";
 import TragoviMapa from "../components/TragoviMapa";
 import OznakeService from "../services/oznake/OznakeService"
+import PrijavaPDFGenerator from "../components/PrijavaPDFGenerator"
 
 export default function DetaljiSlucaja() {
     const { id } = useParams()
@@ -33,15 +34,19 @@ export default function DetaljiSlucaja() {
         ucitaj()
     }, [id])
 
+     const generirajPDF = PrijavaPDFGenerator({ prijava, tragovi });
+
+  
+   
     const renderOznaka = () => {
-    if (!prijava || oznake.length === 0) return 
-    const oznakePrijave = prijava.oznake ?? (
-        prijava.oznaka_id != null
-            ? [prijava.oznaka_id]
-            : prijava.oznaka != null
-                ? [prijava.oznaka]
-                : []
-    );
+        if (!prijava || oznake.length === 0) return null
+        const oznakePrijave = prijava.oznake ?? (
+            prijava.oznaka_id != null
+                ? [prijava.oznaka_id]
+                : prijava.oznaka != null
+                    ? [prijava.oznaka]
+                    : []
+        );
 
     const oznakeZaPrikaz = oznakePrijave
         .map((stavka) => {
@@ -58,6 +63,7 @@ export default function DetaljiSlucaja() {
 
     if (oznakeZaPrikaz.length === 0) return null;
 
+   
     return (
         <div className="d-flex flex-wrap gap-2 mb-3">
             {oznakeZaPrikaz.map((oznaka) => (
@@ -108,6 +114,25 @@ export default function DetaljiSlucaja() {
                             <div className="d-flex align-items-center gap-2 text-muted small">
                                 <BiTime size={18} />
                                 <FormatDatuma datum={prijava.datum} prikazDatuma="Nepoznato" />
+                            </div>
+
+                            <hr className="text-muted my-3" />
+                            <div className="d-flex flex-column gap-2">
+                                <span className="text-muted small fw-semibold">Preuzmi letak:</span>
+                                <div className="d-flex gap-2">
+                                    <button
+                                        onClick={() => generirajPDF(true)}
+                                        className="btn btn-primary btn-sm flex-fill d-flex align-items-center justify-content-center gap-1 shadow-sm py-2"
+                                    >
+                                        <BiPrinter size={16} /> PDF (U boji)
+                                    </button>
+                                    <button
+                                        onClick={() => generirajPDF(false)}
+                                        className="btn btn-outline-secondary btn-sm flex-fill d-flex align-items-center justify-content-center gap-1 shadow-sm py-2"
+                                    >
+                                        <BiPrinter size={16} /> PDF (Crno-bijelo)
+                                    </button>
+                                </div>
                             </div>
                         </Card.Body>
                     </Card>
