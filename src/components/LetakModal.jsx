@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Alert, Button, Form, Modal, Spinner } from "react-bootstrap";
 import { BiPrinter } from "react-icons/bi";
-import { generirajLetak } from "../utils/LetakPDFGenerator";
+import { generirajLetak } from "../utils/letakPdfGenerator.js";
 
 const citaj = (kljuc) => {
   try {
