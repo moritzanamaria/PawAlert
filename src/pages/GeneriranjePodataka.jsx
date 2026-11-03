@@ -7,6 +7,8 @@ import TipService from '../services/tip/TipService';
 import VrsteService from '../services/vrste/VrsteService';
 import OznakeService from '../services/oznake/OznakeService';
 import { DATA_SOURCE } from '../constants';
+import { izveziSveUXml } from '../utils/xmlExporter';
+import { BsFileEarmarkCode } from 'react-icons/bs';
 
 export default function GeneriranjePodataka() {
     const [brojVrsta, setBrojVrsta] = useState(5);
@@ -53,8 +55,8 @@ export default function GeneriranjePodataka() {
 
     const generirajOznake = async (broj) => {
         const naziviOznaka = ['Ima ogrlicu', 'Ozlijeđen', 'Star', 'Mladunče', 'Preplašen', 'Traži se vlasnik', 'Agresivan', 'Miran'];
-        const bojeOznaka =  ['#fd7e14','#dc3545', '#198754', '#0d6efd', '#6c757d', '#ffc107', '#6610f2', '#d63384'];
-const bojeTekstaOznaka = ['#0F52BA', '#FFD1DC', '#36454F', '#ffffff', '#cccccc', '#000000'];
+        const bojeOznaka = ['#fd7e14', '#dc3545', '#198754', '#0d6efd', '#6c757d', '#ffc107', '#6610f2', '#d63384'];
+        const bojeTekstaOznaka = ['#0F52BA', '#FFD1DC', '#36454F', '#ffffff', '#cccccc', '#000000'];
         for (let i = 0; i < broj; i++) {
             await OznakeService.dodaj({
                 naziv: naziviOznaka[i % naziviOznaka.length] + (i >= naziviOznaka.length ? ` ${Math.floor(i / naziviOznaka.length) + 1}` : ''),
@@ -378,13 +380,13 @@ const bojeTekstaOznaka = ['#0F52BA', '#FFD1DC', '#36454F', '#ffffff', '#cccccc',
             setLoading(false);
         }
     };
-if (DATA_SOURCE === 'memorija') {
+    if (DATA_SOURCE === 'memorija') {
         return (
             <Container className="mt-4">
                 <Card className="shadow-sm border-0 rounded-3 p-4 text-center">
-                    <h3 className='shadow-sm p-4' style={{color: 'olive', background: 'antiquewhite'}}>Trenutno ste na memoriji te ne možete generirati podatke</h3>
-                    <h5 className='text-muted p-5' style={{fontStyle: "italic"}}>Pogledaj pregled prijava da vidiš podatke koji su na memoriji te ih tamo po potrebi ažuriraj </h5>
-                
+                    <h3 className='shadow-sm p-4' style={{ color: 'olive', background: 'antiquewhite' }}>Trenutno ste na memoriji te ne možete generirati podatke</h3>
+                    <h5 className='text-muted p-5' style={{ fontStyle: "italic" }}>Pogledaj pregled prijava da vidiš podatke koji su na memoriji te ih tamo po potrebi ažuriraj </h5>
+
                 </Card>
             </Container>
         );
@@ -404,6 +406,15 @@ if (DATA_SOURCE === 'memorija') {
                         </Button>
                         <Button variant="danger" onClick={handleObrisiSve} disabled={loading} className='mb-1 flex-fill flex-md-grow-0'>
                             {loading ? 'Radim...' : 'Obriši sve'}
+                        </Button>
+                        <Button
+                            onClick={izveziSveUXml}
+                            variant="outline-secondary"
+                            className="btn-icon p-2 rounded-circle shadow-sm border d-flex align-items-center justify-content-center"
+                            style={{ width: "38px", height: "38px" }}
+                            title="Izvezi cijelu bazu u XML"
+                        >
+                            <BsFileEarmarkCode size={20} />
                         </Button>
                     </div>
                     {poruka && (
@@ -490,68 +501,68 @@ if (DATA_SOURCE === 'memorija') {
                                 </Button>
                             </Form>
                         </Col>
-                    <Col md={4}>
-                        <Form onSubmit={handleGenerirajOznake}>
-                            <Form.Group className="mb-3">
-                                <Form.Label>Broj oznaka</Form.Label>
-                                <Form.Control
-                                    type="number"
-                                    min="1"
-                                    max="20"
-                                    value={brojOznaka}
-                                    onChange={(e) => setBrojOznaka(parseInt(e.target.value))}
-                                    disabled={loading}
-                                />
-                                <Form.Text className="text-muted">Unesite broj oznaka (1-20)</Form.Text>
-                            </Form.Group>
-                            <Button variant="primary" type="submit" disabled={loading} className="w-100">
-                                {loading ? 'Generiranje...' : 'Generiraj oznake'}
+                        <Col md={4}>
+                            <Form onSubmit={handleGenerirajOznake}>
+                                <Form.Group className="mb-3">
+                                    <Form.Label>Broj oznaka</Form.Label>
+                                    <Form.Control
+                                        type="number"
+                                        min="1"
+                                        max="20"
+                                        value={brojOznaka}
+                                        onChange={(e) => setBrojOznaka(parseInt(e.target.value))}
+                                        disabled={loading}
+                                    />
+                                    <Form.Text className="text-muted">Unesite broj oznaka (1-20)</Form.Text>
+                                </Form.Group>
+                                <Button variant="primary" type="submit" disabled={loading} className="w-100">
+                                    {loading ? 'Generiranje...' : 'Generiraj oznake'}
+                                </Button>
+                            </Form>
+                        </Col>
+                    </Row>
+                    <Alert variant="warning" className="mt-3">
+                        <strong>Upozorenje:</strong> Ove akcije će dodati nove podatke u postojeće. Ako želite početi ispočetka, prvo obrišite postojeće podatke.
+                    </Alert>
+
+                    <hr className="my-4" />
+
+                    <h3>Brisanje podataka</h3>
+                    <p className="text-muted">Koristite ove opcije za brisanje svih podataka iz baze.</p>
+
+                    <Row className="mt-3">
+                        <Col md={6}>
+                            <Button variant="danger" onClick={handleObrisiVrste} disabled={loading} className="w-100 mb-2">
+                                {loading ? 'Brisanje...' : 'Obriši sve vrste'}
                             </Button>
-                        </Form>
-                    </Col>
-                </Row>
-                <Alert variant="warning" className="mt-3">
-                    <strong>Upozorenje:</strong> Ove akcije će dodati nove podatke u postojeće. Ako želite početi ispočetka, prvo obrišite postojeće podatke.
-                </Alert>
-
-                <hr className="my-4" />
-
-                <h3>Brisanje podataka</h3>
-                <p className="text-muted">Koristite ove opcije za brisanje svih podataka iz baze.</p>
-
-                <Row className="mt-3">
-                    <Col md={6}>
-                        <Button variant="danger" onClick={handleObrisiVrste} disabled={loading} className="w-100 mb-2">
-                            {loading ? 'Brisanje...' : 'Obriši sve vrste'}
-                        </Button>
-                    </Col>
-                    <Col md={6}>
-                        <Button variant="danger" onClick={handleObrisiTipove} disabled={loading} className="w-100 mb-2">
-                            {loading ? 'Brisanje...' : 'Obriši sve tipove'}
-                        </Button>
-                    </Col>
-                    <Col md={4}>
-                        <Button variant="danger" onClick={handleObrisiPrijave} disabled={loading} className="w-100 mb-2">
-                            {loading ? 'Brisanje...' : 'Obriši sve prijave'}
-                        </Button>
-                    </Col>
-                    <Col md={4}>
-                        <Button variant="danger" onClick={handleObrisiTragove} disabled={loading} className="w-100 mb-2">
-                            {loading ? 'Brisanje...' : 'Obriši sve tragove'}
-                        </Button>
-                    </Col>
-                    <Col md={4}>
+                        </Col>
+                        <Col md={6}>
+                            <Button variant="danger" onClick={handleObrisiTipove} disabled={loading} className="w-100 mb-2">
+                                {loading ? 'Brisanje...' : 'Obriši sve tipove'}
+                            </Button>
+                        </Col>
+                        <Col md={4}>
+                            <Button variant="danger" onClick={handleObrisiPrijave} disabled={loading} className="w-100 mb-2">
+                                {loading ? 'Brisanje...' : 'Obriši sve prijave'}
+                            </Button>
+                        </Col>
+                        <Col md={4}>
+                            <Button variant="danger" onClick={handleObrisiTragove} disabled={loading} className="w-100 mb-2">
+                                {loading ? 'Brisanje...' : 'Obriši sve tragove'}
+                            </Button>
+                        </Col>
+                        <Col md={4}>
                             <Button variant="danger" onClick={handleObrisiOznake} disabled={loading} className="w-100 mb-2">
                                 {loading ? 'Brisanje...' : 'Obriši sve oznake'}
                             </Button>
                         </Col>
-                </Row>
+                    </Row>
 
-                <Alert variant="danger" className="mt-3">
-                    <strong>Oprez!</strong> Brisanje podataka je trajna akcija i ne može se poništiti.
-                </Alert>
-            </Card.Body>
-        </Card>
-            </Container >
-        );
+                    <Alert variant="danger" className="mt-3">
+                        <strong>Oprez!</strong> Brisanje podataka je trajna akcija i ne može se poništiti.
+                    </Alert>
+                </Card.Body>
+            </Card>
+        </Container >
+    );
 }
