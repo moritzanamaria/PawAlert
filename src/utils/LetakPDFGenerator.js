@@ -145,20 +145,23 @@ export function napraviLetak({
   // 2) Fotografija
   const FY = 48;
   const FH = 82;
-  doc.setFillColor(...SVIJETLA);
-  doc.rect(RUB, FY, SIRINA, FH, "F");
+  doc.setDrawColor(...AKCENT);
+  doc.setLineWidth(0.8);
   if (slika) {
     const omjer = Math.min(SIRINA / slika.w, FH / slika.h);
     const dw = slika.w * omjer;
     const dh = slika.h * omjer;
-    doc.addImage(slika.dataUrl, "JPEG", RUB + (SIRINA - dw) / 2, FY + (FH - dh) / 2, dw, dh);
+    const fx = RUB + (SIRINA - dw) / 2;
+    const fy = FY + (FH - dh) / 2;
+    doc.addImage(slika.dataUrl, "JPEG", fx, fy, dw, dh);
+    doc.rect(fx, fy, dw, dh);
   } else {
+    doc.setFillColor(...SVIJETLA);
+    doc.rect(RUB, FY, SIRINA, FH, "F");
     font("normal", 14, SIVA);
     doc.text("Nema fotografije", STRANICA_W / 2, FY + FH / 2, { align: "center" });
+    doc.rect(RUB, FY, SIRINA, FH);
   }
-  doc.setDrawColor(...AKCENT);
-  doc.setLineWidth(0.8);
-  doc.rect(RUB, FY, SIRINA, FH);
 
   // 3) Ime i osnovni podaci
   const imeValjano = prijava.zivotinja_ime && !/^nepoznato$/i.test(prijava.zivotinja_ime.trim());
