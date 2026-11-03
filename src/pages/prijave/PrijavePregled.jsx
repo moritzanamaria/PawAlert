@@ -4,10 +4,13 @@ import VrsteService from "../../services/vrste/VrsteService";
 import TipService from "../../services/tip/TipService";
 import TragoviService from "../../services/tragovi/TragoviService"
 import { RouteNames, putanja } from "../../constants";
-import { Badge, Button, Card, Container, Table, ButtonGroup, Pagination } from "react-bootstrap";
+import { Badge, Button, Card, Container, Table, ButtonGroup, Pagination, Tooltip, OverlayTrigger } from "react-bootstrap";
 import FormatDatuma from "../../components/FormatDatuma";
 import { Link, useNavigate } from "react-router-dom";
 import { BiPlus, BiPencil, BiTrash, BiSearch } from "react-icons/bi";
+import { generirajPrijaveWord } from '../../utils/prijaveWordGenerator';
+import { BsFileEarmarkWord } from 'react-icons/bs';
+import OznakeService from "../../services/oznake/OznakeService";
 
 const toArray = (res) => {
   const data = Array.isArray(res) ? res : (res?.data ?? []);
@@ -18,7 +21,8 @@ export default function PrijavePregled() {
   const [prijave, setPrijave] = useState([])
   const [vrste, setVrste] = useState([]);
   const [tipovi, setTipovi] = useState([]);
-  const [tragovi, setTragovi] = useState([]);
+  const [oznake, setOznake] = useState([]);
+  
   const navigate = useNavigate();
 
   const [trenutnaStranica, postaviTrenutnuStranicu] = useState(1);
@@ -29,13 +33,14 @@ export default function PrijavePregled() {
   useEffect(() => {
     async function dohvatiInicijalnePodatke() {
       try {
-        const [resVrste, resTipovi] = await Promise.all([
+        const [resVrste, resTipovi, resOznake] = await Promise.all([
           VrsteService.get(),
           TipService.get(),
-
+          OznakeService.get(),
         ]);
         setVrste(toArray(resVrste));
         setTipovi(toArray(resTipovi));
+        setOznake(toArray(resOznake))
       } catch (error) {
         console.error("Greška pri dohvatu podataka:", error);
       }
@@ -96,12 +101,38 @@ export default function PrijavePregled() {
     return tip ? tip.naziv : id;
   };
 
+  const handleExportWord = async () => {
+    try {
+      const res = await prijaveService.get();
+      const svePrijave = toArray(res);
+      generirajPrijaveWord(svePrijave, vrste, tipovi, oznake);
+    } catch (error) {
+      console.error("Greška pri dohvatu svih prijava za Word:", error);
+    }
+  };
+  
   return (
     <Container>
       <Card className="shadow-sm border-0 rounded-3">
         <Card.Header className="bg-white p-4 border-0 d-flex justify-content-between align-items-center flex-wrap gap-3">
           <div>
+            <div className="d-flex align-items-center gap-3 mb-1">
             <h3 className="fw-bold mb-1 text-dark">📋 Pregled prijava</h3>
+             <OverlayTrigger
+              placement="top"
+              trigger={["hover", "focus"]}
+              overlay={<Tooltip id="word-tooltip">Preuzmi Word katalog (.docx)</Tooltip>}
+            >
+              <Button
+                onClick={handleExportWord}
+                variant="light"
+                className="btn-icon p-2 rounded-circle shadow-sm border d-flex align-items-center justify-content-center text-primary"
+                style={{ width: "42px", height: "42px", transition: "all 0.2s" }}
+              >
+                <BsFileEarmarkWord size={22} />
+              </Button>
+            </OverlayTrigger>
+            </div>
             <p className="text-muted small mb-0">Popis svih uočenih i prijavljenih slučajeva</p>
           </div>
           <Link to={RouteNames.PRIJAVA_NOVA} className="btn btn-success fw-medium d-flex align-items-center gap-1 shadow-sm px-3 py-2 justify-content-center col-12 col-md-auto">
