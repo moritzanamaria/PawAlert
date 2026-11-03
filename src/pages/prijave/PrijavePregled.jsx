@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import prijaveService from "../../services/prijave/prijaveService";
 import VrsteService from "../../services/vrste/VrsteService";
 import TipService from "../../services/tip/TipService";
+import TragoviService from "../../services/tragovi/TragoviService"
 import { RouteNames, putanja } from "../../constants";
 import { Badge, Button, Card, Container, Table, ButtonGroup, Pagination } from "react-bootstrap";
 import FormatDatuma from "../../components/FormatDatuma";
@@ -17,6 +18,7 @@ export default function PrijavePregled() {
   const [prijave, setPrijave] = useState([])
   const [vrste, setVrste] = useState([]);
   const [tipovi, setTipovi] = useState([]);
+  const [tragovi, setTragovi] = useState([]);
   const navigate = useNavigate();
 
   const [trenutnaStranica, postaviTrenutnuStranicu] = useState(1);
@@ -63,10 +65,23 @@ export default function PrijavePregled() {
       return
     }
 
+     try {
+      const { data: tragovi } = await TragoviService.getByPrijava(id)
+      for (const trag of tragovi) {
+        await TragoviService.obrisi(trag.id)
+      }
     await prijaveService.obrisi(id)
-    setPrijave(prevPrijave => prevPrijave.filter(p => p.id !== id));
-setOsvjezi((n) => n + 1);  }
-
+  
+      if (prijave.length === 1 && trenutnaStranica > 1) {
+        postaviTrenutnuStranicu(trenutnaStranica - 1)
+      } else {
+        setOsvjezi((n) => n + 1)
+      }
+    } catch (error) {
+      console.error("Greška pri brisanju prijave:", error)
+    }
+  }
+  
   function promijeniStranicu(stranica) {
     postaviTrenutnuStranicu(stranica);
   }
