@@ -97,8 +97,8 @@ export function napraviLetak({
   const doc = new jsPDF({ unit: "mm", format: "a4" });
   doc.addFileToVFS("LINESeedJP-Regular.ttf", fontovi.regular);
   doc.addFont("LINESeedJP-Regular.ttf", "LINESeedJP", "normal");
-  doc.addFileToVFS("LINESeedJP-Bold.ttf", fontovi.bold);
-  doc.addFont("LINESeedJP-Bold.ttf", "LINESeedJP", "bold");
+  doc.addFileToVFS("line-bold.ttf", fontovi.bold);
+  doc.addFont("line-bold.ttf", "LINESeedJP", "bold");
 
   const stil = stilTipa(nazivTipa, prijava.tip_prijave);
   const imaTelefon = telefon.trim() !== "";
@@ -341,7 +341,7 @@ function ucitajFontove() {
   if (!kesFontova) {
     kesFontova = Promise.all([
       dohvatiFont("LINESeedJP-Regular.ttf"), 
-      dohvatiFont("LINESeedJP-Bold.ttf")])
+      dohvatiFont("line-bold.ttf")])
       .then(([regular, bold]) => ({ regular, bold }))
       .catch((error) => {
         kesFontova = null;
