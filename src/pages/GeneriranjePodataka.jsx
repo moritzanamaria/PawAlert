@@ -87,6 +87,7 @@ export default function GeneriranjePodataka() {
             const randomVrsta = vrste[faker.number.int({ min: 0, max: vrste.length - 1 })];
             const randomTip = tipovi[faker.number.int({ min: 0, max: tipovi.length - 1 })];
             const ulica = osjeckeUlice[faker.number.int({ min: 0, max: osjeckeUlice.length - 1 })];
+            const seedSlike = `zivotinja-${i}-${Math.floor(Math.random() * 10000)}`;
             const odabraneOznake = [];
             if (oznake.length > 0) {
                 const brojOznakaZaPrijavu = faker.number.int({ min: 0, max: Math.min(3, oznake.length) });
@@ -109,7 +110,7 @@ export default function GeneriranjePodataka() {
                     opis: `Osijek, ${ulica} ${faker.number.int({ min: 1, max: 120 })}`
                 },
                 datum: faker.date.recent({ days: 30 }).toISOString(),
-                slika: 'https://picsum.photos/400/300',
+                slika: `https://picsum.photos/seed/${seedSlike}/400/300`,
                 hitno: faker.datatype.boolean({ probability: 0.3 }),
                 oznake: odabraneOznake
             });

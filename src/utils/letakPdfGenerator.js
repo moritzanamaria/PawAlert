@@ -339,7 +339,9 @@ async function dohvatiFont(ime) {
 
 function ucitajFontove() {
   if (!kesFontova) {
-    kesFontova = Promise.all([dohvatiFont("LINESeedJP-Regular.ttf"), dohvatiFont("LINESeedJP-Bold.ttf")])
+    kesFontova = Promise.all([
+      dohvatiFont("LINESeedJP-Regular.ttf"), 
+      dohvatiFont("LINESeedJP-Bold.ttf")])
       .then(([regular, bold]) => ({ regular, bold }))
       .catch((error) => {
         kesFontova = null;

@@ -104,6 +104,7 @@ function MapView({ prijave = [], vrste: propVrste, tipovi: propTipovi, oznake: p
                       </div>
                     </>
                   )}
+                  <br />
                   <span>Lokacija: {p.lokacija?.opis || p.lokacija_opis || "-"}</span>
                   <br />
                   {p.datum && <small className="text-muted"><FormatDatuma datum={p.datum} /></small>}
