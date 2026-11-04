@@ -1,11 +1,39 @@
-import FormatDatuma from "./FormatDatuma";
+
 import { Link } from "react-router-dom";
 import { RouteNames, putanja } from "../constants";
+import { useEffect, useState } from "react";
 
 function Sidebar({ prijave = [], oznake = [] }) {
   const najnovije = [...prijave]
     .sort((a, b) => new Date(b.datum || 0) - new Date(a.datum || 0))
     .slice(0, 3);
+
+function ProtekloVrijeme({ datum }) {
+  const [sada, setSada] = useState(Date.now());
+
+  useEffect(() => {
+    const interval = setInterval(() => setSada(Date.now()), 1000);
+    return () => clearInterval(interval);
+  }, []);
+
+  const pocetak = new Date(datum).getTime();
+  if (Number.isNaN(pocetak)) return null;
+
+  let razlika = Math.max(0, Math.floor((sada - pocetak) / 1000));
+
+  const dana = Math.floor(razlika / 86400);
+  razlika %= 86400;
+  const sati = Math.floor(razlika / 3600);
+  razlika %= 3600;
+  const minute = Math.floor(razlika / 60);
+  const sekunde = razlika % 60;
+
+  return (
+    <span className="text-muted small">
+      {dana}d {sati}h {minute}m {sekunde}s
+    </span>
+  );
+}
 
   return (
     <div className="d-flex flex-column gap-3 h-100">
@@ -82,14 +110,21 @@ function Sidebar({ prijave = [], oznake = [] }) {
                   </div>
                   
                   {prijava.datum && (
-                    <span className="badge bg-light text-dark border small">
-                      <span className="datum">
-                        <FormatDatuma datum={prijava.datum} />
-                      </span>
-                    </span>
-                  )}
-
-                </div>
+          <div className="small mt-1 d-flex align-items-center gap-2">
+            <span
+              title={new Date(prijava.datum).toLocaleString("hr-HR")}
+              style={{ cursor: "pointer" }}
+            >
+              🕒
+            </span>
+            <span style={{color: "#ff0004"}}>
+              Od prijave prošlo:   
+              <br />
+            <ProtekloVrijeme datum={prijava.datum} />
+            </span>
+          </div>
+        )}
+      </div>
               
               
             ))
