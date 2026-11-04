@@ -76,8 +76,8 @@ export default function GeneriranjePodataka() {
         const oznakeOdgovor = await OznakeService.get();
         const oznake = oznakeOdgovor.data || oznakeOdgovor;
 
-        if (vrste.length === 0 || tipovi.length === 0) {
-            throw new Error('Nema dostupnih vrsta ili tipova. Prvo generirajte vrste i tipove.');
+        if (vrste.length === 0 || tipovi.length === 0 || oznake.length === 0) {
+            throw new Error('Nema dostupnih vrsta, tipova ili oznaka. Prvo generirajte vrste, tipove i oznake!');
         }
 
         const imenaZivotinja = ['Reks', 'Bubi', 'Maza', 'Luna', 'Garfield', 'Astor', 'Nero', 'Bella', 'Max', 'Rex', 'Medo', 'Kićo'];
@@ -147,6 +147,7 @@ export default function GeneriranjePodataka() {
         e.preventDefault();
         setLoading(true);
         setPoruka(null);
+
 
         try {
             await generirajVrste(brojVrsta);
@@ -224,6 +225,12 @@ export default function GeneriranjePodataka() {
         setPoruka(null);
 
         try {
+            const prijaveOdgovor = await prijaveService.get();
+            const prijave = prijaveOdgovor.data || prijaveOdgovor;
+
+            if (prijave && prijave.length > 0) {
+                throw new Error('Vrste se koriste u prijavama, prvo obrišite prijave!');
+            }
             const rezultat = await VrsteService.get();
             const vrste = rezultat.data || rezultat;
             for (const vrsta of vrste) {
@@ -243,6 +250,12 @@ export default function GeneriranjePodataka() {
         setPoruka(null);
 
         try {
+            const prijaveOdgovor = await prijaveService.get();
+            const prijave = prijaveOdgovor.data || prijaveOdgovor;
+
+            if (prijave && prijave.length > 0) {
+                throw new Error('Tipovi se koriste u prijavama, prvo obrišite prijave!');
+            }
             const rezultat = await TipService.get();
             const tipovi = rezultat.data || rezultat;
             for (const tip of tipovi) {
@@ -251,6 +264,31 @@ export default function GeneriranjePodataka() {
             setPoruka({ tip: 'success', tekst: `Uspješno obrisano ${tipovi.length} tipova!` });
         } catch (error) {
             setPoruka({ tip: 'danger', tekst: 'Greška pri brisanju tipova: ' + error.message });
+        } finally {
+            setLoading(false);
+        }
+    };
+
+     const handleObrisiOznake = async () => {
+        if (!window.confirm('Jeste li sigurni da želite obrisati sve oznake?')) return;
+        setLoading(true);
+        setPoruka(null);
+
+        try {
+            const prijaveOdgovor = await prijaveService.get();
+            const prijave = prijaveOdgovor.data || prijaveOdgovor;
+
+            if (prijave && prijave.length > 0) {
+                throw new Error('Oznake se koriste u prijavama, prvo obrišite prijave!');
+            }
+            const rezultat = await OznakeService.get();
+            const oznake = rezultat.data || rezultat;
+            for (const oznaka of oznake) {
+                await OznakeService.obrisi(oznaka.id);
+            }
+            setPoruka({ tip: 'success', tekst: `Uspješno obrisano ${oznake.length} oznaka!` });
+        } catch (error) {
+            setPoruka({ tip: 'danger', tekst: 'Greška pri brisanju oznaka: ' + error.message });
         } finally {
             setLoading(false);
         }
@@ -294,25 +332,7 @@ export default function GeneriranjePodataka() {
         }
     };
 
-    const handleObrisiOznake = async () => {
-        if (!window.confirm('Jeste li sigurni da želite obrisati sve oznake?')) return;
-        setLoading(true);
-        setPoruka(null);
-
-        try {
-            const rezultat = await OznakeService.get();
-            const oznake = rezultat.data || rezultat;
-            for (const oznaka of oznake) {
-                await OznakeService.obrisi(oznaka.id);
-            }
-            setPoruka({ tip: 'success', tekst: `Uspješno obrisano ${oznake.length} oznaka!` });
-        } catch (error) {
-            setPoruka({ tip: 'danger', tekst: 'Greška pri brisanju oznaka: ' + error.message });
-        } finally {
-            setLoading(false);
-        }
-    };
-
+   
     const handleGenerirajSve = async () => {
         setLoading(true);
         setPoruka(null);
@@ -425,7 +445,7 @@ export default function GeneriranjePodataka() {
                 </Card.Header>
                 <Card.Body>
                     <Row>
-                        <Col md={6}>
+                        <Col md={4}>
                             <Form onSubmit={handleGenerirajVrste}>
                                 <Form.Group className="mb-3">
                                     <Form.Label>Broj vrsta</Form.Label>
@@ -444,7 +464,7 @@ export default function GeneriranjePodataka() {
                                 </Button>
                             </Form>
                         </Col>
-                        <Col md={6}>
+                        <Col md={4}>
                             <Form onSubmit={handleGenerirajTipove}>
                                 <Form.Group className="mb-3">
                                     <Form.Label>Broj tipova</Form.Label>
@@ -460,44 +480,6 @@ export default function GeneriranjePodataka() {
                                 </Form.Group>
                                 <Button variant="primary" type="submit" disabled={loading} className="w-100">
                                     {loading ? 'Generiranje...' : 'Generiraj tipove'}
-                                </Button>
-                            </Form>
-                        </Col>
-                        <Col md={4}>
-                            <Form onSubmit={handleGenerirajPrijave}>
-                                <Form.Group className="mb-3">
-                                    <Form.Label>Broj prijava</Form.Label>
-                                    <Form.Control
-                                        type="number"
-                                        min="1"
-                                        max="50"
-                                        value={brojPrijava}
-                                        onChange={(e) => setBrojPrijava(parseInt(e.target.value))}
-                                        disabled={loading}
-                                    />
-                                    <Form.Text className="text-muted">Unesite broj prijava (1-50)</Form.Text>
-                                </Form.Group>
-                                <Button variant="primary" type="submit" disabled={loading} className="w-100">
-                                    {loading ? 'Generiranje...' : 'Generiraj prijave'}
-                                </Button>
-                            </Form>
-                        </Col>
-                        <Col md={4}>
-                            <Form onSubmit={handleGenerirajTragove}>
-                                <Form.Group className="mb-3">
-                                    <Form.Label>Broj tragova</Form.Label>
-                                    <Form.Control
-                                        type="number"
-                                        min="1"
-                                        max="100"
-                                        value={brojTragova}
-                                        onChange={(e) => setBrojTragova(parseInt(e.target.value))}
-                                        disabled={loading}
-                                    />
-                                    <Form.Text className="text-muted">Unesite broj tragova (1-100)</Form.Text>
-                                </Form.Group>
-                                <Button variant="primary" type="submit" disabled={loading} className="w-100">
-                                    {loading ? 'Generiranje...' : 'Generiraj tragove'}
                                 </Button>
                             </Form>
                         </Col>
@@ -520,6 +502,47 @@ export default function GeneriranjePodataka() {
                                 </Button>
                             </Form>
                         </Col>
+                        <Col md={6}>
+                            <Form onSubmit={handleGenerirajPrijave}>
+                                <Form.Group className="mb-3">
+                                    <Form.Label>Broj prijava</Form.Label>
+                                    <Form.Control
+                                        type="number"
+                                        min="1"
+                                        max="50"
+                                        value={brojPrijava}
+                                        onChange={(e) => setBrojPrijava(parseInt(e.target.value))}
+                                        disabled={loading}
+                                    />
+                                    <Form.Text className="text-muted">Unesite broj prijava (1-50)</Form.Text>
+                                </Form.Group>
+                                <Button variant="primary" type="submit" disabled={loading} className="w-100">
+                                    {loading ? 'Generiranje...' : 'Generiraj prijave'}
+                                </Button>
+                            </Form>
+                        </Col>
+                        <Col md={6}>
+                            <Form onSubmit={handleGenerirajTragove}>
+                                <Form.Group className="mb-3">
+                                    <Form.Label>Broj tragova</Form.Label>
+                                    <Form.Control
+                                        type="number"
+                                        min="1"
+                                        max="100"
+                                        value={brojTragova}
+                                        onChange={(e) => setBrojTragova(parseInt(e.target.value))}
+                                        disabled={loading}
+                                    />
+                                    <Form.Text className="text-muted">Unesite broj tragova (1-100)</Form.Text>
+                                </Form.Group>
+                                <Button variant="primary" type="submit" disabled={loading} className="w-100">
+                                    {loading ? 'Generiranje...' : 'Generiraj tragove'}
+                                </Button>
+                            </Form>
+                        </Col>
+                        <Col md={4}>
+
+                        </Col>
                     </Row>
                     <Alert variant="warning" className="mt-3">
                         <strong>Upozorenje:</strong> Ove akcije će dodati nove podatke u postojeće. Ako želite početi ispočetka, prvo obrišite postojeće podatke.
@@ -530,30 +553,30 @@ export default function GeneriranjePodataka() {
                     <h3>Brisanje podataka</h3>
                     <p className="text-muted">Koristite ove opcije za brisanje svih podataka iz baze.</p>
 
-                    <Row className="mt-3">
-                        <Col md={6}>
+                    <Row className="my-3">
+                        <Col md={4}>
                             <Button variant="danger" onClick={handleObrisiVrste} disabled={loading} className="w-100 mb-2">
                                 {loading ? 'Brisanje...' : 'Obriši sve vrste'}
                             </Button>
                         </Col>
-                        <Col md={6}>
+                        <Col md={4}>
                             <Button variant="danger" onClick={handleObrisiTipove} disabled={loading} className="w-100 mb-2">
                                 {loading ? 'Brisanje...' : 'Obriši sve tipove'}
                             </Button>
                         </Col>
                         <Col md={4}>
+                            <Button variant="danger" onClick={handleObrisiOznake} disabled={loading} className="w-100 mb-2">
+                                {loading ? 'Brisanje...' : 'Obriši sve oznake'}
+                            </Button>
+                        </Col>
+                        <Col md={6}>
                             <Button variant="danger" onClick={handleObrisiPrijave} disabled={loading} className="w-100 mb-2">
                                 {loading ? 'Brisanje...' : 'Obriši sve prijave'}
                             </Button>
                         </Col>
-                        <Col md={4}>
+                        <Col md={6}>
                             <Button variant="danger" onClick={handleObrisiTragove} disabled={loading} className="w-100 mb-2">
                                 {loading ? 'Brisanje...' : 'Obriši sve tragove'}
-                            </Button>
-                        </Col>
-                        <Col md={4}>
-                            <Button variant="danger" onClick={handleObrisiOznake} disabled={loading} className="w-100 mb-2">
-                                {loading ? 'Brisanje...' : 'Obriši sve oznake'}
                             </Button>
                         </Col>
                     </Row>

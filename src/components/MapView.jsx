@@ -52,7 +52,7 @@ function MapView({ prijave = [], vrste: propVrste, tipovi: propTipovi, oznake: p
   };
 
   return (
-    <div className="card-body p-0">
+    <div className="card-body">
       <MapContainer center={CENTAR_OSIJEK} zoom={13} style={{ height: "550px", width: "100%" }}>
         <TileLayer
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
@@ -113,9 +113,9 @@ function MapView({ prijave = [], vrste: propVrste, tipovi: propTipovi, oznake: p
           );
         })}
       </MapContainer>
-      <div className="row g-1">
+      <div className="d-flex align-items-stretch p-2">
         {tipovi.map((t) => (
-          <div key={t.id} className="col-6 col-md-4 col-lg-3 d-flex align-items-center">
+          <div key={t.id} className="m-1">
             <span
               className="legenda-tocka"
               style={{
