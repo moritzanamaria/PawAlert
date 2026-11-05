@@ -86,7 +86,7 @@ export default function TipoviPregled() {
                 <thead className="table-light">
                   <tr>
                     <th className="ps-4">Naziv</th>
-                    <th className="text-center pe-4" style={{ minWidth: "180px" }}>Akcija</th>
+                    <th className="text-center pe-4" style={{ width: "250px" }}>Akcija</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -136,17 +136,17 @@ export default function TipoviPregled() {
             </Card.Header>
 
             <Card.Body className="p-0">
-              <Table hover bordered responsive className="align-middle mb-0 border-top">
+         <Table hover bordered responsive className="align-middle mb-0 border-top">
                 <thead className="table-light">
                   <tr>
-                    <th>Naziv</th>
-                    <th className="text-center pe-4" style={{ width: "180px" }}>Akcija</th>
+                    <th className="ps-4">Naziv</th>
+                    <th className="text-center ps-4" style={{ width: "250px" }}>Akcija</th>
                   </tr>
                 </thead>
                 <tbody>
                   {vrste && vrste.map((vrsta) => (
                     <tr key={vrsta.id}>
-                      <td className="fw-semibold text-dark">
+                      <td className="ps-4 fw-semibold text-dark">
                         <EditText
                           defaultValue={vrsta.naziv}
                           style={{ width: "100%" }}

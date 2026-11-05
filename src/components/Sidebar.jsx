@@ -117,11 +117,7 @@ function ProtekloVrijeme({ datum }) {
             >
               🕒
             </span>
-            <span style={{color: "#ff0004"}}>
-              Od prijave prošlo:   
-              <br />
             <ProtekloVrijeme datum={prijava.datum} />
-            </span>
           </div>
         )}
       </div>
