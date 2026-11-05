@@ -2,10 +2,12 @@ import { useState, useEffect } from "react";
 import TipService from "../../services/tip/TipService";
 import VrsteService from "../../services/vrste/VrsteService";
 import prijaveService from "../../services/prijave/prijaveService";
-import { RouteNames, putanja } from "../../constants";
-import { Badge, Button, Card, Col, Container, Row, Table, ButtonGroup } from "react-bootstrap";
+import { RouteNames } from "../../constants";
+import { Badge, Button, Card, Col, Container, Row, Table } from "react-bootstrap";
 import { Link, useNavigate } from "react-router-dom";
-import { BiPlus, BiPencil, BiTrash } from "react-icons/bi";
+import { BiPlus, BiTrash } from "react-icons/bi";
+import { EditText } from "react-edit-text";
+import "react-edit-text/dist/index.css";
 
 const toArray = (res) => {
   const data = Array.isArray(res) ? res : (res?.data ?? []);
@@ -90,17 +92,20 @@ export default function TipoviPregled() {
                 <tbody>
                   {tipovi && tipovi.map((tip) => (
                     <tr key={tip.id}>
-                      <td className="ps-4 fw-semibold text-dark">{tip.naziv}</td>
+                      <td className="ps-4 fw-semibold text-dark">
+                        <EditText
+                          defaultValue={tip.naziv}
+                          style={{ width: "100%" }}
+                          onSave={async ({ value }) => {
+                            await TipService.promjeni(tip.id, { naziv: value })
+                            setTipovi(prev => prev.map(t => t.id === tip.id ? { ...t, naziv: value } : t))
+                          }}
+                        />
+                      </td>
                       <td className="text-center pe-4">
-                        <ButtonGroup size="sm">
-                          <Button variant="outline-warning" onClick={() => { navigate(putanja(RouteNames.TIP_PROMJENA, tip.id)) }} title="Uredi">
-                            <BiPencil size={16} /> Uredi
-                          </Button>
-
                           <Button variant="outline-danger" onClick={() => obrisiTip(tip.id)} title="Obrisi">
-                            <BiTrash size={16} /> Obriši
+                            <BiTrash size={16} />
                           </Button>
-                        </ButtonGroup>
                       </td>
                     </tr>
                   ))}
@@ -141,17 +146,20 @@ export default function TipoviPregled() {
                 <tbody>
                   {vrste && vrste.map((vrsta) => (
                     <tr key={vrsta.id}>
-                      <td className="fw-semibold text-dark">{vrsta.naziv}</td>
+                      <td className="fw-semibold text-dark">
+                        <EditText
+                          defaultValue={vrsta.naziv}
+                          style={{ width: "100%" }}
+                          onSave={async ({ value }) => {
+                            await VrsteService.promjeni(vrsta.id, { naziv: value })
+                            setVrste(prev => prev.map(v => v.id === vrsta.id ? { ...v, naziv: value } : v))
+                          }}
+                        />
+                      </td>
                       <td className="text-center pe-4">
-                        <ButtonGroup size="sm">
-                          <Button variant="outline-warning" onClick={() => { navigate(putanja(RouteNames.VRSTA_PROMJENA, vrsta.id)) }} title="Uredi">
-                            <BiPencil size={16} />
-                          </Button>
-
                           <Button variant="outline-danger" onClick={() => obrisiVrstu(vrsta.id)} title="Obriši">
                             <BiTrash size={16} />
                           </Button>
-                        </ButtonGroup>
                       </td>
                     </tr>
                   ))}
