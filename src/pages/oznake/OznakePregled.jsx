@@ -60,12 +60,6 @@ export default function OznakePregled() {
           </div>
           <div className="d-flex gap-2 flex-wrap">
             <Link
-              to={RouteNames.OZNAKE_PREGLED || "/oznake"}
-              className="btn btn-outline-secondary d-flex align-items-center gap-1 shadow-sm px-3 py-2"
-            >
-              <BiArrowBack size={18} /> Početna
-            </Link>
-            <Link
               to={RouteNames.OZNAKA_NOVA || "/oznake/nova"}
               className="btn btn-success d-flex align-items-center gap-1 shadow-sm px-3 py-2"
             >
