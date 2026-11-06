@@ -59,10 +59,9 @@ export default function Katalog() {
     setTrenutnaStranica(novaStranica);
   }
 
-
-  const getNazivVrste = (id) => vrste.find((v) => v.id === id)?.naziv ?? "";
-  const getNazivTipa = (id) => tipovi.find((t) => t.id === id)?.naziv ?? "";
-
+const getNazivVrste = (id) => vrste.find((v) => Number(v.id) === Number(id))?.naziv ?? "";
+  const getNazivTipa = (id) => tipovi.find((t) => Number(t.id) === Number(id))?.naziv ?? "";
+  
   const handleExportWord = () => {
     generirajPrijaveWord(prijave, vrste, tipovi, oznake);
   };
