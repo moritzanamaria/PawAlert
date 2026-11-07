@@ -3,7 +3,7 @@ import OznakeService from "../../services/oznake/OznakeService";
 import { RouteNames, putanja } from "../../constants";
 import { Badge, Button, Card, Container, Table, ButtonGroup } from "react-bootstrap";
 import { Link, useNavigate } from "react-router-dom";
-import { BiPlus, BiPencil, BiTrash, BiArrowBack } from "react-icons/bi";
+import { BiPlus, BiPencil, BiTrash } from "react-icons/bi";
 
 const toArray = (res) => {
   const data = Array.isArray(res) ? res : (res?.data ?? []);

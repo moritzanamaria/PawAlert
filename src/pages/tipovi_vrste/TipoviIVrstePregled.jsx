@@ -4,7 +4,7 @@ import VrsteService from "../../services/vrste/VrsteService";
 import prijaveService from "../../services/prijave/prijaveService";
 import { RouteNames } from "../../constants";
 import { Badge, Button, Card, Col, Container, Row, Table } from "react-bootstrap";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { BiPlus, BiTrash } from "react-icons/bi";
 import { EditText } from "react-edit-text";
 import "react-edit-text/dist/index.css";
@@ -17,7 +17,6 @@ const toArray = (res) => {
 export default function TipoviPregled() {
   const [vrste, setVrste] = useState([]);
   const [tipovi, setTipovi] = useState([])
-  const navigate = useNavigate()
 
   useEffect(() => {
     async function dohvatiPodatke() {
