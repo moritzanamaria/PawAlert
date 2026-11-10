@@ -103,7 +103,7 @@ export default function DetaljiSlucaja() {
                     <Card className="shadow-sm border-0 overflow-hidden">
                         <Card.Img
                             variant="top"
-                            src={prijava.slika || `${import.meta.env.BASE_URL}nemaSlike.svg`}
+                            src={`https://edunova33.origo.hr/backend/${prijava.slika}` || `${import.meta.env.BASE_URL}nemaSlike.svg`}
                             alt={prijava.zivotinja_ime || "Životinja"}
                             style={{ height: "350px", objectFit: "cover" }}
                         />

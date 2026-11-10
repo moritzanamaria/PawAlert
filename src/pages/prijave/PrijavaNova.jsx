@@ -11,6 +11,8 @@ import { useEffect, useState } from "react";
 import LokacijaPicker from "../../components/LokacijaPicker";
 import { validirajLokaciju } from "../../utils/lokacija";
 import OznakeService from "../../services/oznake/OznakeService";
+import { spremiSliku } from "../../services/slike/SlikeService";
+import SlikaUploader from "../../components/SlikaUploader";
 
 registerLocale("hr", hr);
 
@@ -24,6 +26,7 @@ export default function PrijavaNova() {
     const [oznake, setOznake] = useState([]);
     const [odabraneOznake, setOdabraneOznake] = useState([]);
     const [lokacija, setLokacija] = useState(null);
+    const [novaSlika, setNovaSlika] = useState(null);
 
     useEffect(() => {
         async function dohvatiPodatke() {
@@ -56,15 +59,37 @@ export default function PrijavaNova() {
         }
     };
 
+    
+
     async function dodaj(prijava) {
         try {
-            await prijaveService.dodaj(prijava)
-            navigate(povratak)
-        } catch (error) {
-            alert(error.message)
-        }
+            const res = await prijaveService.dodaj(prijava);
+            const nova = res?.data ?? res;
+            const noviId = nova?.id ?? prijava.id;
 
+
+            if (novaSlika) {
+                if (!noviId) {
+                    console.error("Odgovor API-ja nema id:", res);
+                    alert("Prijava je spremljena, ali slika nije jer API nije vratio id.");
+                    navigate(povratak);
+                    return;
+                }
+
+                const rez = await spremiSliku(noviId, novaSlika);
+                if (rez.success) {
+                    await prijaveService.promjeni(noviId, { ...prijava, slika: rez.path });
+                } else {
+                    alert("Prijava je spremljena, ali slika nije: " + rez.message);
+                }
+            }
+
+            navigate(povratak);
+        } catch (error) {
+            alert(error.message);
+        }
     }
+
     function obradiSubmit(e) {
         e.preventDefault()
         const podaci = new FormData(e.target)
@@ -131,7 +156,7 @@ export default function PrijavaNova() {
             status: podaci.get('status') || 'otvorena',
             lokacija: { ...lokacija, opis: lokacija.opis.trim() },
             datum: datum.toISOString(),
-            slika: slika,
+            slika: "",
             hitno: podaci.get('hitno') === 'on',
             oznake: odabraneOznake
         })
@@ -184,10 +209,10 @@ export default function PrijavaNova() {
                                 <Form.Control type="number" name="zivotinja_godine" step={1} min={0} placeholder="Npr. 2" />
                             </Form.Group>
 
-                            <Form.Group as={Col} md={6} controlId="slika">
-                                <Form.Label className="fw-medium">Slika (URL)</Form.Label>
-                                <Form.Control type="url" name="slika" placeholder="https://primjer.com/slika.jpg" />
-                            </Form.Group>
+                    <Form.Group as={Col} md={6}>
+    <Form.Label className="fw-medium">Slika</Form.Label>
+    <SlikaUploader value={novaSlika} onChange={setNovaSlika} />
+</Form.Group>
                         </Row>
 
                         <Form.Group className="mb-4" controlId="zivotinja_opis">

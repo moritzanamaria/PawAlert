@@ -174,7 +174,7 @@ const getNazivVrste = (id) => vrste.find((v) => Number(v.id) === Number(id))?.na
               {prijava.slika && (
                 <Card.Img
                   variant="top"
-                  src={prijava.slika}
+                  src={`https://edunova33.origo.hr/backend/${prijava.slika}`}
                   style={{ height: "200px", objectFit: "cover" }}
                   alt={prijava.zivotinja_ime || "Slika prijave"}
                 />

@@ -11,6 +11,9 @@ import { hr } from "date-fns/locale";
 import LokacijaPicker from "../../components/LokacijaPicker";
 import { validirajLokaciju } from "../../utils/lokacija";
 import OznakeService from "../../services/oznake/OznakeService";
+import { SLIKE_URL } from "../../constants";
+import { spremiSliku } from "../../services/slike/SlikeService";
+import SlikaUploader from "../../components/SlikaUploader";
 
 registerLocale("hr", hr);
 
@@ -28,6 +31,9 @@ export default function PrijavaPromjena() {
     const [oznake, setOznake] = useState([]);
     const [odabraneOznake, setOdabraneOznake] = useState([]);
     const [lokacija, setLokacija] = useState(null);
+    const [novaSlika, setNovaSlika] = useState(null);
+    const [cacheBust] = useState(Date.now());
+    
 
     useEffect(() => {
         async function ucitajPodatke() {
@@ -44,7 +50,7 @@ export default function PrijavaPromjena() {
                 const oData = Array.isArray(resOznake) ? resOznake : (resOznake?.data ?? []);
 
                 setPrijava(pData || {});
-                  setOdabraneOznake(Array.isArray(pData?.oznake) ? pData.oznake : []);
+                setOdabraneOznake(Array.isArray(pData?.oznake) ? pData.oznake : []);
                 setCipirana(Boolean(pData?.cipirana));
                 setHitno(Boolean(pData?.hitno));
                 if (pData?.lokacija) {
@@ -52,7 +58,7 @@ export default function PrijavaPromjena() {
                 }
                 setVrste(Array.isArray(vData) ? vData : []);
                 setTipovi(Array.isArray(tData) ? tData : []);
-                setOznake(Array.isArray(oData) ? oData: []);
+                setOznake(Array.isArray(oData) ? oData : []);
             } catch (error) {
                 console.error("Greška pri dohvatu podataka prijave:", error);
             }
@@ -61,13 +67,21 @@ export default function PrijavaPromjena() {
         ucitajPodatke();
     }, [params.id]);
 
-     const handleOznakaChange = (id) => {
+    const handleOznakaChange = (id) => {
         if (odabraneOznake.includes(id)) {
             setOdabraneOznake(odabraneOznake.filter((item) => item !== id));
         } else {
             setOdabraneOznake([...odabraneOznake, id]);
         }
     };
+   
+
+    function slikaSrc() {
+        if (novaSlika) return novaSlika;
+        if (!prijava.slika) return null;
+        if (/^https?:\/\//i.test(prijava.slika)) return prijava.slika;
+        return `${SLIKE_URL}/${prijava.slika}?t=${cacheBust}`;
+    }
 
     async function promjeni(podaciPrijave) {
         await prijaveService.promjeni(params.id, podaciPrijave).then(() => {
@@ -75,7 +89,7 @@ export default function PrijavaPromjena() {
         })
 
     }
-    function obradiSubmit(e) {
+    async function obradiSubmit(e) {
         e.preventDefault()
         const podaci = new FormData(e.target)
 
@@ -99,11 +113,6 @@ export default function PrijavaPromjena() {
             }
         }
 
-        const slika = (podaci.get('slika') || '').trim()
-        if (slika.length > 0 && !/^https?:\/\//i.test(slika)) {
-            alert("URL slike mora započeti s http:// ili https://")
-            return
-        }
 
         const opis = (podaci.get('zivotinja_opis') || '').trim()
         if (opis.length > 500) {
@@ -131,6 +140,22 @@ export default function PrijavaPromjena() {
             return
         }
 
+        let slikaPath = prijava.slika || "";
+        if (novaSlika) {
+            try {
+                const rez = await spremiSliku(params.id, novaSlika);
+                if (!rez.success) {
+                    alert(rez.message);
+                    return;
+                }
+                slikaPath = rez.path;
+            } catch (err) {
+                console.error(err);
+                alert("Greška pri spremanju slike.");
+                return;
+            }
+        }
+
         promjeni({
             ...prijava,
             zivotinja_ime: ime,
@@ -142,7 +167,7 @@ export default function PrijavaPromjena() {
             status: podaci.get('status') || prijava.status || 'otvorena',
             lokacija: { ...lokacija, opis: lokacija.opis.trim() },
             datum: odabraniDatum.toISOString(),
-            slika: slika,
+            slika: slikaPath,
             hitno: podaci.get('hitno') === 'on',
             oznake: odabraneOznake
         })
@@ -208,15 +233,10 @@ export default function PrijavaPromjena() {
                                 />
                             </Form.Group>
 
-                            <Form.Group as={Col} md={6} controlId="slika">
-                                <Form.Label className="fw-medium">Slika (URL link)</Form.Label>
-                                <Form.Control
-                                    type="url"
-                                    name="slika"
-                                    key={prijava.slika}
-                                    defaultValue={prijava.slika}
-                                />
-                            </Form.Group>
+                            <Form.Group as={Col} md={6}>
+    <Form.Label className="fw-medium">Slika</Form.Label>
+    <SlikaUploader value={novaSlika || slikaSrc()} onChange={setNovaSlika} />
+</Form.Group>
                         </Row>
 
                         <Form.Group className="mb-4" controlId="zivotinja_opis">
