@@ -45,6 +45,7 @@ async function dodaj(prijava) {
   }
   prijave.push(prijava)
   spremiUStorage(prijave)
+   return { data: prijava }
 }
 
 async function promjeni(id, prijava) {

@@ -20,6 +20,7 @@ async function dodaj(prijava) {
     prijava.id = prijave[prijave.length - 1].id + 1
   }
   prijave.push(prijava)
+   return { data: prijava }
 }
 
 async function promjeni(id, prijava) {

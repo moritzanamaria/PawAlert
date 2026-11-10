@@ -36,5 +36,7 @@ export const ZASTARJELO_DANA = 30
 
 export const MAX_PRIJAVA = 500
 
+export const SLIKE_URL = "https://edunova33.origo.hr/backend";
+
 // localStorage   memorija
 export const DATA_SOURCE = 'localStorage'
