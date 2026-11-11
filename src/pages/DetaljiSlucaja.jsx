@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react"
 import { Link, useParams } from "react-router-dom"
-import { Button, Card, Container, ListGroup, Row, Col } from "react-bootstrap"
+import { Button, Card, Carousel, Container, Row, Col } from "react-bootstrap"
 import { RouteNames, putanja } from "../constants"
 import prijaveService from "../services/prijave/prijaveService"
 import TragoviService from "../services/tragovi/TragoviService"
@@ -11,6 +11,7 @@ import OznakeService from "../services/oznake/OznakeService"
 import VrsteService from "../services/vrste/VrsteService"
 import TipService from "../services/tip/TipService"
 import LetakModal from "../components/LetakModal"
+import { slikaUrl } from "../utils/slika";
 
 export default function DetaljiSlucaja() {
     const { id } = useParams()
@@ -103,7 +104,7 @@ export default function DetaljiSlucaja() {
                     <Card className="shadow-sm border-0 overflow-hidden">
                         <Card.Img
                             variant="top"
-                            src={`https://edunova33.origo.hr/backend/${prijava.slika}` || `${import.meta.env.BASE_URL}nemaSlike.svg`}
+                            src={slikaUrl(prijava.slika) || `${import.meta.env.BASE_URL}nemaSlike.svg`}
                             alt={prijava.zivotinja_ime || "Životinja"}
                             style={{ height: "350px", objectFit: "cover" }}
                         />
@@ -148,19 +149,35 @@ export default function DetaljiSlucaja() {
                             <p className="mb-0">Još nema zabilježenih tragova za ovaj slučaj.</p>
                         </Card>
                     ) : (
-                        <ListGroup className="shadow-sm">
-                            {tragovi.map((t) => (
-                                <ListGroup.Item key={t.id} className="p-3">
-                                    <div className="fw-medium text-dark">{t.opis}</div>
-                                    <div className="text-muted small mt-1">
-                                        📍 {t.lokacija?.opis || t.lokacija_opis || "Lokacija na karti"}
-                                    </div>
-                                    <div className="text-muted small mt-1">
-                                        🕒 <FormatDatuma datum={t.datum} prikazDatuma="Nepoznato" />
-                                    </div>
-                                </ListGroup.Item>
-                            ))}
-                        </ListGroup>
+                        <Card className="border-0 shadow-sm overflow-hidden">
+                            <Carousel interval={null} indicators={tragovi.length <= 10}>
+                                {tragovi.map((t) => (
+                                    <Carousel.Item key={t.id}>
+                                        <img
+                                            className="d-block w-100"
+                                            src={t.slika ? slikaUrl(t.slika) : `${import.meta.env.BASE_URL}nemaSlike.svg`}
+                                            alt={t.slika ? "Slika traga" : "Trag bez slike"}
+                                            style={{
+                                                height: 320,
+                                                objectFit: t.slika ? "cover" : "contain",
+                                                background: "#f1f3f5"
+                                            }}
+                                        />
+                                        <Carousel.Caption style={{ background: "rgba(0,0,0,.6)", borderRadius: 8 }}>
+                                            <p className="mb-1 small">
+                                                {t.opis.length > 120 ? t.opis.slice(0, 120) + "…" : t.opis}
+                                            </p>
+                                            <small className="d-block">
+                                                📍 {t.lokacija?.opis || t.lokacija_opis || "Lokacija na karti"}
+                                            </small>
+                                            <small className="d-block">
+                                                🕒 <FormatDatuma datum={t.datum} prikazDatuma="Nepoznato" />
+                                            </small>
+                                        </Carousel.Caption>
+                                    </Carousel.Item>
+                                ))}
+                            </Carousel>
+                        </Card>
                     )}
 
                     <div className="mt-4">

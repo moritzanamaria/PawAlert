@@ -12,6 +12,7 @@ import { BiPlus } from "react-icons/bi";
 import OznakeService from "../services/oznake/OznakeService";
 import { generirajPrijaveWord } from '../utils/prijaveWordGenerator';
 import { BsFileEarmarkWord } from 'react-icons/bs';
+import { slikaUrl } from "../utils/slika";
 
 export default function Katalog() {
   const [prijave, setPrijave] = useState([]);
@@ -174,7 +175,7 @@ const getNazivVrste = (id) => vrste.find((v) => Number(v.id) === Number(id))?.na
               {prijava.slika && (
                 <Card.Img
                   variant="top"
-                  src={`https://edunova33.origo.hr/backend/${prijava.slika}`}
+                  src={slikaUrl(prijava.slika) || `${import.meta.env.BASE_URL}nemaSlike.svg`}
                   style={{ height: "200px", objectFit: "cover" }}
                   alt={prijava.zivotinja_ime || "Slika prijave"}
                 />
