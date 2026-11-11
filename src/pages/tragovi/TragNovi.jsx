@@ -1,16 +1,16 @@
 import { Link, useNavigate, useParams, useLocation } from "react-router-dom";
 import { Button, Card, Col, Container, Form, Row } from "react-bootstrap";
 import TragoviService from "../../services/tragovi/TragoviService";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import DatePicker, { registerLocale } from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { hr } from "date-fns/locale";
 import LokacijaPicker from "../../components/LokacijaPicker";
 import { validirajLokaciju } from "../../utils/lokacija";
 import { RouteNames, putanja } from "../../constants";
+import { spremiSlikuFile } from "../../services/slike/SlikeService";
 
 registerLocale("hr", hr);
-
 
 export default function TragNovi() {
     const navigate = useNavigate()
@@ -19,47 +19,81 @@ export default function TragNovi() {
     const povratak = location.state?.povratak ?? putanja(RouteNames.TRAG_PREGLED, id)
     const [datum, setDatum] = useState(new Date())
     const [lokacija, setLokacija] = useState(null)
+    const [slikaFile, setSlikaFile] = useState(null)
+    const pregled = useMemo(() => slikaFile ? URL.createObjectURL(slikaFile) : null, [slikaFile])
+
+    function odaberiSliku(e) {
+        const file = e.target.files[0]
+        if (!file) { setSlikaFile(null); return }
+
+        if (!["image/jpeg", "image/png", "image/webp"].includes(file.type)) {
+            alert("Dozvoljeni formati: JPG, PNG, WEBP.")
+            e.target.value = ""
+            return
+        }
+        if (file.size > 2 * 1024 * 1024) {
+            alert("Slika je prevelika (max 2 MB).")
+            e.target.value = ""
+            return
+        }
+        setSlikaFile(file)
+    }
+
     async function dodaj(trag) {
-        await TragoviService.dodaj(trag).then(() => {
+        try {
+            const res = await TragoviService.dodaj(trag)
+            const noviId = (res?.data ?? res)?.id ?? trag.id
+
+            if (slikaFile && noviId) {
+                const rez = await spremiSlikuFile(noviId, slikaFile)
+                if (rez.success) {
+                    await TragoviService.promjeni(noviId, { ...trag, slika: rez.path })
+                } else {
+                    alert("Trag je spremljen, ali slika nije: " + rez.message)
+                }
+            }
             navigate(povratak)
+        } catch (error) {
+            alert(error.message)
+        }
+    }
+
+    function obradiSubmit(e) {
+        e.preventDefault()
+        const podaci = new FormData(e.target)
+
+        const opis = (podaci.get('opis') || '').trim()
+        if (opis.length === 0) {
+            alert("Opis traga je obavezan i ne smije sadržavati samo razmake!")
+            return
+        }
+        if (opis.length < 3 || opis.length > 500) {
+            alert("Opis traga mora imati najmanje 3 i najviše 500 znakova!")
+            return
+        }
+
+        const greskaLokacije = validirajLokaciju(lokacija)
+        if (greskaLokacije) {
+            alert(greskaLokacije)
+            return
+        }
+
+        if (!datum || isNaN(datum.getTime())) {
+            alert("Morate odabrati datum i vrijeme!")
+            return
+        }
+        if (datum > new Date()) {
+            alert("Datum traga ne može biti u budućnosti!")
+            return
+        }
+
+        dodaj({
+            prijava: parseInt(id),
+            opis: opis,
+            lokacija: { ...lokacija, opis: lokacija.opis.trim() },
+            datum: datum.toISOString(),
         })
     }
-function obradiSubmit(e) {
-    e.preventDefault()
-    const podaci = new FormData(e.target)
-
-    const opis = (podaci.get('opis') || '').trim()
-    if (opis.length === 0) {
-        alert("Opis traga je obavezan i ne smije sadržavati samo razmake!")
-        return
-    }
-    if (opis.length < 3 || opis.length > 500) {
-        alert("Opis traga mora imati najmanje 3 i najviše 500 znakova!")
-        return
-    }
-
-  const greskaLokacije = validirajLokaciju(lokacija)
-if (greskaLokacije) {
-    alert(greskaLokacije)
-    return
-}
-
-    if (!datum || isNaN(datum.getTime())) {
-        alert("Morate odabrati datum i vrijeme!")
-        return
-    }
-    if (datum > new Date()) {
-        alert("Datum traga ne može biti u budućnosti!")
-        return
-    }
-
-    dodaj({
-        prijava: parseInt(id),
-        opis: opis,
-         lokacija: { ...lokacija, opis: lokacija.opis.trim() },
-        datum: datum.toISOString(),
-    })
-}
 
     return (
         <Container className="my-5" style={{ maxWidth: "850px" }}>
@@ -81,11 +115,20 @@ if (greskaLokacije) {
                             <Form.Control as="textarea" rows={3} name="opis" placeholder="Unesite opis traga..." required />
                         </Form.Group>
 
+                        <Form.Group className="mb-3">
+                            <Form.Label className="fw-medium">Slika (nije obavezno)</Form.Label>
+                            <Form.Control type="file" accept="image/png,image/jpeg,image/webp" onChange={odaberiSliku} />
+                            {pregled && (
+                                <img src={pregled} alt="Pregled" className="mt-2 rounded border"
+                                    style={{ maxWidth: "100%", maxHeight: 180, objectFit: "cover" }} />
+                            )}
+                        </Form.Group>
+
                         <Row className="mb-4">
-                          <Form.Group className="mb-3">
-    <Form.Label className="fw-medium">Lokacija</Form.Label>
-    <LokacijaPicker value={lokacija} onChange={setLokacija} />
-</Form.Group>
+                            <Form.Group className="mb-3">
+                                <Form.Label className="fw-medium">Lokacija</Form.Label>
+                                <LokacijaPicker value={lokacija} onChange={setLokacija} />
+                            </Form.Group>
 
                             <Form.Group as={Col} md={6} controlId="datum" className="mb-3">
                                 <Form.Label className="fw-medium">Datum i vrijeme</Form.Label>

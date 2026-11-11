@@ -8,3 +8,15 @@ export async function spremiSliku(id, slika) {
     });
     return odgovor.json(); // { success, message, path }
 }
+
+export async function spremiSlikuFile(id, file) {
+    const formData = new FormData();
+    formData.append("id", id);
+    formData.append("slika", file);
+
+    const odgovor = await fetch(`${SLIKE_URL}/spremiSlikuFile.php`, {
+        method: "POST",
+        body: formData,    
+    });
+    return odgovor.json(); // { success, message, path }
+}

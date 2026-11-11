@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { Button, Card, Col, Container, Form, Row } from "react-bootstrap";
 import TragoviService from "../../services/tragovi/TragoviService";
@@ -8,6 +8,8 @@ import DatePicker, { registerLocale } from "react-datepicker";
 import LokacijaPicker from "../../components/LokacijaPicker";
 import { validirajLokaciju } from "../../utils/lokacija";
 import { RouteNames, putanja } from "../../constants";
+import { spremiSlikuFile } from "../../services/slike/SlikeService";
+import { slikaUrl } from "../../utils/slika";
 
 registerLocale("hr", hr);
 
@@ -16,6 +18,10 @@ export default function TragPromjena() {
     const params = useParams()
     const [datum, setDatum] = useState(new Date());
     const [lokacija, setLokacija] = useState(null);
+    const [slikaFile, setSlikaFile] = useState(null)
+    const [cacheBust] = useState(Date.now())
+    const pregled = useMemo(() => slikaFile ? URL.createObjectURL(slikaFile) : null, [slikaFile])
+
     const [trag, setTrag] = useState({
         prijava: "",
         korisnik: "",
@@ -25,6 +31,29 @@ export default function TragPromjena() {
         lokacija_lng: 0,
         datum: ""
     })
+
+        function slikaSrc() {
+        if (pregled) return pregled
+        const u = slikaUrl(trag.slika)
+        return u ? `${u}?t=${cacheBust}` : null
+    }
+
+    function odaberiSliku(e) {
+    const file = e.target.files[0]
+    if (!file) { setSlikaFile(null); return }
+
+    if (!["image/jpeg", "image/png", "image/webp"].includes(file.type)) {
+        alert("Dozvoljeni formati: JPG, PNG, WEBP.")
+        e.target.value = ""
+        return
+    }
+    if (file.size > 2 * 1024 * 1024) {
+        alert("Slika je prevelika (max 2 MB).")
+        e.target.value = ""
+        return
+    }
+    setSlikaFile(file)
+}
 
     useEffect(() => {
         async function ucitajTrag() {
@@ -60,7 +89,7 @@ export default function TragPromjena() {
         }
     }
 
-    function obradiSubmit(e) {
+   async function obradiSubmit(e) {
         e.preventDefault()
         const podaci = new FormData(e.target)
 
@@ -89,11 +118,28 @@ export default function TragPromjena() {
             return
         }
 
+        let slikaPath = trag.slika || ""
+        if (slikaFile) {
+            try {
+                const rez = await spremiSlikuFile(params.id, slikaFile)
+                if (!rez.success) {
+                    alert(rez.message)
+                    return
+                }
+                slikaPath = rez.path
+            } catch (err) {
+                console.error(err)
+                alert("Greška pri spremanju slike.")
+                return
+            }
+        }
+
         promjeni({
             ...trag,
             opis: opis,
             lokacija: { ...lokacija, opis: lokacija.opis.trim() },
             datum: datum.toISOString(),
+            slika: slikaPath
         })
     }
     return (
@@ -113,6 +159,16 @@ export default function TragPromjena() {
                             <Form.Label className="fw-medium">Opis traga</Form.Label>
                             <Form.Control as="textarea" rows={3} name="opis" defaultValue={trag.opis} required placeholder="Unesite opis traga..." />
                         </Form.Group>
+
+                        <Form.Group className="mb-3">
+                            <Form.Label className="fw-medium">Slika</Form.Label>
+                            <Form.Control type="file" accept="image/png,image/jpeg,image/webp" onChange={odaberiSliku} />
+                            {slikaSrc() && (
+                                <img src={slikaSrc()} alt="Slika traga" className="mt-2 rounded border"
+                                    style={{ maxWidth: "100%", maxHeight: 180, objectFit: "cover" }} />
+                            )}
+                        </Form.Group>
+
                         <Row className="mb-4">
                             <Form.Group className="mb-3">
                                 <Form.Label className="fw-medium">Lokacija</Form.Label>

@@ -139,7 +139,10 @@ export default function GeneriranjePodataka() {
                     lng: faker.number.float({ min: 18.6400, max: 18.7200, fractionDigits: 4 }),
                     opis: `Osijek, ${ulica} ${faker.number.int({ min: 1, max: 120 })}`
                 },
-                datum: faker.date.recent({ days: 10 }).toISOString()
+                datum: faker.date.recent({ days: 10 }).toISOString(),
+                slika: faker.datatype.boolean()
+                    ? `https://picsum.photos/seed/trag-${i}-${Math.floor(Math.random() * 10000)}/600/400`
+                    : ""
             });
         }
     };
@@ -270,7 +273,7 @@ export default function GeneriranjePodataka() {
         }
     };
 
-     const handleObrisiOznake = async () => {
+    const handleObrisiOznake = async () => {
         if (!window.confirm('Jeste li sigurni da želite obrisati sve oznake?')) return;
         setLoading(true);
         setPoruka(null);
@@ -333,7 +336,7 @@ export default function GeneriranjePodataka() {
         }
     };
 
-   
+
     const handleGenerirajSve = async () => {
         setLoading(true);
         setPoruka(null);
