@@ -1,6 +1,7 @@
 import { jsPDF } from "jspdf";
 import QRCode from "qrcode";
 import { RouteNames, putanja } from "../constants";
+import { slikaUrl } from "./slika";
 
 const STRANICA_W = 210;
 const RUB = 12;
@@ -394,7 +395,7 @@ export async function generirajLetak(opcije) {
     const poveznica = window.location.origin + putanja(RouteNames.DETALJI_SLUCAJA, opcije.prijava.id);
     const [fontovi, slika, qr] = await Promise.all([
       ucitajFontove(),
-      ucitajSliku(opcije.prijava.slika, !opcije.uBoji),
+      ucitajSliku(slikaUrl(opcije.prijava.slika), !opcije.uBoji),
       QRCode.toDataURL(poveznica, { margin: 1, width: 400, errorCorrectionLevel: "M" }),
     ]);
     const doc = napraviLetak({ ...opcije, fontovi, slika, qr });
