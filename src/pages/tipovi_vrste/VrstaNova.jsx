@@ -2,9 +2,22 @@ import { Link, useNavigate } from "react-router-dom";
 import { RouteNames } from "../../constants";
 import { Button, Card, Container, Form } from "react-bootstrap";
 import VrsteService from "../../services/vrste/VrsteService";
+import { vrstaSchema } from "../../schemas/nazivSchema";
+import { useState } from "react";
 
 export default function VrstaNova() {
     const navigate = useNavigate()
+
+
+    const [errors, setErrors] = useState({});
+
+    const ocistiGresku = (nazivPolja) => {
+        if (errors[nazivPolja]) {
+            const noveGreske = { ...errors };
+            delete noveGreske[nazivPolja];
+            setErrors(noveGreske);
+        }
+    };
 
     async function dodaj(vrsta) {
         await VrsteService.dodaj(vrsta).then(() => {
@@ -16,23 +29,22 @@ export default function VrstaNova() {
         e.preventDefault()
         const podaci = new FormData(e.target)
 
-        const naziv = (podaci.get('naziv') || '').trim()
-        if (naziv.length === 0) {
-            alert("Naziv je obavezan i ne smije sadržavati samo razmake!")
-            return
-        }
-        if (naziv.length < 3 || naziv.length > 20) {
-            alert("Naziv vrste mora imati najmanje 3 i najviše 20 znakova!")
-            return
-        }
-
-        if (!/^[A-Za-zČčĆćĐđŠšŽž\s-]+$/.test(naziv)) {
-            alert("Naziv smije sadržavati samo slova, razmake i crticu (bez brojeva)!")
-            return
+        setErrors({});
+        const rezultat = vrstaSchema.safeParse({ naziv: podaci.get('naziv') ?? '' })
+        if (!rezultat.success) {
+            const noveGreske = {};
+            rezultat.error.issues.forEach((issue) => {
+                const kljuc = issue.path[0];
+                if (!noveGreske[kljuc]) {
+                    noveGreske[kljuc] = issue.message;
+                }
+            });
+            setErrors(noveGreske);
+            return;
         }
 
         dodaj({
-            naziv: naziv
+            naziv: rezultat.data.naziv
         })
     }
 
@@ -50,7 +62,16 @@ export default function VrstaNova() {
                     <Form onSubmit={obradiSubmit}>
                         <Form.Group controlId="naziv" className="mb-4">
                             <Form.Label className="fw-medium">Naziv vrste</Form.Label>
-                            <Form.Control type="text" name="naziv" placeholder="Unesite naziv vrste (Npr. Ptica)" required />
+                            <Form.Control
+                                type="text"
+                                name="naziv"
+                                placeholder="Unesite naziv vrste (Npr. Ptica)"
+                                isInvalid={!!errors.naziv}
+                                onFocus={() => ocistiGresku("naziv")}
+                            />
+                            <Form.Control.Feedback type="invalid">
+                                {errors.naziv}
+                            </Form.Control.Feedback>
                         </Form.Group>
 
                         <div className="d-flex justify-content-between align-items-center pt-2">

@@ -5,9 +5,22 @@ import OznakeService from "../../services/oznake/OznakeService";
 import { RouteNames } from "../../constants";
 import Wheel from "@uiw/react-color-wheel";
 import { ShadeSlider, hsvaToHex, hexToHsva } from "@uiw/react-color";
+import { oznakaSchema } from "../../schemas/oznakaSchema";
 
 export default function OznakaPromjena() {
     const navigate = useNavigate();
+
+
+    const [errors, setErrors] = useState({});
+
+    const ocistiGresku = (nazivPolja) => {
+        if (errors[nazivPolja]) {
+            const noveGreske = { ...errors };
+            delete noveGreske[nazivPolja];
+            setErrors(noveGreske);
+        }
+    };
+
     const location = useLocation();
     const params = useParams();
     const povratak = location.state?.povratak ?? RouteNames.OZNAKE_PREGLED;
@@ -31,7 +44,7 @@ export default function OznakaPromjena() {
                 const podaci = res?.data ?? res;
                 if (podaci) {
                     setOznaka(podaci);
-                   if (podaci.boja) {
+                    if (podaci.boja) {
                         setBojaHsva(hexToHsva(podaci.boja));
                     }
                     if (podaci.boja_teksta) {
@@ -58,20 +71,26 @@ export default function OznakaPromjena() {
 
     function obradiSubmit(e) {
         e.preventDefault();
-        const trimmedNaziv = oznaka.naziv.trim();
 
-        if (trimmedNaziv.length === 0) {
-            alert("Naziv oznake je obavezan i ne smije sadržavati samo razmake!");
-            return;
-        }
-        if (trimmedNaziv.length < 2 || trimmedNaziv.length > 30) {
-            alert("Naziv oznake mora imati između 2 i 30 znakova!");
+        const podaci = new FormData(e.target);
+
+        setErrors({});
+        const rezultat = oznakaSchema.safeParse({ ...Object.fromEntries(podaci), boja: bojaHex, boja_teksta: bojaTekstaHex });
+        if (!rezultat.success) {
+            const noveGreske = {};
+            rezultat.error.issues.forEach((issue) => {
+                const kljuc = issue.path[0];
+                if (!noveGreske[kljuc]) {
+                    noveGreske[kljuc] = issue.message;
+                }
+            });
+            setErrors(noveGreske);
             return;
         }
 
         promjeni({
             ...oznaka,
-            naziv: trimmedNaziv,
+            naziv: rezultat.data.naziv,
             boja: bojaHex,
             boja_teksta: bojaTekstaHex,
         });
@@ -102,11 +121,16 @@ export default function OznakaPromjena() {
                                 <Form.Label className="fw-medium">Naziv oznake</Form.Label>
                                 <Form.Control
                                     type="text"
+                                    name="naziv"
                                     value={oznaka.naziv}
                                     onChange={(e) => setOznaka({ ...oznaka, naziv: e.target.value })}
                                     placeholder="Unesite naziv oznake..."
-                                    required
+                                    isInvalid={!!errors.naziv}
+                                    onFocus={() => ocistiGresku("naziv")}
                                 />
+                                <Form.Control.Feedback type="invalid">
+                                    {errors.naziv}
+                                </Form.Control.Feedback>
                             </Form.Group>
                         </Row>
 

@@ -6,15 +6,26 @@ import "react-datepicker/dist/react-datepicker.css";
 import { hr } from "date-fns/locale/hr";
 import DatePicker, { registerLocale } from "react-datepicker";
 import LokacijaPicker from "../../components/LokacijaPicker";
-import { validirajLokaciju } from "../../utils/lokacija";
 import { RouteNames, putanja } from "../../constants";
 import { spremiSlikuFile } from "../../services/slike/SlikeService";
 import { slikaUrl } from "../../utils/slika";
+import { tragSchema } from "../../schemas/tragSchema";
+import { slikaFileSchema } from "../../schemas/slikaSchema";
 
 registerLocale("hr", hr);
 
 export default function TragPromjena() {
     const navigate = useNavigate()
+
+    const [errors, setErrors] = useState({});
+
+    const ocistiGresku = (nazivPolja) => {
+        if (errors[nazivPolja]) {
+            const noveGreske = { ...errors };
+            delete noveGreske[nazivPolja];
+            setErrors(noveGreske);
+        }
+    };
     const params = useParams()
     const [datum, setDatum] = useState(new Date());
     const [lokacija, setLokacija] = useState(null);
@@ -32,28 +43,30 @@ export default function TragPromjena() {
         datum: ""
     })
 
-        function slikaSrc() {
+    function slikaSrc() {
         if (pregled) return pregled
         const u = slikaUrl(trag.slika)
         return u ? `${u}?t=${cacheBust}` : null
     }
 
     function odaberiSliku(e) {
-    const file = e.target.files[0]
-    if (!file) { setSlikaFile(null); return }
+        const file = e.target.files[0]
+        if (!file) {
+            setSlikaFile(null)
+            ocistiGresku("slika")
+            return
+        }
 
-    if (!["image/jpeg", "image/png", "image/webp"].includes(file.type)) {
-        alert("Dozvoljeni formati: JPG, PNG, WEBP.")
-        e.target.value = ""
-        return
+        const rezultat = slikaFileSchema(2).safeParse(file)
+        if (!rezultat.success) {
+            setErrors({ ...errors, slika: rezultat.error.issues[0].message })
+            setSlikaFile(null)
+            e.target.value = ""
+            return
+        }
+        ocistiGresku("slika")
+        setSlikaFile(file)
     }
-    if (file.size > 2 * 1024 * 1024) {
-        alert("Slika je prevelika (max 2 MB).")
-        e.target.value = ""
-        return
-    }
-    setSlikaFile(file)
-}
 
     useEffect(() => {
         async function ucitajTrag() {
@@ -89,39 +102,29 @@ export default function TragPromjena() {
         }
     }
 
-   async function obradiSubmit(e) {
+    function obradiSubmit(e) {
         e.preventDefault()
         const podaci = new FormData(e.target)
 
-        const opis = (podaci.get('opis') || '').trim()
-        if (opis.length === 0) {
-            alert("Opis traga je obavezan i ne smije sadržavati samo razmake!")
-            return
-        }
-        if (opis.length < 3 || opis.length > 500) {
-            alert("Opis traga mora imati najmanje 3 i najviše 500 znakova!")
-            return
-        }
 
-        const greskaLokacije = validirajLokaciju(lokacija)
-        if (greskaLokacije) {
-            alert(greskaLokacije)
-            return
-        }
+        setErrors({});
+        const rezultat = tragSchema.safeParse({ ...Object.fromEntries(podaci), lokacija, datum });
 
-        if (!datum || isNaN(datum.getTime())) {
-            alert("Morate odabrati datum i vrijeme!")
-            return
+        if (!rezultat.success) {
+            const noveGreske = {};
+            rezultat.error.issues.forEach((issue) => {
+                const kljuc = issue.path[0];
+                if (!noveGreske[kljuc]) {
+                    noveGreske[kljuc] = issue.message;
+                }
+            });
+            setErrors(noveGreske);
+            return;
         }
-        if (datum > new Date()) {
-            alert("Datum traga ne može biti u budućnosti!")
-            return
-        }
-
         let slikaPath = trag.slika || ""
         if (slikaFile) {
             try {
-                const rez = await spremiSlikuFile(params.id, slikaFile)
+                const rez = spremiSlikuFile(params.id, slikaFile)
                 if (!rez.success) {
                     alert(rez.message)
                     return
@@ -136,9 +139,9 @@ export default function TragPromjena() {
 
         promjeni({
             ...trag,
-            opis: opis,
-            lokacija: { ...lokacija, opis: lokacija.opis.trim() },
-            datum: datum.toISOString(),
+            opis: rezultat.data.opis,
+            lokacija: rezultat.data.lokacija,
+            datum: rezultat.data.datum.toISOString(),
             slika: slikaPath
         })
     }
@@ -157,12 +160,26 @@ export default function TragPromjena() {
 
                         <Form.Group controlId="opis" className="mb-3">
                             <Form.Label className="fw-medium">Opis traga</Form.Label>
-                            <Form.Control as="textarea" rows={3} name="opis" defaultValue={trag.opis} required placeholder="Unesite opis traga..." />
+                            <Form.Control
+                                as="textarea"
+                                rows={3}
+                                name="opis"
+                                defaultValue={trag.opis}
+                                placeholder="Unesite opis traga..."
+                                isInvalid={!!errors.opis}
+                                onFocus={() => ocistiGresku("opis")}
+                            />
+                            <Form.Control.Feedback type="invalid">
+                                {errors.opis}
+                            </Form.Control.Feedback>
                         </Form.Group>
 
                         <Form.Group className="mb-3">
                             <Form.Label className="fw-medium">Slika</Form.Label>
-                            <Form.Control type="file" accept="image/png,image/jpeg,image/webp" onChange={odaberiSliku} />
+                            <Form.Control type="file" accept="image/png,image/jpeg,image/webp" onChange={odaberiSliku} isInvalid={!!errors.slika} />
+                            <Form.Control.Feedback type="invalid">
+                                {errors.slika}
+                            </Form.Control.Feedback>
                             {slikaSrc() && (
                                 <img src={slikaSrc()} alt="Slika traga" className="mt-2 rounded border"
                                     style={{ maxWidth: "100%", maxHeight: 180, objectFit: "cover" }} />
@@ -172,7 +189,10 @@ export default function TragPromjena() {
                         <Row className="mb-4">
                             <Form.Group className="mb-3">
                                 <Form.Label className="fw-medium">Lokacija</Form.Label>
-                                <LokacijaPicker value={lokacija} onChange={setLokacija} />
+                                <LokacijaPicker value={lokacija} onChange={(l) => { setLokacija(l); ocistiGresku("lokacija") }} />
+                                <Form.Control.Feedback type="invalid" className="d-block">
+                                    {errors.lokacija}
+                                </Form.Control.Feedback>
                             </Form.Group>
 
                             <Form.Group as={Col} md={6} controlId="datum" className="mb-3">
@@ -180,14 +200,16 @@ export default function TragPromjena() {
                                 <div>
                                     <DatePicker
                                         selected={datum}
-                                        onChange={(date) => setDatum(date)}
-                                        showTimeSelect
+                                        onChange={(date) => { setDatum(date); ocistiGresku("datum") }} showTimeSelect
                                         timeFormat="HH:mm"
                                         timeIntervals={15}
                                         dateFormat="dd.MM.yyyy. HH:mm"
                                         locale="hr"
-                                        customInput={<Form.Control required />}
+                                        customInput={<Form.Control isInvalid={!!errors.datum} />}
                                     />
+                                    <Form.Control.Feedback type="invalid" className="d-block">
+                                        {errors.datum}
+                                    </Form.Control.Feedback>
                                 </div>
                             </Form.Group>
                         </Row>

@@ -1,7 +1,8 @@
 import { useCallback, useState } from "react";
 import Cropper from "react-easy-crop";
-import { Button, ButtonGroup, Form, Modal } from "react-bootstrap";
+import { Button, ButtonGroup, Col, Form, Modal, Row } from "react-bootstrap";
 import { izrezi } from "../utils/cropSlika";
+import { slikaFileSchema } from "../schemas/slikaSchema";
 
 const OMJERI = [
     { label: "1:1", value: 1 },
@@ -18,6 +19,8 @@ export default function SlikaUploader({ value, onChange }) {
     const [omjer, setOmjer] = useState(4 / 3);
     const [pikseli, setPikseli] = useState(null);
     const [radi, setRadi] = useState(false);
+     const [greska, setGreska] = useState("");
+
 
     const onCropComplete = useCallback((_, croppedAreaPixels) => {
         setPikseli(croppedAreaPixels);
@@ -32,15 +35,12 @@ export default function SlikaUploader({ value, onChange }) {
 
     function odaberi(e) {
         const file = e.target.files[0];
-        e.target.value = ""; // omogućuje ponovni odabir iste datoteke
+        e.target.value = ""; 
         if (!file) return;
 
-        if (!["image/jpeg", "image/png", "image/webp"].includes(file.type)) {
-            alert("Dozvoljeni formati: JPG, PNG, WEBP.");
-            return;
-        }
-        if (file.size > 15 * 1024 * 1024) {
-            alert("Slika je prevelika (max 15 MB).");
+        const rezultat = slikaFileSchema(15).safeParse(file);
+        if (!rezultat.success) {
+            alert(prvaGreska(rezultat));
             return;
         }
 
@@ -72,7 +72,9 @@ export default function SlikaUploader({ value, onChange }) {
                 type="file"
                 accept="image/png,image/jpeg,image/webp"
                 onChange={odaberi}
+            isInvalid={!!greska}
             />
+            <Form.Control.Feedback type="invalid">{greska}</Form.Control.Feedback>
 
             {value && (
                 <div className="mt-2">
@@ -118,15 +120,29 @@ export default function SlikaUploader({ value, onChange }) {
                     </div>
 
                     <div className="mt-3">
-                        <Form.Label className="mb-1 small fw-medium">Zoom</Form.Label>
-                        <Form.Range min={1} max={3} step={0.05} value={zoom}
-                            onChange={(e) => setZoom(Number(e.target.value))} />
-
-                        <Form.Label className="mb-1 small fw-medium">Rotacija ({rotation}°)</Form.Label>
-                        <Form.Range min={-180} max={180} step={1} value={rotation}
-                            onChange={(e) => setRotation(Number(e.target.value))} />
-
-                        <div className="d-flex flex-wrap gap-3 align-items-center">
+                       <Row className="mb-3">
+                            <Col md={6}>
+                                <Form.Label className="mb-1 small fw-medium">Zoom</Form.Label>
+                                <Form.Range 
+                                    min={1} 
+                                    max={3} 
+                                    step={0.05} 
+                                    value={zoom}
+                                    onChange={(e) => setZoom(Number(e.target.value))} 
+                                />
+                            </Col>
+                            <Col md={6}>
+                                <Form.Label className="mb-1 small fw-medium">Rotacija ({rotation}°)</Form.Label>
+                                <Form.Range 
+                                    min={-180} 
+                                    max={180} 
+                                    step={1} 
+                                    value={rotation}
+                                    onChange={(e) => setRotation(Number(e.target.value))} 
+                                />
+                            </Col>
+                        </Row>
+                        <div className="d-flex flex-wrap gap-3 align-items-center justify-content-center">
                             <ButtonGroup size="sm">
                                 {OMJERI.map((o) => (
                                     <Button key={o.label}

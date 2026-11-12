@@ -6,14 +6,26 @@ import DatePicker, { registerLocale } from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { hr } from "date-fns/locale";
 import LokacijaPicker from "../../components/LokacijaPicker";
-import { validirajLokaciju } from "../../utils/lokacija";
 import { RouteNames, putanja } from "../../constants";
 import { spremiSlikuFile } from "../../services/slike/SlikeService";
+import { tragSchema } from "../../schemas/tragSchema";
+import { slikaFileSchema } from "../../schemas/slikaSchema";
 
 registerLocale("hr", hr);
 
 export default function TragNovi() {
     const navigate = useNavigate()
+
+    const [errors, setErrors] = useState({});
+
+    const ocistiGresku = (nazivPolja) => {
+        if (errors[nazivPolja]) {
+            const noveGreske = { ...errors };
+            delete noveGreske[nazivPolja];
+            setErrors(noveGreske);
+        }
+    };
+
     const location = useLocation()
     const { id } = useParams()
     const povratak = location.state?.povratak ?? putanja(RouteNames.TRAG_PREGLED, id)
@@ -24,18 +36,20 @@ export default function TragNovi() {
 
     function odaberiSliku(e) {
         const file = e.target.files[0]
-        if (!file) { setSlikaFile(null); return }
+        if (!file) {
+            setSlikaFile(null)
+            ocistiGresku("slika")
+            return
+        }
 
-        if (!["image/jpeg", "image/png", "image/webp"].includes(file.type)) {
-            alert("Dozvoljeni formati: JPG, PNG, WEBP.")
+        const rezultat = slikaFileSchema(2).safeParse(file)
+        if (!rezultat.success) {
+            setErrors({ ...errors, slika: rezultat.error.issues[0].message })
+            setSlikaFile(null)
             e.target.value = ""
             return
         }
-        if (file.size > 2 * 1024 * 1024) {
-            alert("Slika je prevelika (max 2 MB).")
-            e.target.value = ""
-            return
-        }
+        ocistiGresku("slika")
         setSlikaFile(file)
     }
 
@@ -57,41 +71,30 @@ export default function TragNovi() {
             alert(error.message)
         }
     }
-
     function obradiSubmit(e) {
         e.preventDefault()
         const podaci = new FormData(e.target)
 
-        const opis = (podaci.get('opis') || '').trim()
-        if (opis.length === 0) {
-            alert("Opis traga je obavezan i ne smije sadržavati samo razmake!")
-            return
-        }
-        if (opis.length < 3 || opis.length > 500) {
-            alert("Opis traga mora imati najmanje 3 i najviše 500 znakova!")
-            return
-        }
 
-        const greskaLokacije = validirajLokaciju(lokacija)
-        if (greskaLokacije) {
-            alert(greskaLokacije)
-            return
-        }
-
-        if (!datum || isNaN(datum.getTime())) {
-            alert("Morate odabrati datum i vrijeme!")
-            return
-        }
-        if (datum > new Date()) {
-            alert("Datum traga ne može biti u budućnosti!")
-            return
+        setErrors({});
+        const rezultat = tragSchema.safeParse({ ...Object.fromEntries(podaci), lokacija, datum });
+        if (!rezultat.success) {
+            const noveGreske = {};
+            rezultat.error.issues.forEach((issue) => {
+                const kljuc = issue.path[0];
+                if (!noveGreske[kljuc]) {
+                    noveGreske[kljuc] = issue.message;
+                }
+            });
+            setErrors(noveGreske);
+            return;
         }
 
         dodaj({
             prijava: parseInt(id),
-            opis: opis,
-            lokacija: { ...lokacija, opis: lokacija.opis.trim() },
-            datum: datum.toISOString(),
+            opis: rezultat.data.opis,
+            lokacija: rezultat.data.lokacija,
+            datum: rezultat.data.datum.toISOString(),
         })
     }
 
@@ -112,12 +115,30 @@ export default function TragNovi() {
 
                         <Form.Group controlId="opis" className="mb-3">
                             <Form.Label className="fw-medium">Opis traga</Form.Label>
-                            <Form.Control as="textarea" rows={3} name="opis" placeholder="Unesite opis traga..." required />
+                            <Form.Control
+                                as="textarea"
+                                rows={3}
+                                name="opis"
+                                placeholder="Unesite opis traga..."
+                                isInvalid={!!errors.opis}
+                                onFocus={() => ocistiGresku("opis")}
+                            />
+                            <Form.Control.Feedback type="invalid">
+                                {errors.opis}
+                            </Form.Control.Feedback>
                         </Form.Group>
 
                         <Form.Group className="mb-3">
                             <Form.Label className="fw-medium">Slika (nije obavezno)</Form.Label>
-                            <Form.Control type="file" accept="image/png,image/jpeg,image/webp" onChange={odaberiSliku} />
+                            <Form.Control
+                                type="file"
+                                accept="image/png,image/jpeg,image/webp"
+                                onChange={odaberiSliku}
+                                isInvalid={!!errors.slika}
+                            />
+                            <Form.Control.Feedback type="invalid">
+                                {errors.slika}
+                            </Form.Control.Feedback>
                             {pregled && (
                                 <img src={pregled} alt="Pregled" className="mt-2 rounded border"
                                     style={{ maxWidth: "100%", maxHeight: 180, objectFit: "cover" }} />
@@ -127,7 +148,10 @@ export default function TragNovi() {
                         <Row className="mb-4">
                             <Form.Group className="mb-3">
                                 <Form.Label className="fw-medium">Lokacija</Form.Label>
-                                <LokacijaPicker value={lokacija} onChange={setLokacija} />
+                                <LokacijaPicker value={lokacija} onChange={(l) => { setLokacija(l); ocistiGresku("lokacija") }} />
+                                <Form.Control.Feedback type="invalid" className="d-block">
+                                    {errors.lokacija}
+                                </Form.Control.Feedback>
                             </Form.Group>
 
                             <Form.Group as={Col} md={6} controlId="datum" className="mb-3">
@@ -135,14 +159,17 @@ export default function TragNovi() {
                                 <div>
                                     <DatePicker
                                         selected={datum}
-                                        onChange={(date) => setDatum(date)}
+                                        onChange={(date) => { setDatum(date); ocistiGresku("datum") }}
                                         showTimeSelect
                                         timeFormat="HH:mm"
                                         timeIntervals={15}
                                         dateFormat="dd.MM.yyyy. HH:mm"
                                         locale="hr"
-                                        customInput={<Form.Control required />}
+                                        customInput={<Form.Control isInvalid={!!errors.datum} />}
                                     />
+                                    <Form.Control.Feedback type="invalid" className="d-block">
+                                        {errors.datum}
+                                    </Form.Control.Feedback>
                                 </div>
                             </Form.Group>
                         </Row>

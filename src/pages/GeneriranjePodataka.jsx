@@ -9,6 +9,7 @@ import OznakeService from '../services/oznake/OznakeService';
 import { DATA_SOURCE } from '../constants';
 import { izveziSveUXml } from '../utils/xmlExporter';
 import { BsFileEarmarkCode } from 'react-icons/bs';
+import { brojSchema } from '../schemas/brojSchema';
 
 export default function GeneriranjePodataka() {
     const [brojVrsta, setBrojVrsta] = useState(5);
@@ -18,6 +19,26 @@ export default function GeneriranjePodataka() {
     const [brojTragova, setBrojTragova] = useState(20);
     const [poruka, setPoruka] = useState(null);
     const [loading, setLoading] = useState(false);
+    const [errors, setErrors] = useState({});
+
+    const ocistiGresku = (nazivPolja) => {
+        if (errors[nazivPolja]) {
+            const noveGreske = { ...errors };
+            delete noveGreske[nazivPolja];
+            setErrors(noveGreske);
+        }
+    };
+
+    const provjeriBroj = (polje, broj, max) => {
+        const rezultat = brojSchema(max).safeParse({ broj });
+        if (!rezultat.success) {
+            setErrors({ [polje]: rezultat.error.issues[0].message });
+            return false;
+        }
+        setErrors({});
+        return true;
+    };
+
 
     const faker = new Faker({
         locale: [hr, en]
@@ -52,6 +73,17 @@ export default function GeneriranjePodataka() {
             });
         }
     };
+
+    const unspashSlikeZivotinja = [
+        "https://images.unsplash.com/photo-1543466835-00a7907e9de1?w=500&auto=format&fit=crop&q=60", // Slatki pas
+        "https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?w=500&auto=format&fit=crop&q=60", // Mačka
+        "https://images.unsplash.com/photo-1583511655857-d19b40a7a54e?w=500&auto=format&fit=crop&q=60", // Štene
+        "https://images.unsplash.com/photo-1574158622682-e40e69881006?w=500&auto=format&fit=crop&q=60", // Mačić
+        "https://images.unsplash.com/photo-1537151625747-768eb6cf92b2?w=500&auto=format&fit=crop&q=60", // Pas u prirodi
+        "https://images.unsplash.com/photo-1513360371669-4adf3dd7dff8?w=500&auto=format&fit=crop&q=60", // Mačka znatželjna
+        "https://images.unsplash.com/photo-1548199973-03cce0bbc87b?w=500&auto=format&fit=crop&q=60", // Dva psa
+        "https://images.unsplash.com/photo-1533738363-b7f9aef128ce?w=500&auto=format&fit=crop&q=60", // Mačka leži
+    ];
 
     const generirajOznake = async (broj) => {
         const naziviOznaka = ['Ima ogrlicu', 'Ozlijeđen', 'Star', 'Mladunče', 'Preplašen', 'Traži se vlasnik', 'Agresivan', 'Miran'];
@@ -110,8 +142,7 @@ export default function GeneriranjePodataka() {
                     opis: `Osijek, ${ulica} ${faker.number.int({ min: 1, max: 120 })}`
                 },
                 datum: faker.date.recent({ days: 30 }).toISOString(),
-                slika: `https://picsum.photos/seed/${seedSlike}/400/300`,
-                hitno: faker.datatype.boolean({ probability: 0.3 }),
+                slika: unspashSlikeZivotinja[i % unspashSlikeZivotinja.length],
                 oznake: odabraneOznake
             });
         }
@@ -140,18 +171,17 @@ export default function GeneriranjePodataka() {
                     opis: `Osijek, ${ulica} ${faker.number.int({ min: 1, max: 120 })}`
                 },
                 datum: faker.date.recent({ days: 10 }).toISOString(),
-                slika: faker.datatype.boolean()
-                    ? `https://picsum.photos/seed/trag-${i}-${Math.floor(Math.random() * 10000)}/600/400`
-                    : ""
+                slika: unspashSlikeZivotinja[i % unspashSlikeZivotinja.length],
             });
         }
     };
 
     const handleGenerirajVrste = async (e) => {
         e.preventDefault();
+
+        if (!provjeriBroj('brojVrsta', brojVrsta, 20)) return;
         setLoading(true);
         setPoruka(null);
-
 
         try {
             await generirajVrste(brojVrsta);
@@ -165,6 +195,8 @@ export default function GeneriranjePodataka() {
 
     const handleGenerirajTipove = async (e) => {
         e.preventDefault();
+
+        if (!provjeriBroj('brojTipova', brojTipova, 20)) return;
         setLoading(true);
         setPoruka(null);
 
@@ -180,6 +212,8 @@ export default function GeneriranjePodataka() {
 
     const handleGenerirajOznake = async (e) => {
         e.preventDefault();
+
+        if (!provjeriBroj('brojOznaka', brojOznaka, 20)) return;
         setLoading(true);
         setPoruka(null);
 
@@ -195,6 +229,8 @@ export default function GeneriranjePodataka() {
 
     const handleGenerirajPrijave = async (e) => {
         e.preventDefault();
+
+        if (!provjeriBroj('brojPrijava', brojPrijava, 50)) return;
         setLoading(true);
         setPoruka(null);
 
@@ -210,6 +246,7 @@ export default function GeneriranjePodataka() {
 
     const handleGenerirajTragove = async (e) => {
         e.preventDefault();
+        if (!provjeriBroj('brojTragova', brojTragova, 100)) return;
         setLoading(true);
         setPoruka(null);
 
@@ -460,7 +497,12 @@ export default function GeneriranjePodataka() {
                                         value={brojVrsta}
                                         onChange={(e) => setBrojVrsta(parseInt(e.target.value))}
                                         disabled={loading}
+                                        isInvalid={!!errors.brojVrsta}
+                                        onFocus={() => ocistiGresku('brojVrsta')}
                                     />
+                                    <Form.Control.Feedback type="invalid">
+                                        {errors.brojVrsta}
+                                    </Form.Control.Feedback>
                                     <Form.Text className="text-muted">Unesite broj vrsta (1-20)</Form.Text>
                                 </Form.Group>
                                 <Button variant="primary" type="submit" disabled={loading} className="w-100">
@@ -479,7 +521,12 @@ export default function GeneriranjePodataka() {
                                         value={brojTipova}
                                         onChange={(e) => setBrojTipova(parseInt(e.target.value))}
                                         disabled={loading}
+                                        isInvalid={!!errors.brojTipova}
+                                        onFocus={() => ocistiGresku('brojTipova')}
                                     />
+                                    <Form.Control.Feedback type="invalid">
+                                        {errors.brojTipova}
+                                    </Form.Control.Feedback>
                                     <Form.Text className="text-muted">Unesite broj tipova (1-20)</Form.Text>
                                 </Form.Group>
                                 <Button variant="primary" type="submit" disabled={loading} className="w-100">
@@ -498,7 +545,12 @@ export default function GeneriranjePodataka() {
                                         value={brojOznaka}
                                         onChange={(e) => setBrojOznaka(parseInt(e.target.value))}
                                         disabled={loading}
+                                        isInvalid={!!errors.brojOznaka}
+                                        onFocus={() => ocistiGresku('brojOznaka')}
                                     />
+                                    <Form.Control.Feedback type="invalid">
+                                        {errors.brojOznaka}
+                                    </Form.Control.Feedback>
                                     <Form.Text className="text-muted">Unesite broj oznaka (1-20)</Form.Text>
                                 </Form.Group>
                                 <Button variant="primary" type="submit" disabled={loading} className="w-100">
@@ -517,7 +569,12 @@ export default function GeneriranjePodataka() {
                                         value={brojPrijava}
                                         onChange={(e) => setBrojPrijava(parseInt(e.target.value))}
                                         disabled={loading}
+                                        isInvalid={!!errors.brojPrijava}
+                                        onFocus={() => ocistiGresku('brojPrijava')}
                                     />
+                                    <Form.Control.Feedback type="invalid">
+                                        {errors.brojPrijava}
+                                    </Form.Control.Feedback>
                                     <Form.Text className="text-muted">Unesite broj prijava (1-50)</Form.Text>
                                 </Form.Group>
                                 <Button variant="primary" type="submit" disabled={loading} className="w-100">
@@ -536,7 +593,12 @@ export default function GeneriranjePodataka() {
                                         value={brojTragova}
                                         onChange={(e) => setBrojTragova(parseInt(e.target.value))}
                                         disabled={loading}
+                                        isInvalid={!!errors.brojTragova}
+                                        onFocus={() => ocistiGresku('brojTragova')}
                                     />
+                                    <Form.Control.Feedback type="invalid">
+                                        {errors.brojTragova}
+                                    </Form.Control.Feedback>
                                     <Form.Text className="text-muted">Unesite broj tragova (1-100)</Form.Text>
                                 </Form.Group>
                                 <Button variant="primary" type="submit" disabled={loading} className="w-100">

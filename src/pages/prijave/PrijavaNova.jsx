@@ -9,15 +9,23 @@ import "react-datepicker/dist/react-datepicker.css";
 import { hr } from "date-fns/locale";
 import { useEffect, useState } from "react";
 import LokacijaPicker from "../../components/LokacijaPicker";
-import { validirajLokaciju } from "../../utils/lokacija";
 import OznakeService from "../../services/oznake/OznakeService";
 import { spremiSliku } from "../../services/slike/SlikeService";
 import SlikaUploader from "../../components/SlikaUploader";
+import { prijavaSchema } from "../../schemas/prijavaSchema";
 
 registerLocale("hr", hr);
 
 export default function PrijavaNova() {
     const navigate = useNavigate();
+    const [errors, setErrors] = useState({});
+    const ocistiGresku = (nazivPolja) => {
+        if (errors[nazivPolja]) {
+            const noveGreske = { ...errors };
+            delete noveGreske[nazivPolja];
+            setErrors(noveGreske);
+        }
+    };
     const location = useLocation();
     const povratak = location.state?.povratak ?? RouteNames.PRIJAVE_PREGLED;
     const [datum, setDatum] = useState(new Date());
@@ -59,8 +67,6 @@ export default function PrijavaNova() {
         }
     };
 
-    
-
     async function dodaj(prijava) {
         try {
             const res = await prijaveService.dodaj(prijava);
@@ -92,70 +98,35 @@ export default function PrijavaNova() {
 
     function obradiSubmit(e) {
         e.preventDefault()
+
         const podaci = new FormData(e.target)
 
-        const ime = (podaci.get('zivotinja_ime') || '').trim()
-        if (ime.length > 0 && (ime.length < 2 || ime.length > 50)) {
-            alert("Ime životinje mora imati najmanje 2 i najviše 50 znakova!")
-            return
+        setErrors({});
+        const rezultat = prijavaSchema.safeParse({ ...Object.fromEntries(podaci), lokacija, datum });
+        if (!rezultat.success) {
+            const noveGreske = {};
+            rezultat.error.issues.forEach((issue) => {
+                const kljuc = issue.path[0];
+                if (!noveGreske[kljuc]) {
+                    noveGreske[kljuc] = issue.message;
+                }
+            });
+            setErrors(noveGreske);
+            return;
         }
 
-        if (!podaci.get('zivotinja_vrsta')) {
-            alert("Morate odabrati vrstu životinje!")
-            return
-        }
-
-        const godineRaw = podaci.get('zivotinja_godine')
-        if (godineRaw !== null && godineRaw !== '') {
-            const godine = Number(godineRaw)
-            if (isNaN(godine) || !Number.isInteger(godine) || godine < 0 || godine > 50) {
-                alert("Godine moraju biti cijeli broj između 0 i 50!")
-                return
-            }
-        }
-
-        const slika = (podaci.get('slika') || '').trim()
-        if (slika.length > 0 && !/^https?:\/\//i.test(slika)) {
-            alert("URL slike mora započeti s http:// ili https://")
-            return
-        }
-
-        const opis = (podaci.get('zivotinja_opis') || '').trim()
-        if (opis.length > 500) {
-            alert("Opis može imati najviše 500 znakova!")
-            return
-        }
-
-        if (!podaci.get('tip_prijave')) {
-            alert("Morate odabrati tip prijave!")
-            return
-        }
-
-        const greskaLokacije = validirajLokaciju(lokacija)
-        if (greskaLokacije) {
-            alert(greskaLokacije)
-            return
-        }
-
-        if (!datum || isNaN(datum.getTime())) {
-            alert("Morate odabrati datum i vrijeme!")
-            return
-        }
-        if (datum > new Date()) {
-            alert("Datum prijave ne može biti u budućnosti!")
-            return
-        }
+        const p = rezultat.data
 
         dodaj({
-            zivotinja_ime: ime,
-            zivotinja_vrsta: parseInt(podaci.get('zivotinja_vrsta')),
-            zivotinja_opis: opis,
-            zivotinja_godine: godineRaw ? parseInt(godineRaw) : null,
+            zivotinja_ime: p.zivotinja_ime,
+            zivotinja_vrsta: parseInt(p.zivotinja_vrsta),
+            zivotinja_opis: p.zivotinja_opis,
+            zivotinja_godine: p.zivotinja_godine ? parseInt(p.zivotinja_godine) : null,
             cipirana: podaci.get('cipirana') === 'on',
-            tip_prijave: parseInt(podaci.get('tip_prijave')),
-            status: podaci.get('status') || 'otvorena',
-            lokacija: { ...lokacija, opis: lokacija.opis.trim() },
-            datum: datum.toISOString(),
+            tip_prijave: parseInt(p.tip_prijave),
+            status: p.status,
+            lokacija: p.lokacija,
+            datum: p.datum.toISOString(),
             slika: "",
             hitno: podaci.get('hitno') === 'on',
             oznake: odabraneOznake
@@ -187,12 +158,22 @@ export default function PrijavaNova() {
                                 <Form.Control
                                     type="text"
                                     name="zivotinja_ime"
-                                    placeholder="Npr. Reks" />
+                                    placeholder="Npr. Reks"
+                                    isInvalid={!!errors.zivotinja_ime}
+                                    onFocus={() => ocistiGresku("zivotinja_ime")}
+                                />
+                                <Form.Control.Feedback type="invalid">
+                                    {errors.zivotinja_ime}
+                                </Form.Control.Feedback>
                             </Form.Group>
 
                             <Form.Group as={Col} md={6} controlId="zivotinja_vrsta">
                                 <Form.Label className="fw-medium">Vrsta</Form.Label>
-                                <Form.Select name="zivotinja_vrsta" defaultValue="" required>
+                                <Form.Select
+                                    name="zivotinja_vrsta"
+                                    defaultValue=""
+                                    isInvalid={!!errors.zivotinja_vrsta}
+                                    onFocus={() => ocistiGresku("zivotinja_vrsta")}>
                                     <option value="" disabled>Odaberi vrstu...</option>
                                     {vrste && vrste.map(v =>
                                         <option key={v.id} value={v.id}>
@@ -200,25 +181,56 @@ export default function PrijavaNova() {
                                         </option>
                                     )}
                                 </Form.Select>
+                                <Form.Control.Feedback type="invalid">
+                                    {errors.zivotinja_vrsta}
+                                </Form.Control.Feedback>
                             </Form.Group>
                         </Row>
 
                         <Row className="mb-3">
                             <Form.Group as={Col} md={6} controlId="zivotinja_godine">
                                 <Form.Label className="fw-medium">Godine</Form.Label>
-                                <Form.Control type="number" name="zivotinja_godine" step={1} min={0} placeholder="Npr. 2" />
+                                <Form.Control
+                                    type="number"
+                                    name="zivotinja_godine"
+                                    step={1}
+                                    min={0}
+                                    placeholder="Npr. 2"
+                                    isInvalid={!!errors.zivotinja_godine}
+                                    onFocus={() => ocistiGresku("zivotinja_godine")}
+                                />
+                                <Form.Control.Feedback type="invalid">
+                                    {errors.zivotinja_godine}
+                                </Form.Control.Feedback>
                             </Form.Group>
 
-                    <Form.Group as={Col} md={6}>
-    <Form.Label className="fw-medium">Slika</Form.Label>
-    <SlikaUploader value={novaSlika} onChange={setNovaSlika} />
-</Form.Group>
+                            <Form.Group as={Col} md={6}>
+                                <Form.Label className="fw-medium">Slika</Form.Label>
+                                <SlikaUploader
+                                    value={novaSlika}
+                                    onChange={(val) => {
+                                        setNovaSlika(val);
+                                        ocistiGresku("slika");
+                                    }}
+                                />
+                            </Form.Group>
                         </Row>
 
                         <Form.Group className="mb-4" controlId="zivotinja_opis">
                             <Form.Label className="fw-medium">Opis</Form.Label>
-                            <Form.Control as="textarea" rows={3} name="zivotinja_opis" placeholder="Boja krzna, posebne oznake, ponašanje, ozljede..." />
+                            <Form.Control
+                                as="textarea"
+                                rows={3}
+                                name="zivotinja_opis"
+                                placeholder="Boja krzna, posebne oznake, ponašanje, ozljede..."
+                                isInvalid={!!errors.zivotinja_opis}
+                                onFocus={() => ocistiGresku("zivotinja_opis")}
+                            />
+                            <Form.Control.Feedback type="invalid">
+                                {errors.zivotinja_opis}
+                            </Form.Control.Feedback>
                         </Form.Group>
+
                         <h5 className="text-secondary fw-bold mb-3 border-bottom pb-2 pt-2">
                             Oznake (Tagovi)
                         </h5>
@@ -244,6 +256,7 @@ export default function PrijavaNova() {
                                 )}
                             </div>
                         </div>
+
                         <h5 className="text-secondary fw-bold mb-3 border-bottom pb-2 pt-2">
                             2. Detalji prijave i lokacija
                         </h5>
@@ -251,7 +264,12 @@ export default function PrijavaNova() {
                         <Row className="mb-3">
                             <Form.Group as={Col} md={6} controlId="tip_prijave">
                                 <Form.Label className="fw-medium">Tip prijave</Form.Label>
-                                <Form.Select name="tip_prijave" defaultValue="" required>
+                                <Form.Select
+                                    name="tip_prijave"
+                                    defaultValue=""
+                                    isInvalid={!!errors.tip_prijave}
+                                    onFocus={() => ocistiGresku("tip_prijave")}
+                                >
                                     <option value="" disabled>Odaberi tip...</option>
                                     {tipovi && tipovi.map(t =>
                                         <option key={t.id} value={t.id}>
@@ -259,14 +277,24 @@ export default function PrijavaNova() {
                                         </option>
                                     )}
                                 </Form.Select>
+                                <Form.Control.Feedback type="invalid">
+                                    {errors.tip_prijave}
+                                </Form.Control.Feedback>
                             </Form.Group>
 
                             <Form.Group as={Col} md={6} controlId="status">
                                 <Form.Label className="fw-medium">Status</Form.Label>
-                                <Form.Select name="status" required>
+                                <Form.Select
+                                    name="status"
+                                    isInvalid={!!errors.status}
+                                    onFocus={() => ocistiGresku("status")}
+                                >
                                     <option value="otvorena">Otvorena</option>
                                     <option value="zatvorena">Zatvorena</option>
                                 </Form.Select>
+                                <Form.Control.Feedback type="invalid">
+                                    {errors.status}
+                                </Form.Control.Feedback>
                             </Form.Group>
                         </Row>
 
@@ -274,21 +302,32 @@ export default function PrijavaNova() {
 
                             <Form.Group className="mb-3">
                                 <Form.Label className="fw-medium">Lokacija</Form.Label>
-                                <LokacijaPicker value={lokacija} onChange={setLokacija} />
+                                <LokacijaPicker
+                                    value={lokacija}
+                                    onChange={(l) => { setLokacija(l); ocistiGresku("lokacija") }}
+                                />
+                                <Form.Control.Feedback type="invalid" className="d-block">
+                                    {errors.lokacija}
+                                </Form.Control.Feedback>
                             </Form.Group>
 
                             <Form.Group as={Col} md={6} controlId="datum">
                                 <Form.Label className="fw-medium p-4">Datum i vrijeme</Form.Label>
                                 <DatePicker
                                     selected={datum}
-                                    onChange={(date) => setDatum(date)}
+                                    onChange={(date) => { setDatum(date); ocistiGresku("datum") }}
                                     showTimeSelect
                                     timeFormat="HH:mm"
                                     timeIntervals={15}
                                     dateFormat="dd.MM.yyyy. HH:mm"
                                     locale="hr"
-                                    customInput={<Form.Control required />}
+                                    customInput={
+                                        <Form.Control isInvalid={!!errors.datum} />
+                                    }
                                 />
+                                <Form.Control.Feedback type="invalid">
+                                    {errors.datum}
+                                </Form.Control.Feedback>
                             </Form.Group>
                         </Row>
 
@@ -325,7 +364,7 @@ export default function PrijavaNova() {
                     </Form>
                 </Card.Body>
             </Card>
-        </Container>
+        </Container >
 
     )
 }
