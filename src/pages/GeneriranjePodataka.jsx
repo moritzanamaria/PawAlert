@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Button, Card, Form, Alert, Container, Row, Col } from 'react-bootstrap';
 import { Faker, hr, en } from '@faker-js/faker';
 import prijaveService from '../services/prijave/prijaveService';
@@ -6,10 +6,12 @@ import TragoviService from '../services/tragovi/TragoviService';
 import TipService from '../services/tip/TipService';
 import VrsteService from '../services/vrste/VrsteService';
 import OznakeService from '../services/oznake/OznakeService';
-import { DATA_SOURCE } from '../constants';
+import { DATA_SOURCE, IME_APLIKACIJE } from '../constants';
 import { izveziSveUXml } from '../utils/xmlExporter';
 import { BsFileEarmarkCode } from 'react-icons/bs';
 import { brojSchema } from '../schemas/brojSchema';
+import OperaterService from '../services/operateri/OperaterService';
+
 
 export default function GeneriranjePodataka() {
     const [brojVrsta, setBrojVrsta] = useState(5);
@@ -17,6 +19,7 @@ export default function GeneriranjePodataka() {
     const [brojOznaka, setBrojOznaka] = useState(5);
     const [brojPrijava, setBrojPrijava] = useState(10);
     const [brojTragova, setBrojTragova] = useState(20);
+    const [brojOperatera, setBrojOperatera] = useState(5);
     const [poruka, setPoruka] = useState(null);
     const [loading, setLoading] = useState(false);
     const [errors, setErrors] = useState({});
@@ -38,7 +41,7 @@ export default function GeneriranjePodataka() {
         setErrors({});
         return true;
     };
-
+ useEffect(() => { document.title = 'Generiranje podataka, ' + IME_APLIKACIJE })
 
     const faker = new Faker({
         locale: [hr, en]
@@ -384,9 +387,10 @@ export default function GeneriranjePodataka() {
             await generirajOznake(brojOznaka);
             await generirajPrijave(brojPrijava);
             await generirajTragove(brojTragova);
+            await generirajOperatere(brojOperatera);
             setPoruka({
                 tip: 'success',
-                tekst: `Uspješno generirano: ${brojVrsta} vrsta, ${brojTipova} tipova, ${brojPrijava} prijava, ${brojTragova} tragova i ${brojOznaka} oznaka!`
+                tekst: `Uspješno generirano: ${brojVrsta} vrsta, ${brojTipova} tipova, ${brojPrijava} prijava, ${brojTragova} tragova, ${brojOznaka} oznaka i ${brojOperatera} operatera!`
             });
         } catch (error) {
             setPoruka({ tip: 'danger', tekst: 'Greška pri generiranju svih podataka: ' + error.message });
@@ -431,6 +435,14 @@ export default function GeneriranjePodataka() {
                 await OznakeService.obrisi(oznaka.id)
             }
 
+            const operateriOdgovor = await OperaterService.get();
+            const operateri = operateriOdgovor.data || operateriOdgovor;
+            for (const operater of operateri) {
+                await OperaterService.obrisi(operater.id)
+            }
+
+            
+
             setPoruka({
                 tip: 'success',
                 tekst: `Uspješno obrisano: ${tragovi.length} tragova, ${prijave.length} prijava, ${tipovi.length} tipova, ${vrste.length} vrsta i ${oznake.length} oznaka!`
@@ -452,6 +464,84 @@ export default function GeneriranjePodataka() {
             </Container>
         );
     }
+     const generirajOperatere = async (broj) => {
+        const rezultat = await OperaterService.get();
+        const operateri = rezultat.data;
+        const adminOperater = operateri.find(op => op.email === 'admin@edunova.hr');
+        
+        if (adminOperater) {
+            await OperaterService.obrisi(adminOperater.id);
+        }
+
+        await OperaterService.dodaj({
+            email: 'admin@edunova.hr',
+            lozinka: 'Edunova123!',
+            uloga: 'admin'
+        });
+
+        for (let i = 0; i < broj; i++) {
+            await OperaterService.dodaj({
+                email: faker.internet.email(),
+                lozinka: 'Edunova123!',
+                uloga: 'korisnik'
+            });
+        }
+    };
+
+    const handleGenerirajOperatere = async (e) => {
+        e.preventDefault();
+        setLoading(true);
+        setPoruka(null);
+
+        try {
+            await generirajOperatere(brojOperatera);
+
+            setPoruka({
+                tip: 'success',
+                tekst: `Uspješno generirano ${brojOperatera + 1} operatera (1 admin + ${brojOperatera} korisnika)!`
+            });
+        } catch (error) {
+            setPoruka({
+                tip: 'danger',
+                tekst: 'Greška pri generiranju operatera: ' + error.message
+            });
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const handleObrisiOperatere = async () => {
+        if (!window.confirm('Jeste li sigurni da želite obrisati sve operatere?')) {
+            return;
+        }
+
+        setLoading(true);
+        setPoruka(null);
+
+        try {
+            const rezultat = await OperaterService.get();
+            const operateri = rezultat.data;
+            
+            for (const operater of operateri) {
+                await OperaterService.obrisi(operater.id);
+            }
+
+            setPoruka({
+                tip: 'success',
+                tekst: `Uspješno obrisano ${operateri.length} operatera!`
+            });
+        } catch (error) {
+            setPoruka({
+                tip: 'danger',
+                tekst: 'Greška pri brisanju operatera: ' + error.message
+            });
+        } finally {
+            setLoading(false);
+        }
+    };
+
+
+
 
     return (
         <Container>
@@ -558,7 +648,7 @@ export default function GeneriranjePodataka() {
                                 </Button>
                             </Form>
                         </Col>
-                        <Col md={6}>
+                        <Col md={4}>
                             <Form onSubmit={handleGenerirajPrijave}>
                                 <Form.Group className="mb-3">
                                     <Form.Label>Broj prijava</Form.Label>
@@ -582,7 +672,7 @@ export default function GeneriranjePodataka() {
                                 </Button>
                             </Form>
                         </Col>
-                        <Col md={6}>
+                        <Col md={4}>
                             <Form onSubmit={handleGenerirajTragove}>
                                 <Form.Group className="mb-3">
                                     <Form.Label>Broj tragova</Form.Label>
@@ -606,9 +696,33 @@ export default function GeneriranjePodataka() {
                                 </Button>
                             </Form>
                         </Col>
-                        <Col md={4}>
-
-                        </Col>
+                             <Col md={4}>
+                    <Form onSubmit={handleGenerirajOperatere}>
+                        <Form.Group className="mb-3">
+                            <Form.Label>Broj operatera</Form.Label>
+                            <Form.Control
+                                type="number"
+                                min="1"
+                                max="50"
+                                value={brojOperatera}
+                                onChange={(e) => setBrojOperatera(parseInt(e.target.value))}
+                                disabled={loading}
+                            />
+                            <Form.Text className="text-muted">
+                                +1 admin (1-50)
+                            </Form.Text>
+                        </Form.Group>
+                        <Button 
+                            variant="primary" 
+                            type="submit" 
+                            disabled={loading}
+                            className="w-100"
+                        >
+                            {loading ? 'Generiranje...' : 'Generiraj operatere'}
+                        </Button>
+                    </Form>
+                </Col>
+           
                     </Row>
                     <Alert variant="warning" className="mt-3">
                         <strong>Upozorenje:</strong> Ove akcije će dodati nove podatke u postojeće. Ako želite početi ispočetka, prvo obrišite postojeće podatke.
@@ -635,16 +749,22 @@ export default function GeneriranjePodataka() {
                                 {loading ? 'Brisanje...' : 'Obriši sve oznake'}
                             </Button>
                         </Col>
-                        <Col md={6}>
+                        <Col md={4}>
                             <Button variant="danger" onClick={handleObrisiPrijave} disabled={loading} className="w-100 mb-2">
                                 {loading ? 'Brisanje...' : 'Obriši sve prijave'}
                             </Button>
                         </Col>
-                        <Col md={6}>
+                        <Col md={4}>
                             <Button variant="danger" onClick={handleObrisiTragove} disabled={loading} className="w-100 mb-2">
                                 {loading ? 'Brisanje...' : 'Obriši sve tragove'}
                             </Button>
                         </Col>
+                              <Col md={4}>
+                            <Button variant="danger" onClick={handleObrisiOperatere} disabled={loading} className="w-100 mb-2">
+                                {loading ? 'Brisanje...' : 'Obriši sve tragove'}
+                            </Button>
+                        </Col>
+                  
                     </Row>
 
                     <Alert variant="danger" className="mt-3">

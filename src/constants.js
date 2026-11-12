@@ -23,6 +23,11 @@ export const RouteNames = {
   OZNAKA_NOVA: "/oznake/nova",
   OZNAKA_PROMJENA: "/oznake/promjena/:id",
 
+   OPERATERI: '/operateri',
+   OPERATERI_NOVI: '/operateri/novi',
+   OPERATERI_PROMJENA: '/operateri/:id',
+   OPERATERI_PROMJENA_LOZINKE: '/operateri/:id/lozinka',
+
   GENERIRANJE_PODATAKA: '/generiranje-podatka',
 };
 

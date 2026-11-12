@@ -21,7 +21,10 @@ import { Container } from "react-bootstrap"
 import OznakePregled from "./pages/oznake/OznakePregled"
 import OznakaNova from "./pages/oznake/OznakaNova"
 import OznakaPromjena from "./pages/oznake/OznakaPromjena"
-
+import OperaterPregled from './pages/operateri/OperaterPregled'
+import OperaterNovi from './pages/operateri/OperaterNovi'
+import OperaterPromjena from './pages/operateri/OperaterPromjena'
+import OperaterPromjenaLozinke from './pages/operateri/OperaterPromjenaLozinke'
 
 export default function App() {
   return (
@@ -46,6 +49,10 @@ export default function App() {
         <Route path={RouteNames.OZNAKE_PREGLED} element={<OznakePregled />} />
         <Route path={RouteNames.OZNAKA_NOVA} element={<OznakaNova />} />
         <Route path={RouteNames.OZNAKA_PROMJENA} element={<OznakaPromjena />} />
+        <Route path={RouteNames.OPERATERI} element={<OperaterPregled />} />
+        <Route path={RouteNames.OPERATERI_NOVI} element={<OperaterNovi />} />
+        <Route path={RouteNames.OPERATERI_PROMJENA} element={<OperaterPromjena />} />
+        <Route path={RouteNames.OPERATERI_PROMJENA_LOZINKE} element={<OperaterPromjenaLozinke />} />
         <Route path={RouteNames.GENERIRANJE_PODATAKA} element={<GeneriranjePodataka />} />
         <Route path="*" element={<Navigate to={RouteNames.HOME} replace />} />
       </Routes>
