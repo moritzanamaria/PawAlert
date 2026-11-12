@@ -129,9 +129,7 @@ const getNazivVrste = (id) => vrste.find((v) => Number(v.id) === Number(id))?.na
       <Card className="shadow-sm border-0 rounded-3 mb-4">
         <Card.Header className="bg-white p-4 border-0 d-flex justify-content-between align-items-center flex-wrap gap-3">
           <div>
-            <div className="d-flex justify-content-between align-items-center mb-4">
-            <h2>Katalog prijava</h2>
-        </div>
+           
         <div className="d-flex align-items-center gap-3 mb-1">
             <h3 className="fw-bold mb-1 text-dark">🎴 Katalog</h3>
                    <OverlayTrigger
