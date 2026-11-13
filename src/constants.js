@@ -23,12 +23,18 @@ export const RouteNames = {
   OZNAKA_NOVA: "/oznake/nova",
   OZNAKA_PROMJENA: "/oznake/promjena/:id",
 
-   OPERATERI: '/operateri',
-   OPERATERI_NOVI: '/operateri/novi',
-   OPERATERI_PROMJENA: '/operateri/:id',
-   OPERATERI_PROMJENA_LOZINKE: '/operateri/:id/lozinka',
+  OPERATERI: '/operateri',
+  OPERATERI_NOVI: '/operateri/novi',
+  OPERATERI_PROMJENA: '/operateri/:id',
+  OPERATERI_PROMJENA_LOZINKE: '/operateri/:id/lozinka',
 
   GENERIRANJE_PODATAKA: '/generiranje-podatka',
+
+  LOGIN: '/login',
+  REGISTRACIJA: '/registracija',
+
+  NADZORNA_PLOCA: '/nadzorna-ploca',
+
 };
 
 export const putanja = (ruta, id) => ruta.replace(":id", id);

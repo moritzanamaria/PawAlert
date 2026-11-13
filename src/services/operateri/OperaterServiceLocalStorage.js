@@ -1,9 +1,18 @@
 import bcrypt from 'bcryptjs'
-const STORAGE_KEY='operateri'
+import { operateri as seedOperateri } from './OperaterPodaci'
+
+const STORAGE_KEY = 'operateri'
 
 function dohvatiSveIzStorage() {
     const podaci = localStorage.getItem(STORAGE_KEY)
-    return podaci ? JSON.parse(podaci) : []
+    const parsirano = podaci ? JSON.parse(podaci) : []
+
+    if (parsirano.length === 0) {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(seedOperateri))
+        return [...seedOperateri]
+    }
+
+    return parsirano
 }
 
 function spremiUStorage(podaci) {
