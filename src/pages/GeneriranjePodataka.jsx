@@ -122,7 +122,6 @@ export default function GeneriranjePodataka() {
             const randomVrsta = vrste[faker.number.int({ min: 0, max: vrste.length - 1 })];
             const randomTip = tipovi[faker.number.int({ min: 0, max: tipovi.length - 1 })];
             const ulica = osjeckeUlice[faker.number.int({ min: 0, max: osjeckeUlice.length - 1 })];
-            const seedSlike = `zivotinja-${i}-${Math.floor(Math.random() * 10000)}`;
             const odabraneOznake = [];
             if (oznake.length > 0) {
                 const brojOznakaZaPrijavu = faker.number.int({ min: 0, max: Math.min(3, oznake.length) });
@@ -400,7 +399,7 @@ export default function GeneriranjePodataka() {
     };
 
     const handleObrisiSve = async () => {
-        if (!window.confirm('Jeste li sigurni da želite obrisati SVE podatke (tragove, prijave, tipove, vrste i oznake)?')) return;
+        if (!window.confirm('Jeste li sigurni da želite obrisati SVE podatke (tragove, prijave, tipove, vrste, oznake i operatere)?')) return;
         setLoading(true);
         setPoruka(null);
 
@@ -490,6 +489,7 @@ export default function GeneriranjePodataka() {
 
     const handleGenerirajOperatere = async (e) => {
         e.preventDefault();
+        if (!provjeriBroj('brojOperatera', brojOperatera, 50)) return;
         setLoading(true);
         setPoruka(null);
 
@@ -707,10 +707,13 @@ export default function GeneriranjePodataka() {
                                 value={brojOperatera}
                                 onChange={(e) => setBrojOperatera(parseInt(e.target.value))}
                                 disabled={loading}
+                                 isInvalid={!!errors.brojOperatera} 
+                                 onFocus={() => ocistiGresku('brojOperatera')} 
                             />
                             <Form.Text className="text-muted">
                                 +1 admin (1-50)
                             </Form.Text>
+                            <Form.Control.Feedback type="invalid">{errors.brojOperatera}</Form.Control.Feedback>
                         </Form.Group>
                         <Button 
                             variant="primary" 
@@ -761,7 +764,7 @@ export default function GeneriranjePodataka() {
                         </Col>
                               <Col md={4}>
                             <Button variant="danger" onClick={handleObrisiOperatere} disabled={loading} className="w-100 mb-2">
-                                {loading ? 'Brisanje...' : 'Obriši sve tragove'}
+                                {loading ? 'Brisanje...' : 'Obriši sve operatere'}
                             </Button>
                         </Col>
                   

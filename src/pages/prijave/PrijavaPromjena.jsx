@@ -40,7 +40,7 @@ export default function PrijavaPromjena() {
     const [oznake, setOznake] = useState([]);
     const [odabraneOznake, setOdabraneOznake] = useState([]);
     const [lokacija, setLokacija] = useState(null);
-    const [novaSlika, setNovaSlika] = useState(null);
+    const [novaSlika, setNovaSlika] = useState(undefined);
     const [cacheBust] = useState(Date.now());
 
 
@@ -86,6 +86,7 @@ export default function PrijavaPromjena() {
 
 
     function slikaSrc() {
+        if (novaSlika === null) return null;
         if (novaSlika) return novaSlika;
         if (!prijava.slika) return null;
         if (/^https?:\/\//i.test(prijava.slika)) return prijava.slika;
@@ -118,7 +119,9 @@ export default function PrijavaPromjena() {
         }
 
         let slikaPath = prijava.slika || "";
-        if (novaSlika) {
+        if (novaSlika === null) {
+            slikaPath = "";
+        } else if (novaSlika) {
             try {
                 const rez = await spremiSliku(params.id, novaSlika);
                 if (!rez.success) {
@@ -227,7 +230,7 @@ export default function PrijavaPromjena() {
 
                             <Form.Group as={Col} md={6}>
                                 <Form.Label className="fw-medium">Slika</Form.Label>
-                                <SlikaUploader value={novaSlika || slikaSrc()} onChange={setNovaSlika} />
+                                <SlikaUploader value={slikaSrc()} onChange={setNovaSlika} />
                             </Form.Group>
                         </Row>
 

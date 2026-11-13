@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-export const slikaFileSchema = (maxMB = 2) =>
+export const slikaFileSchema = (maxMB = 5) =>
        z
         .instanceof(File, { error: "Odaberite sliku." })
         .refine(

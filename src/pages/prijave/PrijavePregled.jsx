@@ -176,7 +176,7 @@ export default function PrijavePregled() {
                   <td className="text-center pe-4">
                     <ButtonGroup size="sm">
                       <Link to={putanja(RouteNames.TRAG_PREGLED, prijava.id)} className="btn btn-outline-primary" title="Tragovi">
-                        <BiSearch size={16} /> Tragovi
+                        <BiSearch size={16} /> 
                       </Link>
                       <Button variant="outline-warning" onClick={() => navigate(putanja(RouteNames.PRIJAVA_PROMJENA, prijava.id))} title="Uredi">
                         <BiPencil size={16} />

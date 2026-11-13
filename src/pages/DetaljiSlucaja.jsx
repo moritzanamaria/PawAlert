@@ -226,7 +226,7 @@ export default function DetaljiSlucaja() {
                             <p className="text-muted small">Prikaz svih lokacija vezanih uz ovaj slučaj</p>
                         </Card.Header>
                         <Card.Body className="p-0 pt-3">
-                            <div style={{ height: "450px", width: "100%" }}>
+                            <div style={{ height: "320px", width: "100%" }}>
                                 <TragoviMapa prijava={prijava} tragovi={tragovi} />
                             </div>
                         </Card.Body>

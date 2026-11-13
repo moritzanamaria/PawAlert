@@ -19,7 +19,7 @@ export default function OperaterPromjena() {
             .min(1, "Email je obavezan!")
             .email("Unesite ispravan email format!"),
         uloga: z.enum(['admin', 'korisnik'], {
-            errorMap: () => ({ message: "Uloga mora biti 'admin' ili 'korisnik'!" })
+            error:  "Uloga mora biti 'admin' ili 'korisnik'!" 
         })
     })
 
