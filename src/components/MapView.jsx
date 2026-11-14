@@ -1,5 +1,5 @@
 import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
-import { CENTAR_OSIJEK } from "../constants";
+import { CENTAR_OSIJEK, putanja, RouteNames } from "../constants";
 import "leaflet/dist/leaflet.css";
 import FormatDatuma from "./FormatDatuma";
 import { podesiLeafletIkone, parsirajKoordinate, dohvatiIkonu, bojaTipa } from "../utils/mapHelpers";
@@ -8,6 +8,7 @@ import VrsteService from "../services/vrste/VrsteService";
 import TipService from "../services/tip/TipService";
 import OznakeService from "../services/oznake/OznakeService";
 import "../App.css"
+import { Link } from "react-router-dom";
 
 podesiLeafletIkone();
 
@@ -71,6 +72,13 @@ function MapView({ prijave = [], vrste: propVrste, tipovi: propTipovi, oznake: p
               <Popup>
                 <div>
                   <strong>{p.zivotinja_ime || "Prijava"}</strong>
+                  <Link
+                    to={putanja(RouteNames.DETALJI_SLUCAJA, p.id)}
+                    title="Pogledaj tragove"
+                    className="text-decoration-none fs-4 lh-1"
+                  >
+                    🐾
+                  </Link>
                   <br />
                   <span>Vrsta: {nazivVrste}</span>
                   <br />
@@ -93,7 +101,7 @@ function MapView({ prijave = [], vrste: propVrste, tipovi: propTipovi, oznake: p
                               className="badge"
                               style={{
                                 backgroundColor: o.boja || "#6c757d",
-                                color:  o.boja_teksta || "#fff",
+                                color: o.boja_teksta || "#fff",
                                 fontSize: "0.75rem",
                               }}
                             >
