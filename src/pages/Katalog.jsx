@@ -13,6 +13,7 @@ import OznakeService from "../services/oznake/OznakeService";
 import { generirajPrijaveWord } from '../utils/prijaveWordGenerator';
 import { BsFileEarmarkWord } from 'react-icons/bs';
 import { slikaUrl } from "../utils/slika";
+import useAuth from "../hooks/useAuth";
 
 export default function Katalog() {
   const [prijave, setPrijave] = useState([]);
@@ -23,6 +24,7 @@ export default function Katalog() {
   const [sortiranje, setSortiranje] = useState("najnovije");
   const [trenutnaStranica, setTrenutnaStranica] = useState(1);
   const prijavaPoStranici = 6;
+  const { isLoggedIn } = useAuth();
 
   useEffect(() => {
     prijaveService.get().then((res) => setPrijave(res.data || res));
@@ -60,9 +62,9 @@ export default function Katalog() {
     setTrenutnaStranica(novaStranica);
   }
 
-const getNazivVrste = (id) => vrste.find((v) => Number(v.id) === Number(id))?.naziv ?? "";
+  const getNazivVrste = (id) => vrste.find((v) => Number(v.id) === Number(id))?.naziv ?? "";
   const getNazivTipa = (id) => tipovi.find((t) => Number(t.id) === Number(id))?.naziv ?? "";
-  
+
   const handleExportWord = () => {
     generirajPrijaveWord(prijave, vrste, tipovi, oznake);
   };
@@ -129,29 +131,35 @@ const getNazivVrste = (id) => vrste.find((v) => Number(v.id) === Number(id))?.na
       <Card className="shadow-sm border-0 rounded-3 mb-4">
         <Card.Header className="bg-white p-4 border-0 d-flex justify-content-between align-items-center flex-wrap gap-3">
           <div>
-           
-        <div className="d-flex align-items-center gap-3 mb-1">
-            <h3 className="fw-bold mb-1 text-dark">🎴 Katalog</h3>
-                   <OverlayTrigger
-              placement="top"
-              trigger={["hover", "focus"]}
-              overlay={<Tooltip id="word-tooltip">Preuzmi Word katalog (.docx)</Tooltip>}
-            >
-              <Button
-                onClick={handleExportWord}
-                variant="light"
-                className="btn-icon p-2 rounded-circle shadow-sm border d-flex align-items-center justify-content-center text-primary"
-                style={{ width: "42px", height: "42px", transition: "all 0.2s" }}
+
+            <div className="d-flex align-items-center gap-3 mb-1">
+              <h3 className="fw-bold mb-1 text-dark">🎴 Katalog</h3>
+              <OverlayTrigger
+                placement="top"
+                trigger={["hover", "focus"]}
+                overlay={<Tooltip id="word-tooltip">Preuzmi Word katalog (.docx)</Tooltip>}
               >
-                <BsFileEarmarkWord size={22} />
-              </Button>
-            </OverlayTrigger>
+                <Button
+                  onClick={handleExportWord}
+                  variant="light"
+                  className="btn-icon p-2 rounded-circle shadow-sm border d-flex align-items-center justify-content-center text-primary"
+                  style={{ width: "42px", height: "42px", transition: "all 0.2s" }}
+                >
+                  <BsFileEarmarkWord size={22} />
+                </Button>
+              </OverlayTrigger>
             </div>
             <p className="text-muted small mb-0">Popis svih prijavljenih slučajeva</p>
           </div>
-          <Link to={RouteNames.PRIJAVA_NOVA} state={{ povratak: RouteNames.KATALOG }} className="btn btn-success fw-medium d-flex align-items-center gap-1 shadow-sm px-3 py-2 justify-content-center col-12 col-md-auto">
-            <BiPlus size={20} /> Nova prijava
-          </Link>
+          {isLoggedIn ? (
+            <Link to={RouteNames.PRIJAVA_NOVA} state={{ povratak: RouteNames.KATALOG }} className="btn btn-success fw-medium d-flex align-items-center gap-1 shadow-sm px-3 py-2 justify-content-center col-12 col-md-auto">
+              <BiPlus size={20} /> Nova prijava
+            </Link>
+          ) : (
+            <Link to={RouteNames.LOGIN} className="btn btn-outline-success fw-semibold">
+              Prijavi se za prijavu životinje
+            </Link>
+          )}
         </Card.Header>
         <div className="px-4 pb-3">
           <FilterPrijava

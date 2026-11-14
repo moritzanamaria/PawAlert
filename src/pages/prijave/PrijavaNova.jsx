@@ -13,6 +13,7 @@ import OznakeService from "../../services/oznake/OznakeService";
 import { spremiSliku } from "../../services/slike/SlikeService";
 import SlikaUploader from "../../components/SlikaUploader";
 import { prijavaSchema } from "../../schemas/prijavaSchema";
+import useAuth from "../../hooks/useAuth"
 
 registerLocale("hr", hr);
 
@@ -35,6 +36,7 @@ export default function PrijavaNova() {
     const [odabraneOznake, setOdabraneOznake] = useState([]);
     const [lokacija, setLokacija] = useState(null);
     const [novaSlika, setNovaSlika] = useState(null);
+    const { authUser } = useAuth();
 
     useEffect(() => {
         async function dohvatiPodatke() {
@@ -129,7 +131,8 @@ export default function PrijavaNova() {
             datum: p.datum.toISOString(),
             slika: "",
             hitno: podaci.get('hitno') === 'on',
-            oznake: odabraneOznake
+            oznake: odabraneOznake,
+            operater_id: authUser.id,
         })
     }
 

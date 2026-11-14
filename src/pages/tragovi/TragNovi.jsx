@@ -10,6 +10,7 @@ import { RouteNames, putanja } from "../../constants";
 import { spremiSlikuFile } from "../../services/slike/SlikeService";
 import { tragSchema } from "../../schemas/tragSchema";
 import { slikaFileSchema } from "../../schemas/slikaSchema";
+import useAuth from "../../hooks/useAuth"
 
 registerLocale("hr", hr);
 
@@ -33,6 +34,7 @@ export default function TragNovi() {
     const [lokacija, setLokacija] = useState(null)
     const [slikaFile, setSlikaFile] = useState(null)
     const pregled = useMemo(() => slikaFile ? URL.createObjectURL(slikaFile) : null, [slikaFile])
+    const { authUser } = useAuth();
 
     function odaberiSliku(e) {
         const file = e.target.files[0]
@@ -95,6 +97,7 @@ export default function TragNovi() {
             opis: rezultat.data.opis,
             lokacija: rezultat.data.lokacija,
             datum: rezultat.data.datum.toISOString(),
+            operater_id: authUser.id,
         })
     }
 

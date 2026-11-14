@@ -10,6 +10,7 @@ import { Col, Container, Row } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import { RouteNames } from "../constants";
 import OznakeService from "../services/oznake/OznakeService";
+import useAuth from "../hooks/useAuth";
 
 function Home() {
   const [prijave, setPrijave] = useState([]);
@@ -17,6 +18,7 @@ function Home() {
   const [filteri, setFilteri] = useState(PRAZNI_FILTERI);
   const [tipovi, setTipovi] = useState([]);
   const [oznake, setOznake] = useState([]);
+  const { isLoggedIn } = useAuth();
 
   useEffect(() => {
 
@@ -54,6 +56,7 @@ function Home() {
             </p>
           </Col>
           <Col xs={12} md="auto" className="d-flex flex-column flex-sm-row gap-2">
+          {isLoggedIn ? (
             <Link
               to={RouteNames.PRIJAVA_NOVA}
               state={{ povratak: RouteNames.HOME }}
@@ -61,6 +64,11 @@ function Home() {
             >
               Prijavi životinju
             </Link>
+            ) : (
+  <Link to={RouteNames.LOGIN} className="btn btn-outline-success fw-semibold">
+    Prijavi se za prijavu životinje
+  </Link>
+          )}
             <Link to={RouteNames.KATALOG} className="btn btn-outline-success fw-semibold">
               Katalog
             </Link>

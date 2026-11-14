@@ -1,19 +1,20 @@
-import { useEffect, useMemo, useState } from "react"
-import { Link, useParams } from "react-router-dom"
-import { Button, Card, Container, Row, Col } from "react-bootstrap"
-import { RouteNames, putanja } from "../constants"
-import prijaveService from "../services/prijave/prijaveService"
-import TragoviService from "../services/tragovi/TragoviService"
+import { useEffect, useMemo, useState } from "react";
+import { Link, useNavigate, useParams } from "react-router-dom";
+import { Button, Card, Container, Row, Col } from "react-bootstrap";
+import { RouteNames, putanja } from "../constants";
+import prijaveService from "../services/prijave/prijaveService";
+import TragoviService from "../services/tragovi/TragoviService";
 import FormatDatuma from "../components/FormatDatuma";
 import { BiPlus, BiMap, BiTime, BiPrinter, BiArrowBack } from "react-icons/bi";
 import TragoviMapa from "../components/TragoviMapa";
-import OznakeService from "../services/oznake/OznakeService"
-import VrsteService from "../services/vrste/VrsteService"
-import TipService from "../services/tip/TipService"
-import LetakModal from "../components/LetakModal"
+import OznakeService from "../services/oznake/OznakeService";
+import VrsteService from "../services/vrste/VrsteService";
+import TipService from "../services/tip/TipService";
+import LetakModal from "../components/LetakModal";
 import { slikaUrl } from "../utils/slika";
-import { Chrono } from "react-chrono"
-import "react-chrono/dist/style.css"
+import { Chrono } from "react-chrono";
+import "react-chrono/dist/style.css";
+import useAuth from "../hooks/useAuth";
 
 export default function DetaljiSlucaja() {
     const { id } = useParams()
@@ -23,7 +24,8 @@ export default function DetaljiSlucaja() {
     const [vrste, setVrste] = useState([])
     const [tipovi, setTipovi] = useState([])
     const [prikaziLetak, setPrikaziLetak] = useState(false)
-
+    const { isLoggedIn } = useAuth();
+    const navigate = useNavigate();
 
     useEffect(() => {
         async function ucitaj() {
@@ -126,12 +128,25 @@ export default function DetaljiSlucaja() {
     }
 
     return (
-        <Container className="my-5">
-            <div className="mb-4">
-                <Link to={RouteNames.KATALOG} className="text-decoration-none text-muted d-inline-flex align-items-center gap-1">
-                    <BiArrowBack size={18} /> Natrag na katalog
-                </Link>
+        <Container className="mx-1">
+            <div className="d-flex justify-content-between align-items-center mb-1">
+                <button
+                    onClick={() => navigate(-1)}
+                    className="btn btn-secondary btn-sm d-inline-flex align-items-center gap-1 text-white text-decoration-none border-0"
+                >
+                    <BiArrowBack size={16} />
+                    <span>Natrag</span>
+                </button>
+                {isLoggedIn && (
+                    <Link
+                        to={putanja(RouteNames.TRAG_NOVI, id)}
+                        state={{ povratak: putanja(RouteNames.DETALJI_SLUCAJA, id) }}
+                        className="btn btn-success d-inline-flex align-items-center gap-1 m-2 text-white text-decoration-none">
+                        <BiPlus size={18} /> <span className="text-white">Novi trag</span>
+                    </Link>
+                )}
             </div>
+
             <Row className="g-4">
                 <Col xs={12} lg={5}>
                     <Card className="shadow-sm border-0 overflow-hidden h-100">
@@ -172,17 +187,10 @@ export default function DetaljiSlucaja() {
                 <Col xs={12} lg={7}>
                     <Card className="border-0 shadow-sm p-4 h-100">
                         <div className="d-flex justify-content-between align-items-center mb-4 pb-2 border-bottom">
-                            <div>
-                                <h4 className="fw-bold mb-0">🐾 Tragovi i viđenja</h4>
-                                <p className="text-muted small mb-0">Kronološki pregled prikupljenih tragova i zapažanja</p>
-                            </div>
-                            <Link
-                                to={putanja(RouteNames.TRAG_NOVI, id)}
-                                state={{ povratak: putanja(RouteNames.DETALJI_SLUCAJA, id) }}
-                                className="btn btn-success btn-sm d-flex align-items-center gap-1 fw-medium text-decoration-none shadow-sm px-3 py-2"
-                            >
-                                <BiPlus size={18} /> Novi trag
-                            </Link>
+
+                            <h4 className="fw-bold mb-0">🐾 Tragovi i viđenja</h4>
+                            <p className="text-muted small mb-0">Kronološki pregled prikupljenih tragova i zapažanja</p>
+
                         </div>
                         {tragovi.length === 0 ? (
                             <div className="text-center text-muted py-5 bg-light rounded-3 my-auto">
