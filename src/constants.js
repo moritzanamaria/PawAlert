@@ -34,7 +34,7 @@ export const RouteNames = {
   REGISTRACIJA: '/registracija',
 
   NADZORNA_PLOCA: '/nadzorna-ploca',
-
+  MOJ_PROFIL: '/moj-profil'
 };
 
 export const putanja = (ruta, id) => ruta.replace(":id", id);

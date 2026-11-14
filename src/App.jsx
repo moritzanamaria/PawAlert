@@ -29,6 +29,7 @@ import useAuth from './hooks/useAuth'
 import Login from './pages/login/Login'
 import Registracija from './pages/registracija/Registracija'
 import NadzornaPloca from './pages/NadzornaPloca'
+import MojProfil from './pages/MojProfil'
 
 export default function App() {
   const { isLoggedIn, authUser } = useAuth()
@@ -38,11 +39,12 @@ export default function App() {
       <ScrollToTop />
       <Navbar />
       <Routes>
+        <Route path="*" element={<Navigate to={RouteNames.HOME} replace />} />
         <Route path={RouteNames.HOME} element={<Pocetna />} />
-
+        <Route path={RouteNames.KATALOG} element={<Katalog />} />
+        <Route path={RouteNames.DETALJI_SLUCAJA} element={<DetaljiSlucaja />} />
         {isLoggedIn ? (
           <>
-            <Route path="*" element={<Navigate to={RouteNames.HOME} replace />} />
             <Route path={RouteNames.PRIJAVA_NOVA} element={<PrijavaNova />} />
             <Route path={RouteNames.PRIJAVA_PROMJENA} element={<PrijavaPromjena />} />
             <Route path={RouteNames.TRAG_NOVI} element={<TragNovi />} />
@@ -53,9 +55,11 @@ export default function App() {
             <Route path={RouteNames.TIP_PROMJENA} element={<TipPromjena />} />
             <Route path={RouteNames.VRSTA_NOVA} element={<VrstaNova />} />
             <Route path={RouteNames.VRSTA_PROMJENA} element={<VrstaPromjena />} />
+            <Route path={RouteNames.MOJ_PROFIL} element={<MojProfil />} />
 
             {authUser.uloga === 'admin' && (
               <>
+                <Route path={RouteNames.NADZORNA_PLOCA} element={<NadzornaPloca />} />
                 <Route path={RouteNames.TIPOVI_I_VRSTE_PREGLED} element={<TipoviIVrstePregled />} />
                 <Route path={RouteNames.PRIJAVE_PREGLED} element={<PrijavePregled />} />
                 <Route path={RouteNames.TRAG_PREGLED} element={<TragPregled />} />
@@ -67,8 +71,7 @@ export default function App() {
                 <Route path={RouteNames.GENERIRANJE_PODATAKA} element={<GeneriranjePodataka />} />
               </>
             )}
-            <Route path={RouteNames.KATALOG} element={<Katalog />} />
-            <Route path={RouteNames.DETALJI_SLUCAJA} element={<DetaljiSlucaja />} />
+
           </>
         ) : (
           <>
