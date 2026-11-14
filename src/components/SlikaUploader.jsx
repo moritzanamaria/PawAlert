@@ -2,7 +2,7 @@ import { useCallback, useState } from "react";
 import Cropper from "react-easy-crop";
 import { Button, ButtonGroup, Col, Form, Modal, Row } from "react-bootstrap";
 import { izrezi } from "../utils/cropSlika";
-import { slikaFileSchema } from "../schemas/slikaSchema";
+import { slikaFileSchema, slikaDataUrlSchema } from "../schemas/slikaSchema";
 
 const OMJERI = [
     { label: "1:1", value: 1 },
@@ -19,7 +19,7 @@ export default function SlikaUploader({ value, onChange }) {
     const [omjer, setOmjer] = useState(4 / 3);
     const [pikseli, setPikseli] = useState(null);
     const [radi, setRadi] = useState(false);
-     const [greska, setGreska] = useState("");
+    const [greska, setGreska] = useState("");
 
 
     const onCropComplete = useCallback((_, croppedAreaPixels) => {
@@ -35,14 +35,16 @@ export default function SlikaUploader({ value, onChange }) {
 
     function odaberi(e) {
         const file = e.target.files[0];
-        e.target.value = ""; 
+        e.target.value = "";
         if (!file) return;
 
         const rezultat = slikaFileSchema(15).safeParse(file);
         if (!rezultat.success) {
-            alert(prvaGreska(rezultat));
+            setGreska(rezultat.error.issues[0].message);
             return;
         }
+
+        setGreska("");
 
         const reader = new FileReader();
         reader.onloadend = () => otvori(reader.result);
@@ -54,11 +56,18 @@ export default function SlikaUploader({ value, onChange }) {
         try {
             setRadi(true);
             const rezultat = await izrezi(izvor, pikseli, rotation);
-            onChange(rezultat);
+            const provjera = slikaDataUrlSchema.safeParse(rezultat);
+            if (!provjera.success) {
+                setGreska(provjera.error.issues[0].message);
+                return;
+            }
+
+            setGreska("");
+            onChange(provjera.data);
             setIzvor(null);
         } catch (err) {
             console.error(err);
-            alert("Greška pri obradi slike.");
+            setGreska("Greška pri obradi slike.");
         } finally {
             setRadi(false);
         }
@@ -72,7 +81,7 @@ export default function SlikaUploader({ value, onChange }) {
                 type="file"
                 accept="image/png,image/jpeg,image/webp"
                 onChange={odaberi}
-            isInvalid={!!greska}
+                isInvalid={!!greska}
             />
             <Form.Control.Feedback type="invalid">{greska}</Form.Control.Feedback>
 
@@ -90,7 +99,7 @@ export default function SlikaUploader({ value, onChange }) {
                                 Uredi
                             </Button>
                         )}
-                        <Button size="sm" variant="outline-danger" onClick={() => onChange(null)}>
+                        <Button size="sm" variant="outline-danger" onClick={() => { onChange(null); setGreska(""); }}>
                             Ukloni sliku
                         </Button>
                     </div>
@@ -120,25 +129,25 @@ export default function SlikaUploader({ value, onChange }) {
                     </div>
 
                     <div className="mt-3">
-                       <Row className="mb-3">
+                        <Row className="mb-3">
                             <Col md={6}>
                                 <Form.Label className="mb-1 small fw-medium">Zoom</Form.Label>
-                                <Form.Range 
-                                    min={1} 
-                                    max={3} 
-                                    step={0.05} 
+                                <Form.Range
+                                    min={1}
+                                    max={3}
+                                    step={0.05}
                                     value={zoom}
-                                    onChange={(e) => setZoom(Number(e.target.value))} 
+                                    onChange={(e) => setZoom(Number(e.target.value))}
                                 />
                             </Col>
                             <Col md={6}>
                                 <Form.Label className="mb-1 small fw-medium">Rotacija ({rotation}°)</Form.Label>
-                                <Form.Range 
-                                    min={-180} 
-                                    max={180} 
-                                    step={1} 
+                                <Form.Range
+                                    min={-180}
+                                    max={180}
+                                    step={1}
                                     value={rotation}
-                                    onChange={(e) => setRotation(Number(e.target.value))} 
+                                    onChange={(e) => setRotation(Number(e.target.value))}
                                 />
                             </Col>
                         </Row>
