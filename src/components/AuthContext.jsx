@@ -1,26 +1,22 @@
-import { createContext, useEffect, useState } from 'react';
+import { createContext, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { RouteNames } from '../constants';
 import OperaterService from '../services/operateri/OperaterService';
 
 export const AuthContext = createContext();
 
+function procitajOperatera() {
+  try {
+    return JSON.parse(localStorage.getItem('operater'));
+  } catch {
+    return null;
+  }
+}
+
 export function AuthProvider({ children }) {
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [authUser, setAuthUser] = useState({});
-
+  const [authUser, setAuthUser] = useState(() => procitajOperatera() ?? {});
+  const [isLoggedIn, setIsLoggedIn] = useState(() => !!procitajOperatera());
   const navigate = useNavigate();
-
-  useEffect(() => {
-    const operater = localStorage.getItem('operater');
-
-    if (operater) {
-      setAuthUser(JSON.parse(operater));
-      setIsLoggedIn(operater);
-    } else {
-      navigate(RouteNames.HOME);
-    }
-  }, []);
 
   async function login(email, lozinka) {
     const odgovor = await OperaterService.prijava(email, lozinka);
@@ -30,7 +26,8 @@ export function AuthProvider({ children }) {
       setIsLoggedIn(true);
       navigate(odgovor.data.uloga === 'admin' ? RouteNames.NADZORNA_PLOCA : RouteNames.MOJ_PROFIL);
     } else {
-      alert(odgovor.message);
+      alert(odgovor.message);localStorage.removeItem('operater');
+setAuthUser({});
       localStorage.setItem('operater', '');
       setAuthUser('');
       setIsLoggedIn(false);
@@ -40,7 +37,7 @@ export function AuthProvider({ children }) {
   function logout() {
 
     localStorage.removeItem('operater');
-    setAuthUser('');
+    setAuthUser({});
     setIsLoggedIn(false);
     navigate(RouteNames.HOME);
   }
