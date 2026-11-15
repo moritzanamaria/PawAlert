@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import { Link, useNavigate, useParams } from "react-router-dom";
+import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
 import { Button, Card, Col, Container, Form, Row } from "react-bootstrap";
 import TragoviService from "../../services/tragovi/TragoviService";
 import "react-datepicker/dist/react-datepicker.css";
@@ -11,11 +11,15 @@ import { spremiSlikuFile } from "../../services/slike/SlikeService";
 import { slikaUrl } from "../../utils/slika";
 import { tragSchema } from "../../schemas/tragSchema";
 import { slikaFileSchema } from "../../schemas/slikaSchema";
+import useAuth from "../../hooks/useAuth";
 
 registerLocale("hr", hr);
 
 export default function TragPromjena() {
-    const navigate = useNavigate()
+    const navigate = useNavigate();
+    const { authUser } = useAuth();
+    const location = useLocation();
+    const params = useParams();
 
     const [errors, setErrors] = useState({});
 
@@ -26,7 +30,7 @@ export default function TragPromjena() {
             setErrors(noveGreske);
         }
     };
-    const params = useParams()
+
     const [datum, setDatum] = useState(new Date());
     const [lokacija, setLokacija] = useState(null);
     const [slikaFile, setSlikaFile] = useState(null)
@@ -42,6 +46,8 @@ export default function TragPromjena() {
         lokacija_lng: 0,
         datum: ""
     })
+
+    const povratak = location.state?.povratak ?? putanja(RouteNames.DETALJI_SLUCAJA, trag.prijava);
 
     function slikaSrc() {
         if (pregled) return pregled
@@ -67,6 +73,12 @@ export default function TragPromjena() {
         ocistiGresku("slika")
         setSlikaFile(file)
     }
+
+    useEffect(() => {
+        if (trag?.id && authUser.uloga !== 'admin' && String(trag.operater_id) !== String(authUser.id)) {
+            navigate(RouteNames.HOME, { replace: true });
+        }
+    }, [trag, authUser, navigate]);
 
     useEffect(() => {
         async function ucitajTrag() {
@@ -96,16 +108,15 @@ export default function TragPromjena() {
     async function promjeni(podaci) {
         try {
             await TragoviService.promjeni(params.id, podaci)
-            navigate(putanja(RouteNames.TRAG_PREGLED, trag.prijava))
+            navigate(povratak)
         } catch (error) {
             console.error("Greška pri promjeni:", error);
         }
     }
 
-    function obradiSubmit(e) {
+   async function obradiSubmit(e) {
         e.preventDefault()
         const podaci = new FormData(e.target)
-
 
         setErrors({});
         const rezultat = tragSchema.safeParse({ ...Object.fromEntries(podaci), lokacija, datum });
@@ -124,7 +135,7 @@ export default function TragPromjena() {
         let slikaPath = trag.slika || ""
         if (slikaFile) {
             try {
-                const rez = spremiSlikuFile(params.id, slikaFile)
+                const rez = await spremiSlikuFile(params.id, slikaFile)
                 if (!rez.success) {
                     alert(rez.message)
                     return
@@ -215,7 +226,7 @@ export default function TragPromjena() {
                         </Row>
                         <div className="d-flex justify-content-between align-items-center pt-2">
 
-                            <Link to={putanja(RouteNames.TRAG_PREGLED, trag.prijava)} className="btn btn-outline-secondary px-4 fw-medium">Odustani</Link>
+                            <Link to={povratak} className="btn btn-outline-secondary px-4 fw-medium">Odustani</Link>
 
                             <Button type="submit" variant="success" className="px-5 fw-bold">Spremi</Button>
                         </div>

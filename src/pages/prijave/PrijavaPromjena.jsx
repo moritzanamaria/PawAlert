@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
-import { Link, useNavigate, useParams } from "react-router-dom";
-import { RouteNames } from "../../constants";
+import { Link, useNavigate, useParams, useLocation } from "react-router-dom";
+import { RouteNames, SLIKE_URL } from "../../constants";
 import { Button, Card, Col, Container, Form, Row } from "react-bootstrap";
 import prijaveService from "../../services/prijave/prijaveService";
 import TipService from "../../services/tip/TipService";
@@ -10,10 +10,10 @@ import "react-datepicker/dist/react-datepicker.css";
 import { hr } from "date-fns/locale";
 import LokacijaPicker from "../../components/LokacijaPicker";
 import OznakeService from "../../services/oznake/OznakeService";
-import { SLIKE_URL } from "../../constants";
 import { spremiSliku } from "../../services/slike/SlikeService";
 import SlikaUploader from "../../components/SlikaUploader";
 import { prijavaSchema } from "../../schemas/prijavaSchema";
+import useAuth from "../../hooks/useAuth"
 
 registerLocale("hr", hr);
 
@@ -28,6 +28,9 @@ export default function PrijavaPromjena() {
             setErrors(noveGreske);
         }
     };
+    const { authUser } = useAuth();
+    const location = useLocation();
+    const povratak = location.state?.povratak ?? RouteNames.PRIJAVE_PREGLED;
     const params = useParams()
     const [prijava, setPrijava] = useState({});
     const [vrste, setVrste] = useState([]);
@@ -43,6 +46,11 @@ export default function PrijavaPromjena() {
     const [novaSlika, setNovaSlika] = useState(undefined);
     const [cacheBust] = useState(Date.now());
 
+    useEffect(() => {
+        if (prijava?.id && authUser.uloga !== 'admin' && String(prijava.operater_id) !== String(authUser.id)) {
+            navigate(RouteNames.HOME, { replace: true });
+        }
+    }, [prijava, authUser, navigate]);
 
     useEffect(() => {
         async function ucitajPodatke() {
@@ -95,7 +103,7 @@ export default function PrijavaPromjena() {
 
     async function promjeni(podaciPrijave) {
         await prijaveService.promjeni(params.id, podaciPrijave).then(() => {
-            navigate(RouteNames.PRIJAVE_PREGLED)
+            navigate(povratak)
         })
 
     }
@@ -333,7 +341,7 @@ export default function PrijavaPromjena() {
                             </Form.Group>
 
                             <Form.Group as={Col} md={6} controlId="datum">
-                                <Form.Label className="fw-medium p-4">
+                                <Form.Label className="fw-medium p-1">
                                     Datum i vrijeme <span className="text-danger">*</span>
                                 </Form.Label>
                                 <DatePicker
@@ -383,7 +391,7 @@ export default function PrijavaPromjena() {
 
                         <div className="d-flex justify-content-between align-items-center pt-2">
                             <Link
-                                to={RouteNames.PRIJAVE_PREGLED}
+                                to={povratak}
                                 className="btn btn-outline-secondary px-4 fw-medium"
                             >
                                 Odustani
