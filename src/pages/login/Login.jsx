@@ -1,5 +1,4 @@
 import { Form, Button, Row, Col, Container, Card } from "react-bootstrap"
-import { useNavigate } from "react-router-dom"
 import { loginSchema } from "../../schemas/operaterSchema"
 import { useState, useRef } from "react"
 import useAuth from "../../hooks/useAuth"

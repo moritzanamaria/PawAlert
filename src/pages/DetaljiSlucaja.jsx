@@ -197,7 +197,7 @@ export default function DetaljiSlucaja() {
                                 <p className="mb-0">Još nema zabilježenih tragova za ovaj slučaj.</p>
                             </div>
                         ) : (
-                            <div style={{ minHeight: "420px" }}>
+                            <div className="pa-timeline-wrapper" style={{ minHeight: "420px" }}>
                                 <Chrono
                                     items={stavkeTimeline}
                                     mode="VERTICAL"

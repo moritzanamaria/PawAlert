@@ -1,9 +1,10 @@
 import { useState } from "react"
 import { Container, Nav, Navbar as BsNavbar, Offcanvas, NavDropdown } from "react-bootstrap"
 import { FaMemory, FaStepBackward, FaStoreAlt } from "react-icons/fa";
-import { Link } from "react-router-dom"
+import { Link, NavLink } from "react-router-dom"
 import { DATA_SOURCE, IME_APLIKACIJE, RouteNames } from "../constants"
 import useAuth from "../hooks/useAuth";
+import BrandMark from "./BrandMark";
 
 function Navbar() {
   const [show, setShow] = useState(false)
@@ -23,10 +24,12 @@ function Navbar() {
   }
 
   return (
-    <BsNavbar expand="lg" collapseOnSelect className="bg-light shadow-sm sticky-top" role="navigation" aria-label="Glavni izbornik">
+   <BsNavbar expand="lg" collapseOnSelect className="pa-navbar sticky-top" role="navigation" aria-label="Glavni izbornik">
       <Container>
-        <BsNavbar.Brand as={Link} to={RouteNames.HOME}>
-          {izvor()} {IME_APLIKACIJE}
+        <BsNavbar.Brand as={Link} to={RouteNames.HOME} className="pa-brand">
+          <span className="pa-brand-mark"><BrandMark size={22} /></span>
+          {IME_APLIKACIJE}
+          <span className="pa-brand-ind d-none d-md-inline-flex align-items-center gap-1">{izvor()}</span>
         </BsNavbar.Brand>
         <BsNavbar.Toggle aria-controls="offcanvas-navbar" onClick={handleShow} className="border-0 shadow-none" />
 
@@ -43,15 +46,16 @@ function Navbar() {
             </Offcanvas.Title>
           </Offcanvas.Header>
 
-          <Offcanvas.Body className="d-flex flex-column flex-lg-row justify-content-between align-items-lg-center">
-            <Nav className="me-auto gap-lg-2">
-              <Nav.Link as={Link} to={RouteNames.HOME} onClick={handleClose}>Početna</Nav.Link>
-              <Nav.Link as={Link} to={RouteNames.KATALOG} onClick={handleClose}>Katalog</Nav.Link>
+          <Offcanvas.Body className="d-flex flex-column flex-lg-row justify-content-between align-items-lg-center gap-3">
+            <Nav className="me-auto align-items-lg-center gap-1">
+              <Nav.Link as={NavLink} end to={RouteNames.HOME} className="pa-nav-link" onClick={handleClose}>Početna</Nav.Link>
+              <Nav.Link as={NavLink} to={RouteNames.KATALOG} className="pa-nav-link" onClick={handleClose}>Katalog</Nav.Link>
 
               {isLoggedIn && (
                 <>
                   <Nav.Link
-                    as={Link}
+                    as={NavLink}
+                    className="pa-nav-link"
                     to={authUser?.uloga === 'admin' ? RouteNames.NADZORNA_PLOCA : RouteNames.MOJ_PROFIL}
                     onClick={handleClose}
                   >
@@ -60,8 +64,8 @@ function Navbar() {
 
                   {authUser?.uloga === 'admin' && (
                     <>
-                      <Nav.Link as={Link} to={RouteNames.PRIJAVE_PREGLED} onClick={handleClose}>Pregled prijava</Nav.Link>
-                      <NavDropdown title="Šifrarnici" id="sifrarnici">
+                      <Nav.Link as={NavLink} to={RouteNames.PRIJAVE_PREGLED} className="pa-nav-link" onClick={handleClose}>Pregled prijava</Nav.Link>
+                      <NavDropdown title="Šifrarnici" id="sifrarnici" className="pa-nav-dropdown">
                         <NavDropdown.Item as={Link} to={RouteNames.TIPOVI_I_VRSTE_PREGLED} onClick={handleClose}>Tipovi i vrste</NavDropdown.Item>
                         <NavDropdown.Item as={Link} to={RouteNames.OZNAKE_PREGLED} onClick={handleClose}>Oznake</NavDropdown.Item>
                         <NavDropdown.Divider />
@@ -74,11 +78,11 @@ function Navbar() {
               )}
             </Nav>
 
-            <Nav className="ms-auto d-flex flex-column flex-lg-row gap-2 mt-3 mt-lg-0">
+            <Nav className="ms-auto d-flex flex-column flex-lg-row align-items-lg-center gap-2 mt-3 mt-lg-0">
               {isLoggedIn ? (
                 <Link
                   to={RouteNames.HOME}
-                  className="btn btn-success"
+                  className="btn btn-success pa-nav-cta"
                   onClick={(e) => {
                     e.preventDefault()
                     handleClose()
@@ -91,14 +95,14 @@ function Navbar() {
                 <>
                   <Link
                     to={RouteNames.REGISTRACIJA}
-                    className="btn btn-success"
+                    className="btn btn-outline-success pa-nav-cta"
                     onClick={handleClose}
                   >
                     Registracija
                   </Link>
                   <Link
                     to={RouteNames.LOGIN}
-                    className="btn btn-success"
+                    className="btn btn-success pa-nav-cta"
                     onClick={handleClose}
                   >
                     Login

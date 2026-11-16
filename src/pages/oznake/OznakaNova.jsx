@@ -66,7 +66,7 @@ function obradiSubmit(e) {
     return (
         <Container className="my-5" style={{ maxWidth: "850px" }}>
             <Card className="shadow-sm border-0 rounded-3">
-                <Card.Header className="bg-success text-white p-4 rounded-top-3 d-flex align-items-center gap-3">
+                <Card.Header className="bg-success p-4 rounded-top-3 d-flex align-items-center gap-3">
                     <lord-icon
                         src="https://cdn.lordicon.com/puzgkqsp.json"
                         trigger="loop"
@@ -74,8 +74,8 @@ function obradiSubmit(e) {
                         style={{ width: "45px", height: "45px" }}
                     ></lord-icon>
                     <div>
-                        <h3 className="mb-0 fw-bold fs-4 text-white">Dodaj novu oznaku</h3>
-                        <p className="mb-0 text-white-50 small">
+                        <h3 className="mb-0 fw-bold fs-4 ">Dodaj novu oznaku</h3>
+                        <p className="mb-0 small">
                             Unesite naziv i odaberite boju za novu oznaku
                         </p>
                     </div>

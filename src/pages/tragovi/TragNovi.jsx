@@ -104,10 +104,10 @@ export default function TragNovi() {
     return (
         <Container className="my-5" style={{ maxWidth: "850px" }}>
             <Card className="shadow-sm border-0 rounded-3">
-                <Card.Header className="bg-success text-white p-4 rounded-top-3">
+                <Card.Header className="bg-success p-4 rounded-top-3">
                     <h3 className="mb-0 fw-bold fs-4">🐾Dodaj novi trag za prijavu
                     </h3>
-                    <p className="mb-0 text-white-50 small">
+                    <p className="mb-0 small">
                         Unesite podatke o novom tragu
                     </p>
 
@@ -157,24 +157,24 @@ export default function TragNovi() {
                                 </Form.Control.Feedback>
                             </Form.Group>
 
-                            <Form.Group as={Col} md={6} controlId="datum" className="mb-3">
-                                <Form.Label className="fw-medium">Datum i vrijeme</Form.Label>
-                                <div>
-                                    <DatePicker
-                                        selected={datum}
-                                        onChange={(date) => { setDatum(date); ocistiGresku("datum") }}
-                                        showTimeSelect
-                                        timeFormat="HH:mm"
-                                        timeIntervals={15}
-                                        dateFormat="dd.MM.yyyy. HH:mm"
-                                        locale="hr"
-                                        customInput={<Form.Control isInvalid={!!errors.datum} />}
-                                    />
-                                    <Form.Control.Feedback type="invalid" className="d-block">
-                                        {errors.datum}
-                                    </Form.Control.Feedback>
-                                </div>
-                            </Form.Group>
+                          <Form.Group as={Col} md={6} controlId="datum">
+                                                         <Form.Label className="fw-medium p-4">Datum i vrijeme</Form.Label>
+                                                         <DatePicker
+                                                             selected={datum}
+                                                             onChange={(date) => { setDatum(date); ocistiGresku("datum") }}
+                                                             showTimeSelect
+                                                             timeFormat="HH:mm"
+                                                             timeIntervals={15}
+                                                             dateFormat="dd.MM.yyyy. HH:mm"
+                                                             locale="hr"
+                                                             customInput={
+                                                                 <Form.Control isInvalid={!!errors.datum} />
+                                                             }
+                                                         />
+                                                         <Form.Control.Feedback type="invalid">
+                                                             {errors.datum}
+                                                         </Form.Control.Feedback>
+                                                     </Form.Group>
                         </Row>
                         <div className="d-flex justify-content-between align-items-center pt-2">
 

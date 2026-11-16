@@ -17,12 +17,12 @@ switch (DATA_SOURCE) {
 
 const PrazanServis = {
     get: async () => ({ success: false, data: []}),
-    getById: async (id) => ({ success: false, data: null }),
-    dodaj: async (operater) => { console.error("Servis nije učitan"); return {success: false} },
-    promjeni: async (id, operater) => { console.error("Servis nije učitan"); return {success: false} },
-    promjeniLozinku: async (id, novaLozinka) => { console.error("Servis nije učitan"); return {success: false} },
-    obrisi: async (id) => { console.error("Servis nije učitan"); return {success: false} },
-    prijava: async (email, lozinka) => { console.error("Servis nije učitan"); return {success: false, message: "Servis nije učitan"} }
+    getById: async (_id) => ({ success: false, data: null }),
+    dodaj: async (_operater) => { console.error("Servis nije učitan"); return {success: false} },
+    promjeni: async (_id, _operater) => { console.error("Servis nije učitan"); return {success: false} },
+    promjeniLozinku: async (_id, _novaLozinka) => { console.error("Servis nije učitan"); return {success: false} },
+    obrisi: async (_id) => { console.error("Servis nije učitan"); return {success: false} },
+    prijava: async (_email, _lozinka) => { console.error("Servis nije učitan"); return {success: false, message: "Servis nije učitan"} }
 }
 
 const AktivniServis = Servis || PrazanServis

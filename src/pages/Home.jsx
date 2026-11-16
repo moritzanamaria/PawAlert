@@ -41,40 +41,62 @@ function Home() {
     dohvatiPodatke();
   }, []);
 
-  const filtriranePrijave = filtrirajPrijave(prijave, filteri)
+  const filtriranePrijave = filtrirajPrijave(prijave, filteri);
+  const otvorene = prijave.filter((p) => p.status === "otvorena")
+  const hitne = otvorene.filter((p) => p.hitno)
 
   return (
     <Container className="py-1">
-      <div className="bg-white shadow-sm rounded-3 border-start border-secondary border-5 p-3 mb-2">
-        <Row className="align-items-center g-3">
-          <Col xs={12} md>
-            <h1 className="h3 fw-bold text-dark mb-1">
-              Tragom svake šape 🐾
+      <section className="pa-hero pa-ulaz p-4 p-md-5 mb-3">
+        <Row className="align-items-center g-4">
+          <Col xs={12} lg={8}>
+            <span className="pa-hero-badge mb-3">Zajednica za izgubljene ljubimce</span>
+            <h1 className="mb-3">
+              Tragom svake <span className="pa-hero-akcent">šape</span>
             </h1>
-            <p className="text-muted mb-0">
-              Bilo da si primijetio izgubljenog ljubimca ili tražiš svog, označi lokaciju na interaktivnoj karti i pokreni zajednicu na akciju.
+            <p className="pa-hero-lead mb-4">
+              Bilo da si primijetio izgubljenog ljubimca ili tražiš svog, označi lokaciju
+              na interaktivnoj karti i pokreni zajednicu na akciju.
             </p>
-          </Col>
-          <Col xs={12} md="auto" className="d-flex flex-column flex-sm-row gap-2">
-          {isLoggedIn ? (
-            <Link
-              to={RouteNames.PRIJAVA_NOVA}
-              state={{ povratak: RouteNames.HOME }}
-              className="btn btn-success fw-semibold"
-            >
-              Prijavi životinju
-            </Link>
-            ) : (
-  <Link to={RouteNames.LOGIN} className="btn btn-outline-success fw-semibold">
-    Prijavi se za prijavu životinje
-  </Link>
-          )}
-            <Link to={RouteNames.KATALOG} className="btn btn-outline-success fw-semibold">
-              Katalog
-            </Link>
+            </Col>
+            <Col xs={12} lg={4}>
+            <div className="d-flex flex-column flex-sm-row gap-2">
+              {isLoggedIn ? (
+                <Link
+                  to={RouteNames.PRIJAVA_NOVA}
+                  state={{ povratak: RouteNames.HOME }}
+                  className="btn pa-hero-btn-cta"
+                >
+                  Prijavi životinju
+                </Link>
+              ) : (
+                <Link to={RouteNames.LOGIN} className="btn pa-hero-btn-cta">
+                  Prijavi se i pomozi
+                </Link>
+              )}
+              <Link to={RouteNames.KATALOG} className="btn pa-hero-btn-outline">
+                Pogledaj katalog
+              </Link>
+
+            </div>
           </Col>
         </Row>
-      </div>
+
+        <Row className="pa-hero-stats mt-4 pt-3 g-3 text-center">
+          <Col xs={4}>
+            <div className="fs-2 fw-bold lh-1">{prijave.length}</div>
+            <div className="small opacity-75">prijava ukupno</div>
+          </Col>
+          <Col xs={4}>
+            <div className="fs-2 fw-bold lh-1">{otvorene.length}</div>
+            <div className="small opacity-75">otvorenih</div>
+          </Col>
+          <Col xs={4}>
+            <div className="fs-2 fw-bold lh-1" style={{ color: "#f7bd77" }}>{hitne.length}</div>
+            <div className="small opacity-75">hitnih</div>
+          </Col>
+        </Row>
+      </section>
       <div className="card shadow-sm border-0 rounded-4 p-3 mb-4">
         <FilterPrijava
           filteri={filteri}
@@ -88,13 +110,13 @@ function Home() {
       <Row className="g-4 align-items-stretch">
         <Col xs={12} md={5} lg={4}>
           <Sidebar prijave={filtriranePrijave}
-              oznake={oznake} />
+            oznake={oznake} />
         </Col>
 
         <Col xs={12} md={7} lg={8}>
           <div className="card shadow-sm border-0 rounded-4 overflow-hidden h-100">
             <MapView prijave={filtriranePrijave}
-              oznake={oznake}/>
+              oznake={oznake} />
           </div>
         </Col>
       </Row>
