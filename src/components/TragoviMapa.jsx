@@ -1,40 +1,28 @@
 import { useEffect, useMemo } from "react";
-import {
-  MapContainer, TileLayer, Marker, Popup, Polyline,
-  CircleMarker, Tooltip, useMap,
-} from "react-leaflet";
+import { MapContainer, TileLayer, Marker, Popup, Polyline,
+  CircleMarker, Tooltip, useMap } from "react-leaflet";
 import { CENTAR_OSIJEK } from "../constants";
-import { podesiLeafletIkone, parsirajKoordinate } from "../utils/mapHelpers";
+import { dohvatiIkonu } from "../utils/mapHelpers";
 import FormatDatuma from "./FormatDatuma";
 
-podesiLeafletIkone();
+const CRVENA = "#dc3545";
+const STIL_LINIJE = { color: CRVENA, dashArray: "6 6" };
+const STIL_TRAGA = { color: CRVENA, fillColor: CRVENA, fillOpacity: 0.9 };
+
+const poz = ({ lokacija }) => [lokacija.lat, lokacija.lng];
 
 function PrilagodiPogled({ tocke }) {
   const map = useMap();
   useEffect(() => {
-    if (tocke.length === 0) return;
-    if (tocke.length === 1) map.setView(tocke[0], 16);
+  if (tocke.length === 1) map.setView(tocke[0], 16);
     else map.fitBounds(tocke, { padding: [30, 30] });
   }, [tocke, map]);
   return null;
 }
 
 export default function TragoviMapa({ prijava, tragovi }) {
-  const pozicijaPrijave = useMemo(() => parsirajKoordinate(prijava), [prijava]);
-
-  const poredaniTragovi = useMemo(
-    () =>
-      tragovi
-        .map((t) => ({ trag: t, poz: parsirajKoordinate(t) }))
-        .filter((x) => x.poz)
-        .sort((a, b) => new Date(a.trag.datum) - new Date(b.trag.datum)),
-    [tragovi]
-  );
-
-  const sveTocke = useMemo(() => {
-    const t = poredaniTragovi.map((x) => x.poz);
-    return pozicijaPrijave ? [pozicijaPrijave, ...t] : t;
-  }, [poredaniTragovi, pozicijaPrijave]);
+ const poredani = useMemo(() => [...tragovi].sort((a, b) => a.datum.localeCompare(b.datum)), [tragovi]);
+  const tocke = useMemo(() => [poz(prijava), ...poredani.map(poz)], [prijava, poredani]);
 
   return (
     <MapContainer
@@ -46,27 +34,22 @@ export default function TragoviMapa({ prijava, tragovi }) {
         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
         attribution="&copy; OpenStreetMap contributors"
       />
-      <PrilagodiPogled tocke={sveTocke} />
+      <PrilagodiPogled tocke={tocke} />
 
-      {pozicijaPrijave && (
-        <Marker position={pozicijaPrijave}>
+
+        <Marker position={poz(prijava)} icon={dohvatiIkonu(prijava.tip_prijave)}>
           <Popup>
-            Prijavljeno ovdje: <strong>{prijava.zivotinja_ime || "Prijava"}</strong>
+            Prijavljeno ovdje: <strong>{prijava.zivotinja_ime}</strong>
           </Popup>
         </Marker>
-      )}
+    
+     <Polyline positions={poredani.map(poz)} pathOptions={STIL_LINIJE} />
 
-      {poredaniTragovi.length > 1 && (
-        <Polyline
-          positions={poredaniTragovi.map((x) => x.poz)}
-          pathOptions={{ color: "#dc3545", dashArray: "6 6" }}
-        />
-      )}
-
-      {poredaniTragovi.map((x, i) => (
+    
+      {poredani.map((t, i) => (
         <CircleMarker
-          key={x.trag.id}
-          center={x.poz}
+          key={t.id}
+          center={poz(t)}
           radius={11}
           pathOptions={{ color: "#dc3545", fillColor: "#dc3545", fillOpacity: 0.9 }}
         >
@@ -78,9 +61,9 @@ export default function TragoviMapa({ prijava, tragovi }) {
             {i + 1}
           </Tooltip>
           <Popup>
-            <div>{x.trag.opis}</div>
+            <div>{t.opis}</div>
             <small className="text-muted">
-              <FormatDatuma datum={x.trag.datum} />
+              <FormatDatuma datum={t.datum} />
             </small>
           </Popup>
         </CircleMarker>

@@ -3,9 +3,8 @@ import { MapContainer, TileLayer, Marker, useMap, useMapEvents } from "react-lea
 import { Form, Spinner } from "react-bootstrap";
 import "leaflet/dist/leaflet.css";
 import { CENTAR_OSIJEK } from "../constants";
-import { podesiLeafletIkone } from "../utils/mapHelpers";
+import { dohvatiIkonu } from "../utils/mapHelpers";
 
-podesiLeafletIkone();
 
 async function opisIzKoordinata(lat, lng) {
     try {
@@ -26,48 +25,31 @@ function KlikNaKartu({ onKlik }) {
     return null
 }
 
-function Prati({ value }) {
+function Prati({ lat, lng }) {
     const map = useMap()
     useEffect(() => {
-        if (value && typeof value.lat === "number" && typeof value.lng === "number") {
-            map.flyTo([value.lat, value.lng], Math.max(map.getZoom(), 16))
-        }
-    }, [value, map]);
+        if (lat != null) map.flyTo([lat, lng], Math.max(map.getZoom(), 16));
+    }, [lat, lng, map]);
+
     return null
 }
 
 export default function LokacijaPicker({ value, onChange }) {
     const [ucitava, setUcitava] = useState(false)
-
+    const imaTocku = value?.lat != null;
     async function postavi(lat, lng) {
-        onChange({ lat, lng, opis: value?.opis ?? "" })
+        onChange({ ...value, lat, lng })
         setUcitava(true)
         const opis = await opisIzKoordinata(lat, lng)
         onChange({ lat, lng, opis: opis || value?.opis || "" })
         setUcitava(false)
     }
 
-    const defaultLat = 45.5511;
-    const defaultLng = 18.6939;
-
-    const imaValidneKoordinate = value && typeof value.lat === "number" && typeof value.lng === "number";
-
-    const imaValidanCentarOsijek = Array.isArray(CENTAR_OSIJEK) && 
-        CENTAR_OSIJEK.length === 2 && 
-        typeof CENTAR_OSIJEK[0] === "number" && 
-        typeof CENTAR_OSIJEK[1] === "number";
-    
-    const centarMape = imaValidneKoordinate 
-        ? [value.lat, value.lng] 
-        : (imaValidanCentarOsijek
-            ? CENTAR_OSIJEK
-            : [defaultLat, defaultLng]);
-
     return (
         <div className="d-flex flex-column gap-2">
             <MapContainer
-                center={centarMape}
-                zoom={imaValidneKoordinate ? 16 : 13}
+                center={imaTocku ? [value.lat, value.lng] : CENTAR_OSIJEK}
+                zoom={imaTocku ? 16 : 13}
                 style={{ height: "320px", borderRadius: "8px" }}
             >
                 <TileLayer
@@ -75,17 +57,18 @@ export default function LokacijaPicker({ value, onChange }) {
                     url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                 />
                 <KlikNaKartu onKlik={postavi} />
-                <Prati value={value} />
-                
-                {imaValidneKoordinate && (
+                <Prati lat={value?.lat} lng={value?.lng} />
+
+                {imaTocku && (
                     <Marker
                         position={[value.lat, value.lng]}
+                        icon={dohvatiIkonu(tip)}
                         draggable
                         eventHandlers={{
                             dragend: (e) => {
-                                const p = e.target.getLatLng()
+                                const { lat, lng } = e.target.getLatLng();
                                 postavi(p.lat, p.lng)
-                            }
+                            },
                         }}
                     />
                 )}
@@ -95,14 +78,17 @@ export default function LokacijaPicker({ value, onChange }) {
                 type="text"
                 placeholder="Opis lokacije (automatski se upisuje klikom na kartu, možete ga urediti)"
                 value={value?.opis ?? ""}
-                disabled={!imaValidneKoordinate}
+                disabled={!imaTocku}
                 onChange={(e) => onChange({ ...value, opis: e.target.value })}
             />
-            
+
             <small className="text-muted">
-                {ucitava
-                    ? <><Spinner size="sm" animation="border" className="me-1" /> Učitavam adresu...</>
-                    : "Klikni bilo gdje na kartu ili povuci marker da automatski dohvatiš adresu."}
+                {ucitava ? (
+                     <>
+                     <Spinner size="sm" animation="border" className="me-1" /> Učitavam adresu...</>
+                     ) : (
+                         "Klikni bilo gdje na kartu ili povuci marker da automatski dohvatiš adresu."
+                        )}
             </small>
         </div>
     )
