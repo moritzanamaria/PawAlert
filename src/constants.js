@@ -52,4 +52,13 @@ export const SLIKE_URL = import.meta.env.DEV
   : "https://edunova33.origo.hr/backend";
 
 // localStorage   memorija
-export const DATA_SOURCE = 'localStorage'
+export const DATA_SOURCE = 'firebase'
+
+export const PrefixStorage = {
+    PRIJAVE: 'e33.prijave',
+    TRAGOVI: 'e33.tragovi',
+    OZNAKE: 'e33.oznake',
+    TIPOVI: 'e33.tipovi',
+    VRSTE: 'e33.vrste',
+    OPERATERI: 'e33.operateri'
+}

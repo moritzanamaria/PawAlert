@@ -1,12 +1,14 @@
-const STORAGE_KEY='tipovi'
+import {PrefixStorage } from "../../constants"
+
+
 function dohvatiSveIzStorage(){
-  const podaci = localStorage.getItem(STORAGE_KEY)
+  const podaci = localStorage.getItem(PrefixStorage.TIPOVI)
     return podaci ? JSON.parse(podaci): []
 
   }
 
 function spremiUStorage(podaci){
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(podaci))
+  localStorage.setItem(PrefixStorage.TIPOVI, JSON.stringify(podaci))
 }
 
 async function get() {
@@ -17,7 +19,7 @@ async function get() {
 
 async function getById(id) {
     const tipovi = dohvatiSveIzStorage()
-    return{data: tipovi.find(t => t.id===parseInt(id))}
+    return{data: tipovi.find(t => String(t.id) === String(id))}
   }
 
 async function dodaj(tip) {
@@ -26,7 +28,7 @@ async function dodaj(tip) {
     tip.id = 1
   }else{
     const maxId = Math.max(...tipovi.map(t=>t.id))
-    tip.id = maxId +1
+    tip.id = String(maxId +1)
   }
   tipovi.push(tip)
   spremiUStorage(tipovi)
@@ -34,8 +36,8 @@ async function dodaj(tip) {
 
   async function promjeni(id, tip) {
     const tipovi = dohvatiSveIzStorage()
-    const index = tipovi.findIndex(t=>t.id===parseInt(id))
-    tipovi[index] = { ...tipovi[index], ...tip, }
+    const index = tipovi.findIndex(t=>String(t.id) === String(id))
+    tipovi[index] = { ...tipovi[index], ...tip, id: String(id)}
     spremiUStorage(tipovi)
     }
 
@@ -43,7 +45,7 @@ async function dodaj(tip) {
   
 async function obrisi(id){
   let tipovi= dohvatiSveIzStorage()  
-  tipovi = tipovi.filter(t=>t.id !== parseInt(id))
+  tipovi = tipovi.filter(t=>String(t.id) === String(id))
   spremiUStorage(tipovi)
     
 }

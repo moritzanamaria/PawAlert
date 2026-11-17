@@ -1,11 +1,10 @@
 import { oznake } from "./OznakePodaci"; 
-
-const STORAGE_KEY = 'oznake';
+import { PrefixStorage } from '../../constants'
 
 function dohvatiSveIzStorage() {
-  const podaci = localStorage.getItem(STORAGE_KEY);
+  const podaci = localStorage.getItem(PrefixStorage.OZNAKE);
   if (!podaci) {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(oznake));
+    localStorage.setItem(PrefixStorage.OZNAKE, JSON.stringify(oznake));
     return oznake;
   }
   return JSON.parse(podaci);
@@ -22,7 +21,7 @@ async function get() {
 
 async function getById(id) {
   const oznake = dohvatiSveIzStorage();
-  return { data: oznake.find(o => o.id === parseInt(id)) };
+  return { data: oznake.find(o => String(o.id) === String(id)) };
 }
 
 async function dodaj(oznaka) {
@@ -30,7 +29,7 @@ async function dodaj(oznaka) {
   if (oznake.length === 0) {
     oznaka.id = 1;
   } else {
-    const maxId = Math.max(...oznake.map(o => o.id));
+    const maxId = Math.max(...oznake.map(o => String(o.id)));
     oznaka.id = maxId + 1;
   }
   oznake.push(oznaka);
@@ -39,7 +38,7 @@ async function dodaj(oznaka) {
 
 async function promjeni(id, oznaka) {
   const oznake = dohvatiSveIzStorage();
-  const index = oznake.findIndex(o => o.id === parseInt(id));
+  const index = oznake.findIndex(o => String(o.id) === String(id));
   if (index !== -1) {
     oznake[index] = { ...oznake[index], ...oznaka };
     spremiUStorage(oznake);
@@ -48,7 +47,7 @@ async function promjeni(id, oznaka) {
 
 async function obrisi(id) {
   let oznake = dohvatiSveIzStorage();
-  oznake = oznake.filter(o => o.id !== parseInt(id));
+  oznake = oznake.filter(o => String(o.id) !== String(id));
   spremiUStorage(oznake);
 }
 

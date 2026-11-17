@@ -1,12 +1,12 @@
-const STORAGE_KEY='vrste'
-function dohvatiSveIzStorage(){
-  const podaci = localStorage.getItem(STORAGE_KEY)
-    return podaci ? JSON.parse(podaci): []
+import {PrefixStorage } from "../../constants"
 
-  }
-
+function dohvatiSveIzStorage() {
+  const podaci = localStorage.getItem(PrefixStorage.VRSTE)
+  return podaci ? JSON.parse(podaci) : []
+}
+ 
 function spremiUStorage(podaci){
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(podaci))
+  localStorage.setItem(PrefixStorage.VRSTE, JSON.stringify(podaci))
 }
 
 async function get() {
@@ -17,7 +17,7 @@ async function get() {
 
 async function getById(id) {
     const vrste = dohvatiSveIzStorage()
-    return{data: vrste.find(v => v.id===parseInt(id))}
+    return{data: vrste.find(v => String(v.id) === String(id))}
   }
 
 async function dodaj(vrsta) {
@@ -26,7 +26,7 @@ async function dodaj(vrsta) {
     vrsta.id = 1
   }else{
     const maxId = Math.max(...vrste.map(v=>v.id))
-    vrsta.id = maxId +1
+    vrsta.id = String(maxId +1)
   }
   vrste.push(vrsta)
   spremiUStorage(vrste)
@@ -34,16 +34,16 @@ async function dodaj(vrsta) {
 
   async function promjeni(id, vrsta) {
     const vrste = dohvatiSveIzStorage()
-    const index = vrste.findIndex(v=>v.id===parseInt(id))
-    vrste[index] = { ...vrste[index], ...vrsta, }
+    const index = vrste.findIndex(v=>String(v.id) === String(id))
+     if (index === -1) return
+    vrste[index] = { ...vrste[index], ...vrsta, id: String(id) }
     spremiUStorage(vrste)
     }
 
-    
-  
+   
 async function obrisi(id){
   let vrste= dohvatiSveIzStorage()  
-  vrste = vrste.filter(v=>v.id !== parseInt(id))
+  vrste = vrste.filter(v=>String(v.id) !== String(id))
   spremiUStorage(vrste)
     
 }

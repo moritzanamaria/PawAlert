@@ -1,13 +1,13 @@
-const STORAGE_KEY='tragovi'
+import { PrefixStorage } from "../../constants"
 
 function dohvatiSveIzStorage(){
-  const podaci = localStorage.getItem(STORAGE_KEY)
+  const podaci = localStorage.getItem(PrefixStorage.TRAGOVI)
     return podaci ? JSON.parse(podaci): []
 
   }
 
 function spremiUStorage(podaci){
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(podaci))
+  localStorage.setItem(PrefixStorage.TRAGOVI, JSON.stringify(podaci))
 }
 
 async function get() {
@@ -18,12 +18,12 @@ async function get() {
 
 async function getById(id) {
     const tragovi = dohvatiSveIzStorage()
-    return{data: tragovi.find(t => t.id===parseInt(id))}
+    return{data: tragovi.find(t => String(t.id)===String(id))}
   }
 
   async function getByPrijava(prijavaId) {
         const tragovi = dohvatiSveIzStorage();
-        const filtrirani = tragovi.filter(t => parseInt(t.prijava) === parseInt(prijavaId));
+        const filtrirani = tragovi.filter(t => String(t.prijava) === String(prijavaId));
         return { data: filtrirani };
     }
 
@@ -42,8 +42,8 @@ async function dodaj(trag) {
 
   async function promjeni(id, trag) {
     const tragovi = dohvatiSveIzStorage()
-    const index = tragovi.findIndex(t=>t.id===parseInt(id))
-    tragovi[index] = { ...tragovi[index], ...trag, }
+    const index = tragovi.findIndex(t => String(t.id)===String(id))
+    tragovi[index] = { ...tragovi[index], ...trag, id: String(id)}
     spremiUStorage(tragovi)
     
     return{data: trag}
@@ -53,7 +53,7 @@ async function dodaj(trag) {
   
 async function obrisi(id){
   let tragovi= dohvatiSveIzStorage()  
-  tragovi = tragovi.filter(t=>t.id !== parseInt(id))
+  tragovi = tragovi.filter(t=>String(t.id) !== String(id))
   spremiUStorage(tragovi)
     return{data:{}}
 }

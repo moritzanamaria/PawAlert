@@ -121,11 +121,11 @@ export default function PrijavaNova() {
 
         dodaj({
             zivotinja_ime: p.zivotinja_ime,
-            zivotinja_vrsta: parseInt(p.zivotinja_vrsta),
+            zivotinja_vrsta: p.zivotinja_vrsta,
             zivotinja_opis: p.zivotinja_opis,
-            zivotinja_godine: p.zivotinja_godine ? parseInt(p.zivotinja_godine) : null,
+            zivotinja_godine: p.zivotinja_godine,
             cipirana: podaci.get('cipirana') === 'on',
-            tip_prijave: parseInt(p.tip_prijave),
+            tip_prijave: p.tip_prijave,
             status: p.status,
             lokacija: p.lokacija,
             datum: p.datum.toISOString(),

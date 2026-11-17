@@ -1,14 +1,13 @@
 import bcrypt from 'bcryptjs'
 import { operateri as seedOperateri } from './OperaterPodaci'
-
-const STORAGE_KEY = 'operateri'
+import { PrefixStorage } from '../../constants'
 
 function dohvatiSveIzStorage() {
-    const podaci = localStorage.getItem(STORAGE_KEY)
+    const podaci = localStorage.getItem(PrefixStorage.OPERATERI)
     const parsirano = podaci ? JSON.parse(podaci) : []
 
     if (parsirano.length === 0) {
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(seedOperateri))
+        localStorage.setItem(PrefixStorage.OPERATERI, JSON.stringify(seedOperateri))
         return [...seedOperateri]
     }
 
@@ -16,7 +15,7 @@ function dohvatiSveIzStorage() {
 }
 
 function spremiUStorage(podaci) {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(podaci))
+    localStorage.setItem(PrefixStorage.OPERATERI, JSON.stringify(podaci))
 }
 
 async function get() {
@@ -48,7 +47,7 @@ async function dodaj(operater) {
     if (operateri.length === 0) {
         operater.id = '1'
     } else {
-        operater.id = String(parseInt(operateri[operateri.length - 1].id) + 1)
+        operater.id = String((operateri[operateri.length - 1].id) + 1)
     }
     
     operater.lozinka = bcrypt.hashSync(operater.lozinka, 10)

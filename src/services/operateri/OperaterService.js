@@ -1,4 +1,5 @@
 import OperaterServiceLocalStorage from "./OperaterServiceLocalStorage"
+import OperaterServiceFirebase from "./OperaterServiceFireBase"
 import OperaterServiceMemorija from "./OperaterServiceMemorija"
 import { DATA_SOURCE } from "../../constants"
 
@@ -10,19 +11,22 @@ switch (DATA_SOURCE) {
         break
     case 'localStorage':
         Servis = OperaterServiceLocalStorage
-        break;
+        break
+    case 'firebase':
+        Servis = OperaterServiceFirebase
+        break
     default:
         Servis = null
 }
 
 const PrazanServis = {
-    get: async () => ({ success: false, data: []}),
+    get: async () => ({ success: false, data: [] }),
     getById: async (_id) => ({ success: false, data: null }),
-    dodaj: async (_operater) => { console.error("Servis nije učitan"); return {success: false} },
-    promjeni: async (_id, _operater) => { console.error("Servis nije učitan"); return {success: false} },
-    promjeniLozinku: async (_id, _novaLozinka) => { console.error("Servis nije učitan"); return {success: false} },
-    obrisi: async (_id) => { console.error("Servis nije učitan"); return {success: false} },
-    prijava: async (_email, _lozinka) => { console.error("Servis nije učitan"); return {success: false, message: "Servis nije učitan"} }
+    dodaj: async (_operater) => { console.error("Servis nije učitan"); return { success: false } },
+    promjeni: async (_id, _operater) => { console.error("Servis nije učitan"); return { success: false } },
+    promjeniLozinku: async (_id, _novaLozinka) => { console.error("Servis nije učitan"); return { success: false } },
+    obrisi: async (_id) => { console.error("Servis nije učitan"); return { success: false } },
+    prijava: async (_email, _lozinka) => { console.error("Servis nije učitan"); return { success: false, message: "Servis nije učitan" } }
 }
 
 const AktivniServis = Servis || PrazanServis

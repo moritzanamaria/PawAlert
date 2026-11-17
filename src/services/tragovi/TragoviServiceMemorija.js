@@ -2,19 +2,14 @@ import { tragovi } from "./TragoviPodaci";
 
 async function get() {
   return { data: [...tragovi] }
-
 }
 
 async function getById(id) {
-  return { data: tragovi.find(p => p.id === parseInt(id)) }
+  return { data: tragovi.find(t => t.id === parseInt(id)) }
 }
 
 async function getByPrijava(prijavaId) {
-  const filtrirani = tragovi.filter(t => {
-    const pId = t.prijava !== undefined ? t.prijava : (t.prijava_id !== undefined ? t.prijava_id : t.prijavaId);
-    return parseInt(pId) === parseInt(prijavaId);
-  });
-  return { data: filtrirani };
+ return { data: tragovi.filter(t => t.prijava === parseInt(prijavaId))}
 }
 
 async function dodaj(trag) {
@@ -24,6 +19,7 @@ async function dodaj(trag) {
     trag.id = tragovi[tragovi.length - 1].id + 1
   }
   tragovi.push(trag)
+  return { data: trag }
 }
 
 async function promjeni(id, trag) {

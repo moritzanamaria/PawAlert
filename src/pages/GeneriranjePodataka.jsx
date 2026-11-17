@@ -41,10 +41,172 @@ export default function GeneriranjePodataka() {
         setErrors({});
         return true;
     };
- 
+
     const faker = new Faker({
         locale: [hr, en]
     });
+
+    const handleMemorijaULocalStorage = async () => {
+        if (!window.confirm('Jeste li sigurni da želite presipati sve podatke iz memorije u localStorage?')) {
+            return;
+        }
+
+        setLoading(true);
+        setPoruka(null);
+
+        try {
+            const vrsteRes = await VrsteService.get();
+            const tipoviRes = await TipService.get();
+            const oznakeRes = await OznakeService.get();
+            const prijaveRes = await prijaveService.get();
+            const tragoviRes = await TragoviService.get();
+            const operateriRes = await OperaterService.get();
+
+            const vrste = vrsteRes.data || vrsteRes;
+            const tipovi = tipoviRes.data || tipoviRes;
+            const oznake = oznakeRes.data || oznakeRes;
+            const prijave = prijaveRes.data || prijaveRes;
+            const tragovi = tragoviRes.data || tragoviRes;
+            const operateri = operateriRes.data || operateriRes;
+
+            localStorage.removeItem('vrste');
+            localStorage.removeItem('tipovi');
+            localStorage.removeItem('oznake');
+            localStorage.removeItem('prijave');
+            localStorage.removeItem('tragovi');
+            localStorage.removeItem('operateri');
+
+            localStorage.setItem('vrste', JSON.stringify(vrste));
+            localStorage.setItem('tipovi', JSON.stringify(tipovi));
+            localStorage.setItem('oznake', JSON.stringify(oznake));
+            localStorage.setItem('prijave', JSON.stringify(prijave));
+            localStorage.setItem('tragovi', JSON.stringify(tragovi));
+            localStorage.setItem('operateri', JSON.stringify(operateri));
+
+            setPoruka({
+                tip: 'success',
+                tekst: `Uspješno presipano!`
+            });
+        } catch (error) {
+            setPoruka({
+                tip: 'danger',
+                tekst: 'Greška pri presipavanju podataka: ' + error.message
+            });
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const handleMemorijaUFirebase = async () => {
+        if (!window.confirm('Jeste li sigurni da želite pretočiti iz memorije u Firebase?')) {
+            return;
+        }
+
+        setLoading(true);
+        setPoruka(null);
+
+        try {
+            // Pretpostavka: podaci u memoriji se mogu dohvatiti preko servisa ili ih već imate negdje u stanju.
+            // Ovdje ih dohvaćamo preko servisnih metoda koje čitaju iz memorije.
+            const vrsteRes = await VrsteService.get();
+            const tipoviRes = await TipService.get();
+            const oznakeRes = await OznakeService.get();
+            const prijaveRes = await prijaveService.get();
+            const tragoviRes = await TragoviService.get();
+            const operateriRes = await OperaterService.get();
+
+            const vrste = vrsteRes.data || vrsteRes;
+            const tipovi = tipoviRes.data || tipoviRes;
+            const oznake = oznakeRes.data || oznakeRes;
+            const prijave = prijaveRes.data || prijaveRes;
+            const tragovi = tragoviRes.data || tragoviRes;
+            const operateri = operateriRes.data || operateriRes;
+
+            // 1. Operateri
+            const operateriPromises = operateri.map(e => {
+                const { id, ...ostatak } = e;
+                return OperaterService.dodaj(ostatak);
+            });
+            await Promise.all(operateriPromises);
+
+            // 2. Vrste (mapiramo stare ID-ove na nove Firebase ID-ove)
+            let mapiranjeVrsta = [];
+            for (const e of vrste) {
+                const { id, ...ostatak } = e;
+                const fb = await VrsteService.dodaj(ostatak);
+                const noviId = fb.id;
+                mapiranjeVrsta.push({ stariId: id, noviId: noviId });
+            }
+
+            // 3. Tipovi
+            let mapiranjeTipova = [];
+            for (const e of tipovi) {
+                const { id, ...ostatak } = e;
+                const fb = await TipService.dodaj(ostatak);
+                const noviId = fb.id;
+                mapiranjeTipova.push({ stariId: id, noviId: noviId });
+            }
+
+            // 4. Oznake
+            let mapiranjeOznaka = [];
+            for (const e of oznake) {
+                const { id, ...ostatak } = e;
+                const fb = await OznakeService.dodaj(ostatak);
+                const noviId = fb.id;
+                mapiranjeOznaka.push({ stariId: id, noviId: noviId });
+            }
+
+            // 5. Prijave (povezujemo vrste, tipove i oznake s novim Firebase ID-ovima)
+            let mapiranjePrijava = [];
+            for (const e of prijave) {
+                const { id, ...ostatak } = e;
+
+                // Zamijeni vrstu
+                const mVrsta = mapiranjeVrsta.find(m => m.stariId == ostatak.zivotinja_vrsta);
+                ostatak.zivotinja_vrsta = mVrsta ? mVrsta.noviId : ostatak.zivotinja_vrsta;
+
+                // Zamijeni tip prijave
+                const mTip = mapiranjeTipova.find(m => m.stariId == ostatak.tip_prijave);
+                ostatak.tip_prijave = mTip ? mTip.noviId : ostatak.tip_prijave;
+
+                // Zamijeni oznake (polje ID-ova)
+                if (Array.isArray(ostatak.oznake)) {
+                    ostatak.oznake = ostatak.oznake.map(staraOznakaId => {
+                        const mOznaka = mapiranjeOznaka.find(m => m.stariId == staraOznakaId);
+                        return mOznaka ? mOznaka.noviId : null;
+                    }).filter(id => id !== null);
+                }
+
+                const fb = await prijaveService.dodaj(ostatak);
+                const noviId = fb.id;
+                mapiranjePrijava.push({ stariId: id, noviId: noviId });
+            }
+
+            // 6. Tragovi (povezujemo s novim ID-ovima prijava)
+            for (const e of tragovi) {
+                const { id, ...ostatak } = e;
+
+                const mPrijava = mapiranjePrijava.find(m => m.stariId == ostatak.prijava);
+                ostatak.prijava = mPrijava ? mPrijava.noviId : ostatak.prijava;
+
+                await TragoviService.dodaj(ostatak);
+            }
+
+            setPoruka({
+                tip: 'success',
+                tekst: 'Uspješno presipano u Firebase!'
+            });
+
+        } catch (error) {
+            console.error("Greška pri presipanju u Firebase:", error);
+            setPoruka({
+                tip: 'danger',
+                tekst: 'Došlo je do greške prilikom sinkronizacije: ' + error.message
+            });
+        } finally {
+            setLoading(false);
+        }
+    };
 
     const generirajVrste = async (broj) => {
         const naziviVrsta = ['Pas', 'Mačka', 'Ptica', 'Kunić', 'Hrčak', 'Kornjača', 'Tvor', 'Papiga'];
@@ -440,7 +602,7 @@ export default function GeneriranjePodataka() {
                 await OperaterService.obrisi(operater.id)
             }
 
-            
+
 
             setPoruka({
                 tip: 'success',
@@ -463,11 +625,11 @@ export default function GeneriranjePodataka() {
             </Container>
         );
     }
-     const generirajOperatere = async (broj) => {
+    const generirajOperatere = async (broj) => {
         const rezultat = await OperaterService.get();
         const operateri = rezultat.data;
         const adminOperater = operateri.find(op => op.email === 'admin@edunova.hr');
-        
+
         if (adminOperater) {
             await OperaterService.obrisi(adminOperater.id);
         }
@@ -521,7 +683,7 @@ export default function GeneriranjePodataka() {
         try {
             const rezultat = await OperaterService.get();
             const operateri = rezultat.data;
-            
+
             for (const operater of operateri) {
                 await OperaterService.obrisi(operater.id);
             }
@@ -585,7 +747,7 @@ export default function GeneriranjePodataka() {
                                         min="1"
                                         max="20"
                                         value={brojVrsta}
-                                        onChange={(e) => setBrojVrsta(parseInt(e.target.value))}
+                                        onChange={(e) => setBrojVrsta(e.target.value)}
                                         disabled={loading}
                                         isInvalid={!!errors.brojVrsta}
                                         onFocus={() => ocistiGresku('brojVrsta')}
@@ -609,7 +771,7 @@ export default function GeneriranjePodataka() {
                                         min="1"
                                         max="20"
                                         value={brojTipova}
-                                        onChange={(e) => setBrojTipova(parseInt(e.target.value))}
+                                        onChange={(e) => setBrojTipova(e.target.value)}
                                         disabled={loading}
                                         isInvalid={!!errors.brojTipova}
                                         onFocus={() => ocistiGresku('brojTipova')}
@@ -633,7 +795,7 @@ export default function GeneriranjePodataka() {
                                         min="1"
                                         max="20"
                                         value={brojOznaka}
-                                        onChange={(e) => setBrojOznaka(parseInt(e.target.value))}
+                                        onChange={(e) => setBrojOznaka(e.target.value)}
                                         disabled={loading}
                                         isInvalid={!!errors.brojOznaka}
                                         onFocus={() => ocistiGresku('brojOznaka')}
@@ -657,7 +819,7 @@ export default function GeneriranjePodataka() {
                                         min="1"
                                         max="50"
                                         value={brojPrijava}
-                                        onChange={(e) => setBrojPrijava(parseInt(e.target.value))}
+                                        onChange={(e) => setBrojPrijava(e.target.value)}
                                         disabled={loading}
                                         isInvalid={!!errors.brojPrijava}
                                         onFocus={() => ocistiGresku('brojPrijava')}
@@ -681,7 +843,7 @@ export default function GeneriranjePodataka() {
                                         min="1"
                                         max="100"
                                         value={brojTragova}
-                                        onChange={(e) => setBrojTragova(parseInt(e.target.value))}
+                                        onChange={(e) => setBrojTragova(e.target.value)}
                                         disabled={loading}
                                         isInvalid={!!errors.brojTragova}
                                         onFocus={() => ocistiGresku('brojTragova')}
@@ -696,36 +858,36 @@ export default function GeneriranjePodataka() {
                                 </Button>
                             </Form>
                         </Col>
-                             <Col md={4}>
-                    <Form onSubmit={handleGenerirajOperatere}>
-                        <Form.Group className="mb-3">
-                            <Form.Label>Broj operatera</Form.Label>
-                            <Form.Control
-                                type="number"
-                                min="1"
-                                max="50"
-                                value={brojOperatera}
-                                onChange={(e) => setBrojOperatera(parseInt(e.target.value))}
-                                disabled={loading}
-                                 isInvalid={!!errors.brojOperatera} 
-                                 onFocus={() => ocistiGresku('brojOperatera')} 
-                            />
-                            <Form.Text className="text-muted">
-                                +1 admin (1-50)
-                            </Form.Text>
-                            <Form.Control.Feedback type="invalid">{errors.brojOperatera}</Form.Control.Feedback>
-                        </Form.Group>
-                        <Button 
-                            variant="primary" 
-                            type="submit" 
-                            disabled={loading}
-                            className="w-100"
-                        >
-                            {loading ? 'Generiranje...' : 'Generiraj operatere'}
-                        </Button>
-                    </Form>
-                </Col>
-           
+                        <Col md={4}>
+                            <Form onSubmit={handleGenerirajOperatere}>
+                                <Form.Group className="mb-3">
+                                    <Form.Label>Broj operatera</Form.Label>
+                                    <Form.Control
+                                        type="number"
+                                        min="1"
+                                        max="50"
+                                        value={brojOperatera}
+                                        onChange={(e) => setBrojOperatera(e.target.value)}
+                                        disabled={loading}
+                                        isInvalid={!!errors.brojOperatera}
+                                        onFocus={() => ocistiGresku('brojOperatera')}
+                                    />
+                                    <Form.Text className="text-muted">
+                                        +1 admin (1-50)
+                                    </Form.Text>
+                                    <Form.Control.Feedback type="invalid">{errors.brojOperatera}</Form.Control.Feedback>
+                                </Form.Group>
+                                <Button
+                                    variant="primary"
+                                    type="submit"
+                                    disabled={loading}
+                                    className="w-100"
+                                >
+                                    {loading ? 'Generiranje...' : 'Generiraj operatere'}
+                                </Button>
+                            </Form>
+                        </Col>
+
                     </Row>
                     <Alert variant="warning" className="mt-3">
                         <strong>Upozorenje:</strong> Ove akcije će dodati nove podatke u postojeće. Ako želite početi ispočetka, prvo obrišite postojeće podatke.
@@ -762,18 +924,51 @@ export default function GeneriranjePodataka() {
                                 {loading ? 'Brisanje...' : 'Obriši sve tragove'}
                             </Button>
                         </Col>
-                              <Col md={4}>
+                        <Col md={4}>
                             <Button variant="danger" onClick={handleObrisiOperatere} disabled={loading} className="w-100 mb-2">
                                 {loading ? 'Brisanje...' : 'Obriši sve operatere'}
                             </Button>
                         </Col>
-                  
+
                     </Row>
 
                     <Alert variant="danger" className="mt-3">
                         <strong>Oprez!</strong> Brisanje podataka je trajna akcija i ne može se poništiti.
                     </Alert>
                 </Card.Body>
+                 <hr className="my-4" />
+                <Row className="m-2">
+                <div className='mx-2'>
+                    <h3>Presipavanje podataka</h3>
+                        <p className="text-muted">
+                            Koristite ove opcije za kopiranje iz jednog izvora u drugi.
+                        </p>
+                </div>
+                    <Col md={6}>
+                        <Row>
+                            <Col md={6}>
+                                <Button
+                                    variant="danger"
+                                    onClick={handleMemorijaULocalStorage}
+                                    disabled={loading}
+                                    className="w-100 mb-2"
+                                >
+                                    {loading ? 'Presipavanje...' : 'Iz memorije u localStorage'}
+                                </Button>
+                            </Col>
+                            <Col md={6}>
+                                <Button
+                                    variant="danger"
+                                    onClick={handleMemorijaUFirebase}
+                                    disabled={loading}
+                                    className="w-100 mb-2"
+                                >
+                                    {loading ? 'Pretakanje...' : 'Iz memorije u firebase'}
+                                </Button>
+                            </Col>
+                        </Row>
+                    </Col>
+                </Row>
             </Card>
         </Container >
     );

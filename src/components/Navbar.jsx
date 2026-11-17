@@ -1,6 +1,7 @@
 import { useState } from "react"
 import { Container, Nav, Navbar as BsNavbar, Offcanvas, NavDropdown } from "react-bootstrap"
-import { FaMemory, FaStepBackward, FaStoreAlt } from "react-icons/fa";
+import { FaMemory } from 'react-icons/fa';
+import { GrServer, GrStatusUnknown, GrVirtualStorage } from 'react-icons/gr';
 import { Link, NavLink } from "react-router-dom"
 import { DATA_SOURCE, IME_APLIKACIJE, RouteNames } from "../constants"
 import useAuth from "../hooks/useAuth";
@@ -17,14 +18,16 @@ function Navbar() {
       case 'memorija':
         return <FaMemory title='Memorija' />
       case 'localStorage':
-        return <FaStoreAlt title='Local storage' />
+        return <GrVirtualStorage title='Local storage' />
+      case 'firebase':
+        return <GrServer title='Firebase' />
       default:
-        return <FaStepBackward title='Nepoznato' />
+        return <GrStatusUnknown  title='Nepoznato' />
     }
   }
 
   return (
-   <BsNavbar expand="lg" collapseOnSelect className="pa-navbar sticky-top" role="navigation" aria-label="Glavni izbornik">
+    <BsNavbar expand="lg" collapseOnSelect className="pa-navbar sticky-top" role="navigation" aria-label="Glavni izbornik">
       <Container>
         <BsNavbar.Brand as={Link} to={RouteNames.HOME} className="pa-brand">
           <span className="pa-brand-mark"><BrandMark size={22} /></span>

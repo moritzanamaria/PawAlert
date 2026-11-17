@@ -1,12 +1,23 @@
 import { DATA_SOURCE } from "../../constants";
+import TipServiceFirebase from "./TipServiceFireBase";
 import TipServiceLocalStorage from "./TipServiceLocalStorage";
 import TipServiceMemorija from "./TipServiceMemorija";
 
-let Servis = 
-  DATA_SOURCE === 'memorija' ? TipServiceMemorija :
-  DATA_SOURCE === 'localStorage' ? TipServiceLocalStorage : 
-  null;
+let Servis = null
 
+switch (DATA_SOURCE) {
+  case 'memorija':
+    Servis = TipServiceMemorija
+    break
+  case 'localStorage':
+    Servis = TipServiceLocalStorage
+    break
+  case 'firebase':
+    Servis = TipServiceFirebase
+    break
+  default:
+    Servis = null
+}
 const PrazanServis = {
   get: async () => ({ data: [] }),
   getById: async () => ({ data: {} }),

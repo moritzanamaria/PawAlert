@@ -93,7 +93,7 @@ export default function TragNovi() {
         }
 
         dodaj({
-            prijava: parseInt(id),
+            prijava: id,
             opis: rezultat.data.opis,
             lokacija: rezultat.data.lokacija,
             datum: rezultat.data.datum.toISOString(),

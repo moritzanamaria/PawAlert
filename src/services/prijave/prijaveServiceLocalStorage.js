@@ -1,16 +1,17 @@
 import { MAX_PRIJAVA } from "../../constants";
+import {PrefixStorage } from "../../constants"
 
-const STORAGE_KEY = 'prijave'
+
 
 function dohvatiSveIzStorage() {
-  const podaci = localStorage.getItem(STORAGE_KEY)
+  const podaci = localStorage.getItem(PrefixStorage.PRIJAVE)
   return podaci ? JSON.parse(podaci) : []
 
 }
 
 function spremiUStorage(podaci) {
   try {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(podaci))
+    localStorage.setItem(PrefixStorage.PRIJAVE, JSON.stringify(podaci))
   } catch (error) {
     if (error.name === 'QuotaExceededError') {
       throw new Error('Nema više mjesta u pregledniku. Smanji broj prijava.', { cause: error })
@@ -28,7 +29,7 @@ async function get() {
 async function getById(id) {
   const prijave = dohvatiSveIzStorage()
   return {
-    data: prijave.find(p => p.id === parseInt(id))
+    data: prijave.find(p =>  String(p.id) === String(id))
   }
 }
 
@@ -40,7 +41,7 @@ async function dodaj(prijava) {
   if (prijave.length === 0) {
     prijava.id = 1
   } else {
-    const maxId = Math.max(...prijave.map(p => p.id))
+    const maxId = Math.max(...prijave.map(p => String(p.id)))
     prijava.id = maxId + 1
   }
   prijave.push(prijava)
@@ -50,8 +51,8 @@ async function dodaj(prijava) {
 
 async function promjeni(id, prijava) {
   const prijave = dohvatiSveIzStorage()
-  const index = prijave.findIndex(p => p.id === parseInt(id))
-  prijave[index] = { ...prijave[index], ...prijava, }
+  const index = prijave.findIndex(p =>  String(p.id) === String(id))
+  prijave[index] = { ...prijave[index], ...prijava, id: String(id)}
   spremiUStorage(prijave)
 }
 
@@ -59,7 +60,7 @@ async function promjeni(id, prijava) {
 
 async function obrisi(id) {
   let prijave = dohvatiSveIzStorage()
-  prijave = prijave.filter(p => p.id !== parseInt(id))
+  prijave = prijave.filter(p => String(p.id) !== String(id))
   spremiUStorage(prijave)
 
 }

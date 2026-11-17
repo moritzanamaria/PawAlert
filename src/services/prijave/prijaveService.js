@@ -1,12 +1,24 @@
 import { DATA_SOURCE } from "../../constants";
 import { normalizirajLokaciju } from "../../utils/lokacija";
+import prijaveServiceFirebase from "./prijaveServiceFireBase";
 import prijaveServiceLocalStorage from "./prijaveServiceLocalStorage";
 import prijaveServiceMemorija from "./prijaveServiceMemorija";
 
-let Servis =
-  DATA_SOURCE === 'memorija' ? prijaveServiceMemorija :
-    DATA_SOURCE === 'localStorage' ? prijaveServiceLocalStorage :
-      null;
+let Servis = null;
+
+switch (DATA_SOURCE) {
+  case 'memorija':
+    Servis = prijaveServiceMemorija;
+    break;
+  case 'localStorage':
+    Servis = prijaveServiceLocalStorage;
+    break;
+  case 'firebase':
+    Servis = prijaveServiceFirebase;
+    break;
+  default:
+    Servis = null;
+}
 
 const PrazanServis = {
   get: async () => ({ data: [] }),

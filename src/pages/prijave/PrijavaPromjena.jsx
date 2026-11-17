@@ -149,11 +149,11 @@ export default function PrijavaPromjena() {
         promjeni({
             ...prijava,
             zivotinja_ime: p.zivotinja_ime,
-            zivotinja_vrsta: parseInt(p.zivotinja_vrsta),
+            zivotinja_vrsta: p.zivotinja_vrsta,
             zivotinja_opis: p.zivotinja_opis,
-            zivotinja_godine: p.zivotinja_godine ? parseInt(p.zivotinja_godine) : null,
+            zivotinja_godine: p.zivotinja_godine, 
             cipirana: podaci.get('cipirana') === 'on',
-            tip_prijave: parseInt(p.tip_prijave),
+            tip_prijave: p.tip_prijave,
             status: p.status,
             lokacija: p.lokacija,
             datum: p.datum.toISOString(),
@@ -201,7 +201,7 @@ export default function PrijavaPromjena() {
                                 <Form.Select
                                     name="zivotinja_vrsta"
                                     value={prijava.zivotinja_vrsta || ""}
-                                    onChange={(e) => setPrijava({ ...prijava, zivotinja_vrsta: parseInt(e.target.value) })}
+                                    onChange={(e) => setPrijava({ ...prijava, zivotinja_vrsta: e.target.value })}
                                     isInvalid={!!errors.zivotinja_vrsta}
                                     onFocus={() => ocistiGresku("zivotinja_vrsta")}
                                 >
@@ -294,7 +294,7 @@ export default function PrijavaPromjena() {
                                 <Form.Select
                                     name="tip_prijave"
                                     value={prijava.tip_prijave || ""}
-                                    onChange={(e) => setPrijava({ ...prijava, tip_prijave: parseInt(e.target.value) })}
+                                    onChange={(e) => setPrijava({ ...prijava, tip_prijave: e.target.value })}
                                     isInvalid={!!errors.tip_prijave}
                                     onFocus={() => ocistiGresku("tip_prijave")}
                                 >

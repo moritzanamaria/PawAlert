@@ -1,11 +1,23 @@
 import { DATA_SOURCE } from "../../constants";
+import OznakeServiceFirebase from "./OznakeServiceFireBase";
 import OznakeServiceLocalStorage from "./OznakeServiceLocalStorage";
 import OznakeServiceMemorija from "./OznakeServiceMemorija";
 
-let Servis = 
-  DATA_SOURCE === 'memorija' ? OznakeServiceMemorija :
-  DATA_SOURCE === 'localStorage' ? OznakeServiceLocalStorage : 
-  null;
+let Servis = null
+
+switch (DATA_SOURCE) {
+  case 'memorija':
+    Servis = OznakeServiceMemorija
+    break
+  case 'localStorage':
+    Servis = OznakeServiceLocalStorage
+    break
+  case 'firebase':
+    Servis = OznakeServiceFirebase
+    break
+  default:
+    Servis = null
+}
 
 const PrazanServis = {
   get: async () => ({ data: [] }),
