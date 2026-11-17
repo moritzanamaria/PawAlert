@@ -3,9 +3,8 @@ import L from "leaflet";
 const BOJE = ["#0d6efd", "#dc3545", "#198754", "#fd7e14", "#6f42c1", "#ffc107", "#6c757d", "#212529"];
 
 export function bojaTipa(tipId) {
-  const stvarniId = typeof tipId === "object" && tipId !== null ? (tipId.id ?? tipId.tip_id) : tipId;
-  const id = Number(stvarniId);
-  return isNaN(id) ? "#6c757d" : BOJE[id % BOJE.length];
+  const id = Number(tipId);
+  return Number.isNaN(id) ? "#6c757d" : BOJE[id % BOJE.length];
 }
 
 export function dohvatiIkonu(tipId) {

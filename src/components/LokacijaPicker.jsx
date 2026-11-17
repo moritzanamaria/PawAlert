@@ -5,6 +5,7 @@ import "leaflet/dist/leaflet.css";
 import { CENTAR_OSIJEK } from "../constants";
 import { dohvatiIkonu } from "../utils/mapHelpers";
 
+ const IKONA = dohvatiIkonu();   
 
 async function opisIzKoordinata(lat, lng) {
     try {
@@ -62,12 +63,12 @@ export default function LokacijaPicker({ value, onChange }) {
                 {imaTocku && (
                     <Marker
                         position={[value.lat, value.lng]}
-                        icon={dohvatiIkonu(tip)}
+                        icon={IKONA}
                         draggable
                         eventHandlers={{
                             dragend: (e) => {
                                 const { lat, lng } = e.target.getLatLng();
-                                postavi(p.lat, p.lng)
+                                postavi(lat, lng)
                             },
                         }}
                     />

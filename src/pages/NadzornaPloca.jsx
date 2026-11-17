@@ -1,6 +1,7 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import { Card, Col, Container, Row, Table } from "react-bootstrap";
+import Highcharts from "highcharts";
 import {
   BiCategory,
   BiData,
@@ -37,16 +38,82 @@ if (import.meta.env.DEV) {
   });
 }
 
-function Kartica({ naslov, vrijednost, boja = "dark", to }) {
-  const sadrzaj = (
-    <Card className="h-100 shadow-sm border-0">
+function PregledPrijavaChart({ podaci }) {
+  const chartContainerRef = useRef(null);
+
+  useEffect(() => {
+    if (!chartContainerRef.current || !podaci) return;
+
+    const chart = Highcharts.chart(chartContainerRef.current, {
+      chart: {
+        type: "pie",
+        backgroundColor: "#ffffff",
+        height: 360,
+      },
+      
+      credits: {
+        enabled: false,
+      },
+      tooltip: {
+        pointFormat: "<b>{point.y}</b> prijava ({point.percentage:.1f}%)",
+      },
+      series: [
+        {
+          name: "Prijave",
+          borderRadius: 8,
+          borderWidth: 3,
+          innerSize: "70%",
+          dataLabels: [
+            {
+              format: "{point.name}: {point.y}",
+            },
+            {
+              format: "{point.percentage:.0f}%",
+              distance: "-15%",
+              backgroundColor: "contrast",
+              style: {
+                textOutline: "none",
+              },
+            },
+          ],
+          data: [
+            {
+              name: "Hitne",
+              y: podaci.hitne.length,
+              color: "#dc3545",
+            },
+           
+            {
+              name: "Otvorene",
+              y: podaci.otvorene,
+              color: "#198754", 
+            },
+            {
+              name: "Zatvorene",
+              y: podaci.zatvorene,
+              color: "#6c757d", 
+            },
+          ].filter((item) => item.y > 0),
+        },
+      ],
+    });
+
+    return () => {
+      chart.destroy();
+    };
+  }, [podaci]);
+
+  return (
+    <Card className="shadow-sm border-0 mb-4">
       <Card.Body>
-        <div className="text-muted small">{naslov}</div>
-        <div className={`fs-2 fw-bold text-${boja}`}>{vrijednost}</div>
+        {podaci.ukupno === 0 ? (
+          <p className="text-muted text-center py-5 mb-0">Još nema zabilježenih prijava za prikaz grafikona.</p>
+        ) : (
+          <div ref={chartContainerRef} />
+        )}
       </Card.Body>
     </Card>
   );
-  return to ? <Link to={to} className="text-decoration-none">{sadrzaj}</Link> : sadrzaj;
 }
 
 function Precac({ naslov, opis, ikona: Ikona, to, boja }) {
@@ -143,15 +210,10 @@ export default function NadzornaPloca() {
 
   return (
     <Container className="my-4">
+      
       <h3 className="fw-bold mb-4">📊 Nadzorna ploča</h3>
 
-      <Row className="g-3 mb-4">
-        <Col xs={6} md={4} lg><Kartica naslov="Sve prijave" vrijednost={podaci.ukupno} to={RouteNames.PRIJAVE_PREGLED} /></Col>
-        <Col xs={6} md={4} lg><Kartica naslov="Otvorene" vrijednost={podaci.otvorene} boja="success" /></Col>
-        <Col xs={6} md={4} lg><Kartica naslov="Hitne (otvorene)" vrijednost={podaci.hitne.length} boja="danger" /></Col>
-        <Col xs={6} md={4} lg><Kartica naslov={`Starije od ${ZASTARJELO_DANA} dana`} vrijednost={podaci.zastarjele} boja="warning" /></Col>
-        <Col xs={6} md={4} lg><Kartica naslov="Zatvorene" vrijednost={podaci.zatvorene} boja="secondary" /></Col>
-      </Row>
+   <PregledPrijavaChart podaci={podaci} />
 
       <Row className="g-3 mb-4">
         <Col lg={6}>

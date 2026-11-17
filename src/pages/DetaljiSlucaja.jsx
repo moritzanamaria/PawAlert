@@ -208,8 +208,8 @@ export default function DetaljiSlucaja() {
                                         cardTitleColor: "#212529",
                                         cardSubtitleColor: "#6c757d",
                                         cardDetailsColor: "#495057",
-                                        titleColor: "#ffffff",
-                                        titleColorActive: "#ffffff",
+                                        titleColor: "#198754",
+                                        titleColorActive: "#146c43",
                                         shadowColor: "rgba(25, 135, 84, 0.25)",
                                         glowColor: "rgba(25, 135, 84, 0.35)"
                                     }}

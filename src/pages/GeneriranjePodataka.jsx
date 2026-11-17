@@ -41,8 +41,7 @@ export default function GeneriranjePodataka() {
         setErrors({});
         return true;
     };
- useEffect(() => { document.title = 'Generiranje podataka, ' + IME_APLIKACIJE })
-
+ 
     const faker = new Faker({
         locale: [hr, en]
     });
@@ -145,7 +144,8 @@ export default function GeneriranjePodataka() {
                 },
                 datum: faker.date.recent({ days: 30 }).toISOString(),
                 slika: unspashSlikeZivotinja[i % unspashSlikeZivotinja.length],
-                oznake: odabraneOznake
+                oznake: odabraneOznake,
+                hitno: faker.datatype.boolean(),
             });
         }
     };

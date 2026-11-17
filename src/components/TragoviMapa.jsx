@@ -14,8 +14,7 @@ const poz = ({ lokacija }) => [lokacija.lat, lokacija.lng];
 function PrilagodiPogled({ tocke }) {
   const map = useMap();
   useEffect(() => {
-  if (tocke.length === 1) map.setView(tocke[0], 16);
-    else map.fitBounds(tocke, { padding: [30, 30] });
+  map.fitBounds(tocke, { padding: [30, 30], maxZoom: 16 });
   }, [tocke, map]);
   return null;
 }
@@ -42,16 +41,16 @@ export default function TragoviMapa({ prijava, tragovi }) {
             Prijavljeno ovdje: <strong>{prijava.zivotinja_ime}</strong>
           </Popup>
         </Marker>
-    
+    {poredani.length > 1 && (
      <Polyline positions={poredani.map(poz)} pathOptions={STIL_LINIJE} />
-
+)}
     
       {poredani.map((t, i) => (
         <CircleMarker
           key={t.id}
           center={poz(t)}
           radius={11}
-          pathOptions={{ color: "#dc3545", fillColor: "#dc3545", fillOpacity: 0.9 }}
+          pathOptions={{ STIL_TRAGA }}
         >
           <Tooltip
             permanent

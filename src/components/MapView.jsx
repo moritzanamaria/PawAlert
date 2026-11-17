@@ -82,7 +82,7 @@ function MapView({ prijave = [], vrste: propVrste = [], tipovi: propTipovi = [],
         ))}
       </MapContainer>
 
-      <div className="d-flex flex-wrap flex-md-wrap gap-2 p small">
+      <div className="d-flex flex-wrap gap-1 py-2 small">
         {tipovi.map((t) => (
           <div key={t.id} className="d-flex align-items-center m-1">
             <span className="legenda-tocka" style={{ backgroundColor: bojaTipa(t.id) }} />

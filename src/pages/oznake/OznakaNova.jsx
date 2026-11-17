@@ -10,7 +10,7 @@ import { oznakaSchema } from "../../schemas/oznakaSchema";
 export default function OznakaNova() {
     const navigate = useNavigate();
 
-     const [errors, setErrors] = useState({});
+    const [errors, setErrors] = useState({});
 
     const ocistiGresku = (nazivPolja) => {
         if (errors[nazivPolja]) {
@@ -24,7 +24,7 @@ export default function OznakaNova() {
     const povratak = location.state?.povratak ?? RouteNames.OZNAKE_PREGLED;
 
     const [naziv, setNaziv] = useState("");
-  const [bojaHsva, setBojaHsva] = useState(hexToHsva("#0d6efd"));
+    const [bojaHsva, setBojaHsva] = useState(hexToHsva("#0d6efd"));
     const [bojaTekstaHsva, setBojaTekstaHsva] = useState(hexToHsva("#ffffff"));
 
     const bojaHex = hsvaToHex(bojaHsva);
@@ -36,30 +36,46 @@ export default function OznakaNova() {
             navigate(povratak);
         } catch (error) {
             console.error("Greška pri dodavanju oznake:", error);
+            setErrors({ opcenito: "Oznaku nije moguće dodati. Pokušaj ponovno." });
         }
     }
-function obradiSubmit(e) {
-    e.preventDefault();
- const podaci = new FormData(e.target);
 
-        setErrors({});
-    const rezultat = oznakaSchema.safeParse({ ...Object.fromEntries(podaci), boja: bojaHex, boja_teksta: bojaTekstaHex });
-    if (!rezultat.success) {
-         const noveGreske = {};
+    function OdabirBoje({ label, hsva, setHsva }) {
+        return (
+            <Form.Group as={Col} md={6} className="mb-3 text-center">
+                <Form.Label className="fw-medium d-block text-start">{label}</Form.Label>
+                <div className="shadow-sm d-flex flex-column align-items-center justify-content-center p-3 rounded bg-white gap-3">
+                    <Wheel
+                        color={hsva}
+                        onChange={(col) => setHsva((prev) => ({ ...prev, ...col.hsva }))}
+                        width={160}
+                        height={160}
+                    />
+                    <div className="w-100 px-2">
+                        <span className="text-muted small d-block text-start mb-1">Svjetlina:</span>
+                        <ShadeSlider
+                            hsva={hsva}
+                            onChange={(nova) => setHsva((prev) => ({ ...prev, ...nova }))}
+                            style={{ height: 16, borderRadius: 8 }}
+                        />
+                    </div>
+                </div>
+            </Form.Group>
+        );
+    } function obradiSubmit(e) {
+        e.preventDefault();
+
+        const rezultat = oznakaSchema.safeParse({ ...Object.fromEntries(podaci), boja: bojaHex, boja_teksta: bojaTekstaHex });
+        if (!rezultat.success) {
+            const noveGreske = {};
             rezultat.error.issues.forEach((issue) => {
-                const kljuc = issue.path[0];
-                if (!noveGreske[kljuc]) {
-                    noveGreske[kljuc] = issue.message;
-                }
+                noveGreske[issue.path[0]] ??= issue.message;
             });
             setErrors(noveGreske);
             return;
-}
-  dodaj({
-            naziv: rezultat.data.naziv,
-            boja: bojaHex,
-            boja_teksta: bojaTekstaHex,
-        });
+        }
+        setErrors({})
+        dodaj(rezultat.data);
     }
 
 
@@ -92,55 +108,18 @@ function obradiSubmit(e) {
                                     value={naziv}
                                     onChange={(e) => setNaziv(e.target.value)}
                                     placeholder="npr.  Preplašen, Crna, Ima ogrlicu..."
-                                     isInvalid={!!errors.naziv}
+                                    isInvalid={!!errors.naziv}
                                     onFocus={() => ocistiGresku("naziv")}
                                 />
                                 <Form.Control.Feedback type="invalid">
-                                {errors.naziv}
-                            </Form.Control.Feedback>
+                                    {errors.naziv}
+                                </Form.Control.Feedback>
                             </Form.Group>
-</Row>
+                        </Row>
 
                         <Row className="mb-4">
-                            <Form.Group as={Col} md={6} className="mb-3 text-center">
-                                <Form.Label className="fw-medium d-block text-start">Boja oznake</Form.Label>
-                                <div className="shadow-sm d-flex flex-column align-items-center justify-content-center p-3 rounded bg-white gap-3">
-                                    <Wheel
-                                        color={bojaHsva}
-                                        onChange={(col) => setBojaHsva((prev) => ({ ...prev, ...col.hsva }))}
-                                        width={160}
-                                        height={160}
-                                    />
-                                    <div className="w-100 px-2">
-                                        <span className="text-muted small d-block text-start mb-1">Svjetlina:</span>
-                                        <ShadeSlider
-                                            hsva={bojaHsva}
-                                            onChange={(newColor) => setBojaHsva((prev) => ({ ...prev, ...newColor }))}
-                                            style={{ height: 16, borderRadius: 8 }}
-                                        />
-                                    </div>
-                                </div>
-                            </Form.Group>
-
-                            <Form.Group as={Col} md={6} className="mb-3 text-center">
-                                <Form.Label className="fw-medium d-block text-start">Boja teksta</Form.Label>
-                                <div className="shadow-sm d-flex flex-column align-items-center justify-content-center p-3 rounded bg-white gap-3">
-                                    <Wheel
-                                        color={bojaTekstaHsva}
-                                        onChange={(col) => setBojaTekstaHsva((prev) => ({ ...prev, ...col.hsva }))}
-                                        width={160}
-                                        height={160}
-                                    />
-                                    <div className="w-100 px-2">
-                                        <span className="text-muted small d-block text-start mb-1">Svjetlina:</span>
-                                        <ShadeSlider
-                                            hsva={bojaTekstaHsva}
-                                            onChange={(newColor) => setBojaTekstaHsva((prev) => ({ ...prev, ...newColor }))}
-                                            style={{ height: 16, borderRadius: 8 }}
-                                        />
-                                    </div>
-                                </div>
-                            </Form.Group>
+                            <OdabirBoje label="Boja oznake" hsva={bojaHsva} setHsva={setBojaHsva} />
+                            <OdabirBoje label="Boja teksta" hsva={bojaTekstaHsva} setHsva={setBojaTekstaHsva} />
                         </Row>
                         <div className="mb-3">
                             <span className="text-muted small me-2">Pregled:</span>

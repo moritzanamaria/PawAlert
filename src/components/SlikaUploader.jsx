@@ -2,7 +2,7 @@ import { useCallback, useState } from "react";
 import Cropper from "react-easy-crop";
 import { Button, ButtonGroup, Col, Form, Modal, Row } from "react-bootstrap";
 import { izrezi } from "../utils/cropSlika";
-import { slikaFileSchema, slikaDataUrlSchema } from "../schemas/slikaSchema";
+import { slikaFileSchema } from "../schemas/slikaSchema";
 
 const OMJERI = [
     { label: "1:1", value: 1 },
@@ -55,15 +55,8 @@ export default function SlikaUploader({ value, onChange }) {
         if (!pikseli) return;
         try {
             setRadi(true);
-            const rezultat = await izrezi(izvor, pikseli, rotation);
-            const provjera = slikaDataUrlSchema.safeParse(rezultat);
-            if (!provjera.success) {
-                setGreska(provjera.error.issues[0].message);
-                return;
-            }
-
+            onChange(await izrezi(izvor, pikseli, rotation));
             setGreska("");
-            onChange(provjera.data);
             setIzvor(null);
         } catch (err) {
             console.error(err);

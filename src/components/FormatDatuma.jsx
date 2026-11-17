@@ -24,10 +24,7 @@ export default function FormatDatuma({ datum, prikazDatuma = '-', relativno = fa
     }
     return (
         <>
-        {tekst} <span className="text-muted">
-({formatDistanceToNow(d, {addSuffix: true, locale: hr})})
-
-        </span>
+        {tekst} <span className="text-muted"> ({formatDistanceToNow(d, {addSuffix: true, locale: hr})}) </span>
         </>
     )
 }

@@ -12,6 +12,8 @@
   "dependencies": {
     "@babel/runtime": "^8.1.0",
     "@faker-js/faker": "^10.6.0",
+    "@highcharts/dashboards": "^4.2.3",
+    "@highcharts/grid-lite": "^3.2.0",
     "@uiw/react-color": "^2.10.3",
     "@uiw/react-color-wheel": "^2.10.3",
     "bcryptjs": "^3.0.3",
@@ -19,6 +21,7 @@
     "date-fns": "^4.4.0",
     "docx": "^9.15.2",
     "file-saver": "^2.0.5",
+    "highcharts": "^13.1.1",
     "jspdf": "^4.2.1",
     "jspdf-autotable": "^5.0.9",
     "leaflet": "^1.9.4",

@@ -14,7 +14,7 @@ const spremi = (kljuc, vrijednost) => {
   try {
     localStorage.setItem(kljuc, vrijednost);
   } catch {
-    /* nije bitno */
+
   }
 };
 
@@ -25,28 +25,36 @@ export default function LetakModal({ show, onHide, prijava, nazivTipa, nazivVrst
   const [trakice, setTrakice] = useState(true);
   const [radi, setRadi] = useState(false);
   const [greska, setGreska] = useState("");
-
-  const telefonNevaljan = telefon.trim() !== "" && !/^[+\d\s()/-]{6,20}$/.test(telefon.trim());
+  const tel = telefon.trim();
+  const ime = kontaktIme.trim();
+  const telefonNevaljan = tel !== "" && !/^[+\d\s()/-]{6,20}$/.test(tel);
 
   async function generiraj() {
     if (telefonNevaljan) return;
     setRadi(true);
     setGreska("");
     try {
-      spremi("letak_telefon", telefon.trim());
-      spremi("letak_ime", kontaktIme.trim());
-      await generirajLetak({ prijava, nazivTipa, nazivVrste, oznake, uBoji, telefon, kontaktIme, trakice });
+      spremi("letak_telefon", tel);
+      spremi("letak_ime", ime);
+      await generirajLetak({
+        prijava, nazivTipa, nazivVrste, oznake, uBoji,
+        telefon: tel,
+        kontaktIme: ime,
+        trakice: trakice && tel !== "",
+      });
       onHide();
     } catch (error) {
       console.error("Greška pri izradi letka:", error);
-      setGreska(error.message || "Letak nije moguće izraditi.");
+      setGreska("Letak nije moguće izraditi.");
     } finally {
       setRadi(false);
     }
   }
 
   return (
-    <Modal show={show} onHide={onHide} centered>
+    <Modal show={show} onHide={radi ? () => { } : onHide}
+      onShow={() => setGreska("")} backdrop={radi ? "static" : true}
+      keyboard={!radi} centered>
       <Modal.Header closeButton>
         <Modal.Title className="fs-5 d-flex align-items-center gap-2">
           <BiPrinter /> Letak za ispis
@@ -89,7 +97,7 @@ export default function LetakModal({ show, onHide, prijava, nazivTipa, nazivVrst
             onChange={(e) => setTelefon(e.target.value)}
           />
           <Form.Control.Feedback type="invalid">
-            Unesi samo brojeve, razmake i znakove + ( ) -
+            Unesi 6 do 20 znakova: brojeve, razmake i + ( ) / -
           </Form.Control.Feedback>
         </Form.Group>
 
@@ -108,8 +116,8 @@ export default function LetakModal({ show, onHide, prijava, nazivTipa, nazivVrst
           type="checkbox"
           id="letak-trakice"
           label="Dodaj odrezive trakice s brojem telefona"
-          checked={trakice && telefon.trim() !== ""}
-          disabled={telefon.trim() === ""}
+          checked={trakice && tel !== ""}
+          disabled={tel === ""}
           onChange={(e) => setTrakice(e.target.checked)}
         />
 

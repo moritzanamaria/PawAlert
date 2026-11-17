@@ -8,7 +8,3 @@ export const slikaFileSchema = (maxMB = 5) =>
             "Dozvoljeni formati: JPG, PNG, WEBP."
         )
         .refine((f) => f.size <= maxMB * 1024 * 1024, `Slika je prevelika (max ${maxMB} MB).`);
-
-export const slikaDataUrlSchema = z
-    .string({ error: "Slika nije ispravna." })
-    .regex(/^data:image\/(jpeg|png|webp);base64,/, "Dozvoljeni formati: JPG, PNG, WEBP.");
