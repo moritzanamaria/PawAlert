@@ -41,7 +41,7 @@ export default function OznakaPromjena() {
         async function ucitajOznaku() {
             try {
                 const res = await OznakeService.getById(params.id);
-                const podaci = res?.data ?? res;
+                const podaci = res.data;
                 if (podaci) {
                     setOznaka(podaci);
                     if (podaci.boja) {

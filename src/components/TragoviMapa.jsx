@@ -50,7 +50,7 @@ export default function TragoviMapa({ prijava, tragovi }) {
           key={t.id}
           center={poz(t)}
           radius={11}
-          pathOptions={{ STIL_TRAGA }}
+          pathOptions={STIL_TRAGA}
         >
           <Tooltip
             permanent

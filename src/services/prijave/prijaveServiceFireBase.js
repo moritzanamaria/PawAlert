@@ -67,11 +67,22 @@ async function obrisi(id) {
         return { success: false, message: e.message };
     }
 }
+async function dohvatiStranicu(stranica = 1, velicinaStranice = 8) {
+    const { data } = await get();
+    data.sort((a, b) => Number(a.id) - Number(b.id)); 
+    const pocetak = (stranica - 1) * velicinaStranice;
+    return {
+        data: data.slice(pocetak, pocetak + velicinaStranice),
+        ukupnoStavki: data.length,
+        ukupnoStranica: Math.ceil(data.length / velicinaStranice) || 1
+    };
+}
 
 export default {
     get,
     getById,
     dodaj,
     promjeni,
-    obrisi
+    obrisi,
+    dohvatiStranicu
 };

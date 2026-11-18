@@ -15,11 +15,6 @@ import { RouteNames, ZASTARJELO_DANA, putanja } from "../constants";
 import prijaveService from "../services/prijave/prijaveService";
 import FormatDatuma from "../components/FormatDatuma";
 
-const toArray = (res) => {
-  const data = Array.isArray(res) ? res : (res?.data ?? []);
-  return Array.isArray(data) ? data : [];
-};
-
 const PRECACI = [
   { naslov: "Pregled prijava", opis: "Sve prijave, uređivanje i brisanje", ikona: BiListUl, to: RouteNames.PRIJAVE_PREGLED, boja: "success" },
   { naslov: "Tipovi i vrste", opis: "Šifrarnik tipova prijava i vrsta životinja", ikona: BiCategory, to: RouteNames.TIPOVI_I_VRSTE_PREGLED, boja: "primary" },
@@ -184,7 +179,7 @@ export default function NadzornaPloca() {
   useEffect(() => {
     async function ucitaj() {
       try {
-        const prijave = toArray(await prijaveService.get());
+        const prijave = (await prijaveService.get()).data;
         const otvorene = prijave.filter((p) => p.status === "otvorena");
         const granica = Date.now() - ZASTARJELO_DANA * 24 * 60 * 60 * 1000;
         const poDatumu = [...prijave].sort((a, b) => new Date(b.datum) - new Date(a.datum));

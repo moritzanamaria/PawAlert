@@ -1,7 +1,4 @@
-import { MAX_PRIJAVA } from "../../constants";
-import {PrefixStorage } from "../../constants"
-
-
+import { MAX_PRIJAVA, PrefixStorage } from "../../constants";
 
 function dohvatiSveIzStorage() {
   const podaci = localStorage.getItem(PrefixStorage.PRIJAVE)

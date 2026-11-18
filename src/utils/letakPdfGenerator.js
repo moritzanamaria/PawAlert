@@ -5,9 +5,7 @@ import { slikaUrl } from "./slika";
 
 const STRANICA_W = 210;
 const RUB = 12;
-const SIRINA = STRANICA_W - 2 * RUB; // 186 mm
-
-// ---------- pomoćne funkcije ----------
+const SIRINA = STRANICA_W - 2 * RUB; 
 
 function hexUBoju(hex, zamjena) {
   const m = /^#?([0-9a-f]{3}|[0-9a-f]{6})$/i.exec((hex || "").trim());
@@ -25,7 +23,6 @@ function skratiTekst(doc, tekst, sirina, maxRedaka) {
   return rez;
 }
 
-// smanjuje font dok tekst ne stane u zadanu širinu
 function stisniDoSirine(doc, tekst, pocetniFont, minFont, sirina) {
   let f = pocetniFont;
   doc.setFontSize(f);
@@ -47,7 +44,6 @@ function formatirajDatum(datum) {
   );
 }
 
-// ---------- stil letka ovisi o tipu prijave ----------
 
 const STILOVI = {
   nestanak: { boja: [185, 28, 28], naslov: "NESTALA ŽIVOTINJA", podnaslov: "Pomozite nam je pronaći!", lokacija: "ZADNJE POZNATA LOKACIJA", datum: "NESTALA", kontakt: "JAVITE SE" },
@@ -55,7 +51,6 @@ const STILOVI = {
   pronadjeno: { boja: [22, 101, 52], naslov: "PRONAĐENA ŽIVOTINJA", podnaslov: "Tražimo vlasnika!", lokacija: "PRONAĐENA NA LOKACIJI", datum: "PRONAĐENA", kontakt: "VLASNIK? JAVITE SE" },
 };
 
-// boje za sve ostale tipove (bira se prema broju tipa)
 const PALETA = [[124, 58, 237], [194, 65, 12], [14, 116, 144], [190, 24, 93], [161, 98, 7], [51, 65, 85]];
 
 function stilTipa(naziv, tipId) {
@@ -80,9 +75,8 @@ function sapa(doc, x, y, s) {
   doc.ellipse(x, y + 1.8 * s, 3.6 * s, 2.8 * s, "F");
 }
 
-// ---------- crtanje letka (čista funkcija, bez browsera) ----------
 
-export function napraviLetak({
+function napraviLetak({
   prijava,
   nazivTipa = "",
   nazivVrste = "",

@@ -30,10 +30,10 @@ function Home() {
           TipService.get(),
           OznakeService.get(),
         ]);
-        setPrijave(rezPrijave.data || rezPrijave);
-        setVrste(rezVrste.data || rezVrste);
-        setTipovi(rezTipovi.data || rezTipovi);
-        setOznake(rezOznake.data || rezOznake);
+        setPrijave(rezPrijave.data);
+        setVrste(rezVrste.data);
+        setTipovi(rezTipovi.data);
+        setOznake(rezOznake.data);
       } catch (error) {
         console.error("Greška pri dohvaćanju podataka:", error);
       }

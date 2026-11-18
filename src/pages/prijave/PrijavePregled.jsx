@@ -12,11 +12,6 @@ import { generirajPrijaveWord } from '../../utils/prijaveWordGenerator';
 import { BsFileEarmarkWord } from 'react-icons/bs';
 import OznakeService from "../../services/oznake/OznakeService";
 
-const toArray = (res) => {
-  const data = Array.isArray(res) ? res : (res?.data ?? []);
-  return Array.isArray(data) ? data : [];
-};
-
 export default function PrijavePregled() {
   const [prijave, setPrijave] = useState([])
   const [vrste, setVrste] = useState([]);
@@ -38,9 +33,9 @@ export default function PrijavePregled() {
           TipService.get(),
           OznakeService.get(),
         ]);
-        setVrste(toArray(resVrste));
-        setTipovi(toArray(resTipovi));
-        setOznake(toArray(resOznake))
+        setVrste(resVrste.data);
+        setTipovi(resTipovi.data);
+        setOznake(resOznake.data)
       } catch (error) {
         console.error("Greška pri dohvatu podataka:", error);
       }
@@ -54,7 +49,7 @@ export default function PrijavePregled() {
     async function ucitajStranicu() {
       try {
         const odgovor = await prijaveService.dohvatiStranicu(trenutnaStranica, velicinaStranice);
-        setPrijave(toArray(odgovor.data));
+        setPrijave(odgovor.data);
         postaviUkupnoStranica(odgovor.ukupnoStranica || 0);
         postaviUkupnoStavki(odgovor.ukupnoStavki || 0);
       } catch (error) {
@@ -104,7 +99,7 @@ export default function PrijavePregled() {
   const handleExportWord = async () => {
     try {
       const res = await prijaveService.get();
-      const svePrijave = toArray(res);
+      const svePrijave = res.data;
       generirajPrijaveWord(svePrijave, vrste, tipovi, oznake);
     } catch (error) {
       console.error("Greška pri dohvatu svih prijava za Word:", error);

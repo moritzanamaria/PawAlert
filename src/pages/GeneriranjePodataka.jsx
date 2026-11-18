@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { Button, Card, Form, Alert, Container, Row, Col } from 'react-bootstrap';
 import { Faker, hr, en } from '@faker-js/faker';
 import prijaveService from '../services/prijave/prijaveService';
@@ -6,12 +6,24 @@ import TragoviService from '../services/tragovi/TragoviService';
 import TipService from '../services/tip/TipService';
 import VrsteService from '../services/vrste/VrsteService';
 import OznakeService from '../services/oznake/OznakeService';
-import { DATA_SOURCE, IME_APLIKACIJE } from '../constants';
+import { DATA_SOURCE, PrefixStorage } from '../constants';
 import { izveziSveUXml } from '../utils/xmlExporter';
 import { BsFileEarmarkCode } from 'react-icons/bs';
 import { brojSchema } from '../schemas/brojSchema';
 import OperaterService from '../services/operateri/OperaterService';
-
+import useAuth from '../hooks/useAuth';
+import OperaterServiceFirebase from '../services/operateri/OperaterServiceFireBase';
+import VrsteServiceFirebase from '../services/vrste/VrsteServiceFireBase';
+import TipServiceFirebase from '../services/tip/TipServiceFireBase';
+import OznakeServiceFirebase from '../services/oznake/OznakeServiceFireBase';
+import prijaveServiceFirebase from '../services/prijave/prijaveServiceFireBase';
+import TragoviServiceFirebase from '../services/tragovi/TragoviServiceFireBase';
+import VrsteServiceMemorija from '../services/vrste/VrsteServiceMemorija';
+import TipServiceMemorija from '../services/tip/TipServiceMemorija';
+import OznakeServiceMemorija from '../services/oznake/OznakeServiceMemorija';
+import prijaveServiceMemorija from '../services/prijave/prijaveServiceMemorija';
+import TragoviServiceMemorija from '../services/tragovi/TragoviServiceMemorija';
+import { operateri as operateriMemorija } from '../services/operateri/OperaterPodaci';
 
 export default function GeneriranjePodataka() {
     const [brojVrsta, setBrojVrsta] = useState(5);
@@ -23,7 +35,7 @@ export default function GeneriranjePodataka() {
     const [poruka, setPoruka] = useState(null);
     const [loading, setLoading] = useState(false);
     const [errors, setErrors] = useState({});
-
+    const { authUser } = useAuth();
     const ocistiGresku = (nazivPolja) => {
         if (errors[nazivPolja]) {
             const noveGreske = { ...errors };
@@ -46,8 +58,32 @@ export default function GeneriranjePodataka() {
         locale: [hr, en]
     });
 
+    const dohvatiIzMemorije = async () => {
+        const [vrste, tipovi, oznake, prijave, tragovi] = (await Promise.all([
+            VrsteServiceMemorija.get(),
+            TipServiceMemorija.get(),
+            OznakeServiceMemorija.get(),
+            prijaveServiceMemorija.get(),
+            TragoviServiceMemorija.get(),
+        ])).map((res) => res.data);
+        return { vrste, tipovi, oznake, prijave, tragovi, operateri: operateriMemorija };
+    };
+
+    const dodajIliBaci = async (servis, zapis) => {
+        const rez = await servis.dodaj(zapis);
+        if (rez?.success === false) throw new Error(rez.message);
+        return rez?.id ?? rez?.data?.id;
+    };
+
+    const prebaci = async (servis, stavke) => {
+        const mapa = new Map();
+        for (const { id, ...ostatak } of stavke) {
+            mapa.set(String(id), await dodajIliBaci(servis, ostatak));
+        }
+        return mapa;
+    };
     const handleMemorijaULocalStorage = async () => {
-        if (!window.confirm('Jeste li sigurni da želite presipati sve podatke iz memorije u localStorage?')) {
+        if (!window.confirm('Presipati podatke iz memorije u localStorage? Postojeći podaci u localStorageu bit će zamijenjeni.')) {
             return;
         }
 
@@ -55,37 +91,18 @@ export default function GeneriranjePodataka() {
         setPoruka(null);
 
         try {
-            const vrsteRes = await VrsteService.get();
-            const tipoviRes = await TipService.get();
-            const oznakeRes = await OznakeService.get();
-            const prijaveRes = await prijaveService.get();
-            const tragoviRes = await TragoviService.get();
-            const operateriRes = await OperaterService.get();
+            const podaci = await dohvatiIzMemorije();
 
-            const vrste = vrsteRes.data || vrsteRes;
-            const tipovi = tipoviRes.data || tipoviRes;
-            const oznake = oznakeRes.data || oznakeRes;
-            const prijave = prijaveRes.data || prijaveRes;
-            const tragovi = tragoviRes.data || tragoviRes;
-            const operateri = operateriRes.data || operateriRes;
-
-            localStorage.removeItem('vrste');
-            localStorage.removeItem('tipovi');
-            localStorage.removeItem('oznake');
-            localStorage.removeItem('prijave');
-            localStorage.removeItem('tragovi');
-            localStorage.removeItem('operateri');
-
-            localStorage.setItem('vrste', JSON.stringify(vrste));
-            localStorage.setItem('tipovi', JSON.stringify(tipovi));
-            localStorage.setItem('oznake', JSON.stringify(oznake));
-            localStorage.setItem('prijave', JSON.stringify(prijave));
-            localStorage.setItem('tragovi', JSON.stringify(tragovi));
-            localStorage.setItem('operateri', JSON.stringify(operateri));
+            localStorage.setItem(PrefixStorage.VRSTE, JSON.stringify(podaci.vrste));
+            localStorage.setItem(PrefixStorage.TIPOVI, JSON.stringify(podaci.tipovi));
+            localStorage.setItem(PrefixStorage.OZNAKE, JSON.stringify(podaci.oznake));
+            localStorage.setItem(PrefixStorage.PRIJAVE, JSON.stringify(podaci.prijave));
+            localStorage.setItem(PrefixStorage.TRAGOVI, JSON.stringify(podaci.tragovi));
+            localStorage.setItem(PrefixStorage.OPERATERI, JSON.stringify(podaci.operateri));
 
             setPoruka({
                 tip: 'success',
-                tekst: `Uspješno presipano!`
+                tekst: `Uspješno presipano u localStorage!`
             });
         } catch (error) {
             setPoruka({
@@ -98,107 +115,48 @@ export default function GeneriranjePodataka() {
     };
 
     const handleMemorijaUFirebase = async () => {
-        if (!window.confirm('Jeste li sigurni da želite pretočiti iz memorije u Firebase?')) {
+        if (!window.confirm('Jeste li sigurni da želite pretočiti iz memorije u firebase?')) {
             return;
         }
-
         setLoading(true);
         setPoruka(null);
 
         try {
-            // Pretpostavka: podaci u memoriji se mogu dohvatiti preko servisa ili ih već imate negdje u stanju.
-            // Ovdje ih dohvaćamo preko servisnih metoda koje čitaju iz memorije.
-            const vrsteRes = await VrsteService.get();
-            const tipoviRes = await TipService.get();
-            const oznakeRes = await OznakeService.get();
-            const prijaveRes = await prijaveService.get();
-            const tragoviRes = await TragoviService.get();
-            const operateriRes = await OperaterService.get();
+            const { vrste, tipovi, oznake, prijave, tragovi, operateri } = await dohvatiIzMemorije();
 
-            const vrste = vrsteRes.data || vrsteRes;
-            const tipovi = tipoviRes.data || tipoviRes;
-            const oznake = oznakeRes.data || oznakeRes;
-            const prijave = prijaveRes.data || prijaveRes;
-            const tragovi = tragoviRes.data || tragoviRes;
-            const operateri = operateriRes.data || operateriRes;
-
-            // 1. Operateri
-            const operateriPromises = operateri.map(e => {
-                const { id, ...ostatak } = e;
-                return OperaterService.dodaj(ostatak);
-            });
-            await Promise.all(operateriPromises);
-
-            // 2. Vrste (mapiramo stare ID-ove na nove Firebase ID-ove)
-            let mapiranjeVrsta = [];
-            for (const e of vrste) {
-                const { id, ...ostatak } = e;
-                const fb = await VrsteService.dodaj(ostatak);
-                const noviId = fb.id;
-                mapiranjeVrsta.push({ stariId: id, noviId: noviId });
+            // 1. Operateri (lozinke su već hashirane); one s istim emailom preskačemo
+            const postojeciEmailovi = (await OperaterServiceFirebase.get()).data.map((o) => o.email);
+            for (const { id: _id, ...ostatak } of operateri) {
+                if (postojeciEmailovi.includes(ostatak.email)) continue;
+                const rez = await OperaterServiceFirebase.dodajBezHash(ostatak);
+                if (!rez.success) throw new Error(rez.message);
             }
 
-            // 3. Tipovi
-            let mapiranjeTipova = [];
-            for (const e of tipovi) {
-                const { id, ...ostatak } = e;
-                const fb = await TipService.dodaj(ostatak);
-                const noviId = fb.id;
-                mapiranjeTipova.push({ stariId: id, noviId: noviId });
+            // 2. Vrste, tipovi i oznake (trebamo nove ID-ove za prijave)
+            const mapaVrsta = await prebaci(VrsteServiceFirebase, vrste);
+            const mapaTipova = await prebaci(TipServiceFirebase, tipovi);
+            const mapaOznaka = await prebaci(OznakeServiceFirebase, oznake);
+
+            // 3. Prijave (povezivanje starih ID-ova s novim Firebase ID-ovima)
+            const mapaPrijava = new Map();
+            for (const { id, ...ostatak } of prijave) {
+                ostatak.zivotinja_vrsta = mapaVrsta.get(String(ostatak.zivotinja_vrsta)) ?? null;
+                ostatak.tip_prijave = mapaTipova.get(String(ostatak.tip_prijave)) ?? null;
+                ostatak.oznake = (ostatak.oznake ?? [])
+                    .map((o) => mapaOznaka.get(String(o)))
+                    .filter((o) => o != null); // makni one koje nije našao
+                mapaPrijava.set(String(id), await dodajIliBaci(prijaveServiceFirebase, ostatak));
             }
 
-            // 4. Oznake
-            let mapiranjeOznaka = [];
-            for (const e of oznake) {
-                const { id, ...ostatak } = e;
-                const fb = await OznakeService.dodaj(ostatak);
-                const noviId = fb.id;
-                mapiranjeOznaka.push({ stariId: id, noviId: noviId });
+            // 4. Tragovi
+            for (const { id: _id, ...ostatak } of tragovi) {
+                ostatak.prijava = mapaPrijava.get(String(ostatak.prijava)) ?? null;
+                await dodajIliBaci(TragoviServiceFirebase, ostatak);
             }
 
-            // 5. Prijave (povezujemo vrste, tipove i oznake s novim Firebase ID-ovima)
-            let mapiranjePrijava = [];
-            for (const e of prijave) {
-                const { id, ...ostatak } = e;
-
-                // Zamijeni vrstu
-                const mVrsta = mapiranjeVrsta.find(m => m.stariId == ostatak.zivotinja_vrsta);
-                ostatak.zivotinja_vrsta = mVrsta ? mVrsta.noviId : ostatak.zivotinja_vrsta;
-
-                // Zamijeni tip prijave
-                const mTip = mapiranjeTipova.find(m => m.stariId == ostatak.tip_prijave);
-                ostatak.tip_prijave = mTip ? mTip.noviId : ostatak.tip_prijave;
-
-                // Zamijeni oznake (polje ID-ova)
-                if (Array.isArray(ostatak.oznake)) {
-                    ostatak.oznake = ostatak.oznake.map(staraOznakaId => {
-                        const mOznaka = mapiranjeOznaka.find(m => m.stariId == staraOznakaId);
-                        return mOznaka ? mOznaka.noviId : null;
-                    }).filter(id => id !== null);
-                }
-
-                const fb = await prijaveService.dodaj(ostatak);
-                const noviId = fb.id;
-                mapiranjePrijava.push({ stariId: id, noviId: noviId });
-            }
-
-            // 6. Tragovi (povezujemo s novim ID-ovima prijava)
-            for (const e of tragovi) {
-                const { id, ...ostatak } = e;
-
-                const mPrijava = mapiranjePrijava.find(m => m.stariId == ostatak.prijava);
-                ostatak.prijava = mPrijava ? mPrijava.noviId : ostatak.prijava;
-
-                await TragoviService.dodaj(ostatak);
-            }
-
-            setPoruka({
-                tip: 'success',
-                tekst: 'Uspješno presipano u Firebase!'
-            });
-
+            setPoruka({ tip: 'success', tekst: 'Uspješno presipano u Firebase!' });
         } catch (error) {
-            console.error("Greška pri presipanju u Firebase:", error);
+            console.error('Greška pri presipanju:', error);
             setPoruka({
                 tip: 'danger',
                 tekst: 'Došlo je do greške prilikom sinkronizacije: ' + error.message
@@ -207,7 +165,6 @@ export default function GeneriranjePodataka() {
             setLoading(false);
         }
     };
-
     const generirajVrste = async (broj) => {
         const naziviVrsta = ['Pas', 'Mačka', 'Ptica', 'Kunić', 'Hrčak', 'Kornjača', 'Tvor', 'Papiga'];
 
@@ -599,9 +556,9 @@ export default function GeneriranjePodataka() {
             const operateriOdgovor = await OperaterService.get();
             const operateri = operateriOdgovor.data || operateriOdgovor;
             for (const operater of operateri) {
+                if (operater.email === authUser.email) continue;
                 await OperaterService.obrisi(operater.id)
             }
-
 
 
             setPoruka({
@@ -626,19 +583,15 @@ export default function GeneriranjePodataka() {
         );
     }
     const generirajOperatere = async (broj) => {
-        const rezultat = await OperaterService.get();
-        const operateri = rezultat.data;
-        const adminOperater = operateri.find(op => op.email === 'admin@edunova.hr');
-
-        if (adminOperater) {
-            await OperaterService.obrisi(adminOperater.id);
+        const operateri = (await OperaterService.get()).data;
+        const adminPostoji = operateri.some(op => op.email === 'admin@pawalert.hr');
+        if (!adminPostoji) {
+            await OperaterService.dodaj({
+                email: 'admin@pawalert.hr',
+                lozinka: 'Edunova123!',
+                uloga: 'admin'
+            });
         }
-
-        await OperaterService.dodaj({
-            email: 'admin@edunova.hr',
-            lozinka: 'Edunova123!',
-            uloga: 'admin'
-        });
 
         for (let i = 0; i < broj; i++) {
             await OperaterService.dodaj({
@@ -660,7 +613,7 @@ export default function GeneriranjePodataka() {
 
             setPoruka({
                 tip: 'success',
-                tekst: `Uspješno generirano ${brojOperatera + 1} operatera (1 admin + ${brojOperatera} korisnika)!`
+                tekst: `Uspješno generirano ${brojOperatera} operatera!`
             });
         } catch (error) {
             setPoruka({
@@ -685,6 +638,7 @@ export default function GeneriranjePodataka() {
             const operateri = rezultat.data;
 
             for (const operater of operateri) {
+                if (operater.email === authUser.email) continue;
                 await OperaterService.obrisi(operater.id);
             }
 
@@ -936,14 +890,14 @@ export default function GeneriranjePodataka() {
                         <strong>Oprez!</strong> Brisanje podataka je trajna akcija i ne može se poništiti.
                     </Alert>
                 </Card.Body>
-                 <hr className="my-4" />
+                <hr className="my-4" />
                 <Row className="m-2">
-                <div className='mx-2'>
-                    <h3>Presipavanje podataka</h3>
+                    <div className='mx-2'>
+                        <h3>Presipavanje podataka</h3>
                         <p className="text-muted">
                             Koristite ove opcije za kopiranje iz jednog izvora u drugi.
                         </p>
-                </div>
+                    </div>
                     <Col md={6}>
                         <Row>
                             <Col md={6}>

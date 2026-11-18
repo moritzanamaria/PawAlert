@@ -12,7 +12,7 @@ function izFirestorea(d) {
 }
 
 function uFirestore(trag) {
-    const { id, ...ostalo } = trag;
+    const { _id, ...ostalo } = trag;
     return {
         ...ostalo,
         prijava: String(trag.prijava),

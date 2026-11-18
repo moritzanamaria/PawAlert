@@ -5,11 +5,6 @@ import TipService from '../services/tip/TipService';
 import OznakeService from '../services/oznake/OznakeService';
 import TragoviService from '../services/tragovi/TragoviService';
 
-const toArray = (res) => {
-  const data = Array.isArray(res) ? res : (res?.data ?? []);
-  return Array.isArray(data) ? data : [];
-};
-
 const escapeXml = (str) => {
   if (str === null || str === undefined) return '';
   return String(str)
@@ -30,10 +25,10 @@ export async function izveziSveUXml() {
       OznakeService.get(),
     ]);
 
-    const prijave = toArray(resPrijave);
-    const vrste = toArray(resVrste);
-    const tipovi = toArray(resTipovi);
-    const oznake = toArray(resOznake);
+    const prijave = resPrijave.data;
+    const vrste = resVrste.data;
+    const tipovi = resTipovi.data;
+    const oznake = resOznake.data;
 
     // 2. Za svaku prijavu paralelno dohvaćamo njezine tragove
     const prijaveSaTragovima = await Promise.all(

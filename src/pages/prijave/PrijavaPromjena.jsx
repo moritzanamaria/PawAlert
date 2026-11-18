@@ -43,7 +43,7 @@ export default function PrijavaPromjena() {
     const [oznake, setOznake] = useState([]);
     const [odabraneOznake, setOdabraneOznake] = useState([]);
     const [lokacija, setLokacija] = useState(null);
-    const [novaSlika, setNovaSlika] = useState(undefined);
+    const [novaSlika, setNovaSlika] = useState();
     const [cacheBust] = useState(Date.now());
 
     useEffect(() => {
@@ -61,21 +61,19 @@ export default function PrijavaPromjena() {
                     TipService.get(),
                     OznakeService.get()
                 ]);
-                const pData = resPrijava?.data ?? resPrijava;
-                const vData = Array.isArray(resVrste) ? resVrste : (resVrste?.data ?? []);
-                const tData = Array.isArray(resTipovi) ? resTipovi : (resTipovi?.data ?? []);
-                const oData = Array.isArray(resOznake) ? resOznake : (resOznake?.data ?? []);
+
+                const pData = resPrijava.data ?? {};
 
                 setPrijava(pData || {});
-                setOdabraneOznake(Array.isArray(pData?.oznake) ? pData.oznake : []);
+                setOdabraneOznake(pData.oznake ?? []);
                 setCipirana(Boolean(pData?.cipirana));
                 setHitno(Boolean(pData?.hitno));
                 if (pData?.lokacija) {
                     setLokacija(pData.lokacija);
                 }
-                setVrste(Array.isArray(vData) ? vData : []);
-                setTipovi(Array.isArray(tData) ? tData : []);
-                setOznake(Array.isArray(oData) ? oData : []);
+                setVrste(resVrste.data);
+                setTipovi(resTipovi.data);
+                setOznake(resOznake.data);
             } catch (error) {
                 console.error("Greška pri dohvatu podataka prijave:", error);
             }
@@ -151,7 +149,7 @@ export default function PrijavaPromjena() {
             zivotinja_ime: p.zivotinja_ime,
             zivotinja_vrsta: p.zivotinja_vrsta,
             zivotinja_opis: p.zivotinja_opis,
-            zivotinja_godine: p.zivotinja_godine, 
+            zivotinja_godine: p.zivotinja_godine,
             cipirana: podaci.get('cipirana') === 'on',
             tip_prijave: p.tip_prijave,
             status: p.status,
@@ -206,7 +204,7 @@ export default function PrijavaPromjena() {
                                     onFocus={() => ocistiGresku("zivotinja_vrsta")}
                                 >
                                     <option value="" disabled>Odaberi vrstu...</option>
-                                    {vrste && vrste.map((v) => (
+                                    {vrste.map((v) => (
                                         <option key={v.id} value={v.id}>
                                             {v.naziv}
                                         </option>

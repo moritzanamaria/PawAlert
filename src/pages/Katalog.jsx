@@ -27,10 +27,10 @@ export default function Katalog() {
   const { isLoggedIn } = useAuth();
 
   useEffect(() => {
-    prijaveService.get().then((res) => setPrijave(res.data || res));
-    VrsteService.get().then((res) => setVrste(res.data || res));
-    TipService.get().then((res) => setTipovi(res.data || res));
-    OznakeService.get().then((res) => setOznake(res.data || res));
+    prijaveService.get().then((res) => setPrijave(res.data));
+    VrsteService.get().then((res) => setVrste(res.data));
+    TipService.get().then((res) => setTipovi(res.data));
+    OznakeService.get().then((res) => setOznake(res.data));
   }, []);
 
   const filtriranePrijave = filtrirajPrijave(prijave, filteri);

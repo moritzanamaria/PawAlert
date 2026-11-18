@@ -3,11 +3,6 @@ import { Link } from "react-router-dom";
 import { RouteNames, putanja } from "../constants";
 import { useEffect, useState } from "react";
 
-function Sidebar({ prijave = [], oznake = [] }) {
-  const najnovije = [...prijave]
-    .sort((a, b) => new Date(b.datum || 0) - new Date(a.datum || 0))
-    .slice(0, 3);
-
 function ProtekloVrijeme({ datum }) {
   const [sada, setSada] = useState(Date.now());
 
@@ -34,6 +29,13 @@ function ProtekloVrijeme({ datum }) {
     </span>
   );
 }
+
+function Sidebar({ prijave = [], oznake = [] }) {
+  const najnovije = [...prijave]
+    .sort((a, b) => new Date(b.datum || 0) - new Date(a.datum || 0))
+    .slice(0, 3);
+
+
 
   return (
     <div className="d-flex flex-column gap-3 h-100">
@@ -76,42 +78,42 @@ function ProtekloVrijeme({ datum }) {
                     </div>
                   </div>
                   {prijava.oznake && prijava.oznake.length > 0 && (
-                      <div className="d-flex flex-column align-items-end gap-2">
-                        {prijava.oznake.map((idOznake) => {
-                          const o = oznake.find((item) => item.id === Number(idOznake));
-                          if (!o) return null;
-                          return (
-                            <span
-                              key={o.id}
-                              className="badge"
-                              style={{
-                                backgroundColor: o.boja || "#6c757d",
-                                color:  o.boja_teksta || "#fff",
-                                fontSize: "0.75rem",
-                              }}
-                            >
-                              {o.naziv}
-                            </span>
-                          );
-                        })}
-                      </div>
-                    )}
+                    <div className="d-flex flex-column align-items-end gap-2">
+                      {prijava.oznake.map((idOznake) => {
+                        const o = oznake.find((item) => item.id === Number(idOznake));
+                        if (!o) return null;
+                        return (
+                          <span
+                            key={o.id}
+                            className="badge"
+                            style={{
+                              backgroundColor: o.boja || "#6c757d",
+                              color: o.boja_teksta || "#fff",
+                              fontSize: "0.75rem",
+                            }}
+                          >
+                            {o.naziv}
+                          </span>
+                        );
+                      })}
+                    </div>
+                  )}
+                </div>
+
+                {prijava.datum && (
+                  <div className="small mt-1 d-flex align-items-center gap-2">
+                    <span
+                      title={new Date(prijava.datum).toLocaleString("hr-HR")}
+                      style={{ cursor: "pointer" }}
+                    >
+                      🕒
+                    </span>
+                    <ProtekloVrijeme datum={prijava.datum} />
                   </div>
-                  
-                  {prijava.datum && (
-          <div className="small mt-1 d-flex align-items-center gap-2">
-            <span
-              title={new Date(prijava.datum).toLocaleString("hr-HR")}
-              style={{ cursor: "pointer" }}
-            >
-              🕒
-            </span>
-            <ProtekloVrijeme datum={prijava.datum} />
-          </div>
-        )}
-      </div>
-              
-              
+                )}
+              </div>
+
+
             ))
           ) : (
             <p className="text-muted small my-2">Nema dostupnih prijava.</p>

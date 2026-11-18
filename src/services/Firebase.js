@@ -8,7 +8,7 @@ import { getFirestore } from "firebase/firestore";
 
 export default function getFirebaseDB() {
     // mora biti VITE_ ili se to u vite config može promijeniti
-    //console.log(import.meta.env.VITE_FIREBASE_API_KEY)
+   
     const firebaseConfig = {
         apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
         authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,

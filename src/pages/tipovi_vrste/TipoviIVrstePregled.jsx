@@ -9,11 +9,6 @@ import { BiPlus, BiTrash } from "react-icons/bi";
 import { EditText } from "react-edit-text";
 import "react-edit-text/dist/index.css";
 
-const toArray = (res) => {
-  const data = Array.isArray(res) ? res : (res?.data ?? []);
-  return Array.isArray(data) ? data : [];
-};
-
 export default function TipoviPregled() {
   const [vrste, setVrste] = useState([]);
   const [tipovi, setTipovi] = useState([])
@@ -25,8 +20,8 @@ export default function TipoviPregled() {
           TipService.get(),
           VrsteService.get()
         ]);
-        setVrste(toArray(resVrste));
-        setTipovi(toArray(resTipovi));
+        setVrste(resVrste.data);
+        setTipovi(resTipovi.data);
       } catch (error) {
         console.error("Greška pri dohvatu podataka:", error);
       }

@@ -7,7 +7,7 @@ async function get() {
     try {
         const skupOperatera = collection(getFirebaseDB(), PrefixStorage.OPERATERI);
         const snapshot = await getDocs(skupOperatera);
-        
+
         const data = snapshot.docs.map(doc => {
             const operater = doc.data();
             return {
@@ -16,7 +16,7 @@ async function get() {
                 uloga: operater.uloga
             };
         });
-        
+
         return { success: true, data: data };
     } catch (e) {
         console.error("Greška kod dohvaćanja operatera: ", e);
@@ -28,7 +28,7 @@ async function getById(id) {
     try {
         const docRef = doc(getFirebaseDB(), PrefixStorage.OPERATERI, id);
         const docSnap = await getDoc(docRef);
-        
+
         if (docSnap.exists()) {
             const data = docSnap.data();
             return {
@@ -83,7 +83,7 @@ async function dodajBezHash(operater) {
     }
 }
 
-async function promijeni(id, operater) {
+async function promjeni(id, operater) {
     try {
         const docRef = doc(getFirebaseDB(), PrefixStorage.OPERATERI, id);
         await updateDoc(docRef, {
@@ -101,7 +101,7 @@ async function promjeniLozinku(id, novaLozinka) {
     try {
         const hashiranaLozinka = bcrypt.hashSync(novaLozinka, 10);
         const docRef = doc(getFirebaseDB(), PrefixStorage.OPERATERI, id);
-        
+
         await updateDoc(docRef, {
             lozinka: hashiranaLozinka
         });
@@ -125,10 +125,13 @@ async function obrisi(id) {
 async function prijava(email, lozinka) {
     try {
         const skupOperatera = collection(getFirebaseDB(), PrefixStorage.OPERATERI);
-        
+
         const q = query(skupOperatera, where("email", "==", email), limit(1));
         const querySnapshot = await getDocs(q);
         const operaterDoc = querySnapshot.docs[0];
+        if (!operaterDoc) {
+            return { success: false, message: "Email i lozinka ne odgovaraju" };
+        }
         const operaterPodaci = operaterDoc.data();
         const isMatch = bcrypt.compareSync(lozinka, operaterPodaci.lozinka);
         if (!isMatch) {
@@ -152,7 +155,7 @@ export default {
     get,
     dodaj,
     getById,
-    promijeni,
+    promjeni,
     promjeniLozinku,
     obrisi,
     prijava,

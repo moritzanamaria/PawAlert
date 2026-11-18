@@ -11,7 +11,7 @@ function dohvatiSveIzStorage() {
 }
 
 function spremiUStorage(podaci) {
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(podaci));
+  localStorage.setItem(PrefixStorage.OZNAKE, JSON.stringify(podaci));
 }
 
 async function get() {

@@ -84,7 +84,7 @@ export default function TragPromjena() {
         async function ucitajTrag() {
             try {
                 const res = await TragoviService.getById(params.id);
-                const tData = res?.data ?? res;
+                const tData = res.data;
                 setTrag(tData || {});
                 if (tData?.datum) setDatum(new Date(tData.datum))
                 if (tData?.lokacija) {

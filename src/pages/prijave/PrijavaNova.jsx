@@ -46,14 +46,9 @@ export default function PrijavaNova() {
                     TipService.get(),
                     OznakeService.get()
                 ]);
-
-                const vData = Array.isArray(resVrste) ? resVrste : (resVrste?.data ?? []);
-                const tData = Array.isArray(resTipovi) ? resTipovi : (resTipovi?.data ?? []);
-                const oData = Array.isArray(resOznake) ? resOznake : (resOznake?.data ?? []);
-
-                setVrste(Array.isArray(vData) ? vData : []);
-                setTipovi(Array.isArray(tData) ? tData : []);
-                setOznake(Array.isArray(oData) ? oData : []);
+                setVrste(resVrste.data);
+                setTipovi(resTipovi.data);
+                setOznake(resOznake.data);
             } catch (error) {
                 console.error("Greška pri dohvatu podataka:", error);
             }

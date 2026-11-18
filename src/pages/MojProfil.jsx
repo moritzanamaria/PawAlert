@@ -9,11 +9,6 @@ import TragoviService from "../services/tragovi/TragoviService";
 import VrsteService from "../services/vrste/VrsteService";
 import FormatDatuma from "../components/FormatDatuma";
 
-const toArray = (res) => {
-  const data = Array.isArray(res) ? res : (res?.data ?? []);
-  return Array.isArray(data) ? data : [];
-};
-
 export default function MojProfil() {
   const { authUser } = useAuth();
   const [searchParams, setSearchParams] = useSearchParams();
@@ -32,9 +27,9 @@ export default function MojProfil() {
           TragoviService.get(),
           VrsteService.get(),
         ]);
-        setSvePrijave(toArray(rp));
-        setSviTragovi(toArray(rt));
-        setVrste(toArray(rv));
+        setSvePrijave(rp.data);
+        setSviTragovi(rt.data);
+        setVrste(rv.data);
       } catch (error) {
         console.error("Greška pri dohvatu podataka profila:", error);
       }

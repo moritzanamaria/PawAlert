@@ -6,11 +6,6 @@ import { Link, useNavigate, useParams } from "react-router-dom";
 import FormatDatuma from "../../components/FormatDatuma";
 import { BiPlus, BiPencil, BiTrash, BiArrowBack } from "react-icons/bi";
 
-const toArray = (res) => {
-  const data = Array.isArray(res) ? res : (res?.data ?? []);
-  return Array.isArray(data) ? data : [];
-};
-
 export default function TragPregled() {
   const navigate = useNavigate();
   const { id } = useParams();
@@ -20,7 +15,7 @@ export default function TragPregled() {
     async function ucitajTragove() {
       try {
         const res = await TragoviService.get();
-        const sviTragovi = toArray(res);
+        const sviTragovi = res.data;
         const filtrirani = sviTragovi.filter(t => String(t.prijava) === String(id) || String(t.prijavaId) === String(id));
 
         setTragovi(filtrirani)

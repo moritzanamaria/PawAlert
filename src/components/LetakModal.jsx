@@ -11,11 +11,7 @@ const citaj = (kljuc) => {
   }
 };
 const spremi = (kljuc, vrijednost) => {
-  try {
     localStorage.setItem(kljuc, vrijednost);
-  } catch {
-
-  }
 };
 
 export default function LetakModal({ show, onHide, prijava, nazivTipa, nazivVrste, oznake }) {

@@ -5,12 +5,6 @@ import { Badge, Button, Card, Container, Table, ButtonGroup } from "react-bootst
 import { Link, useNavigate } from "react-router-dom";
 import { BiPlus, BiPencil, BiTrash } from "react-icons/bi";
 
-const toArray = (res) => {
-  const data = Array.isArray(res) ? res : (res?.data ?? []);
-  return Array.isArray(data) ? data : [];
-};
-
-
 export default function OznakePregled() {
   const navigate = useNavigate();
   const [oznake, setOznake] = useState([]);
@@ -19,7 +13,7 @@ export default function OznakePregled() {
     async function ucitajOznake() {
       try {
         const res = await OznakeService.get();
-        setOznake(toArray(res));
+        setOznake(res.data);
       } catch (error) {
         console.error("Greška pri učitavanju oznaka:", error);
       }
