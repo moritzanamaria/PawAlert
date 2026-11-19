@@ -1,78 +1,112 @@
-import { collection, doc, getDoc, getDocs, setDoc, updateDoc, deleteDoc } from "firebase/firestore";
+import { collection, doc, updateDoc, getDoc, getDocs, addDoc, deleteDoc } from "firebase/firestore";
 import getFirebaseDB from "../Firebase";
 import { PrefixStorage } from "../../constants";
 
-const kolekcija = () => collection(getFirebaseDB(), PrefixStorage.VRSTE);
-const ref = (id) => doc(getFirebaseDB(), PrefixStorage.VRSTE, String(id));
-
 async function get() {
     try {
-        const snapshot = await getDocs(kolekcija());
+        const skupVrsta = collection(getFirebaseDB(), PrefixStorage.VRSTE);
+        const vrsteSnapshot = await getDocs(skupVrsta);
         return {
             success: true,
-            data: snapshot.docs.map(d => ({ ...d.data(), id: d.id }))
+            data: vrsteSnapshot.docs.map(doc => {
+                const data = doc.data();
+                return {
+                    id: doc.id,
+                    ...data
+                };
+            })
         };
     } catch (e) {
-        console.error("Greška kod dohvaćanja: ", e);
-        return { success: false, data: [], message: e.message };
-    }
-}
-
-async function getById(id) {
-    try {
-        const docSnap = await getDoc(ref(id));
-        if (docSnap.exists()) {
-            return { success: true, data: { ...docSnap.data(), id: docSnap.id } };
-        }
-        return { success: false, data: undefined, message: "Vrsta ne postoji u bazi." };
-    } catch (e) {
-        console.error("Greška kod dohvaćanja po id-u: ", e);
-        return { success: false, message: e.message };
+        console.error("Greška kod dohvaćanja vrsta: ", e);
+        return {
+            success: false,
+            message: e.message
+        };
     }
 }
 
 async function dodaj(vrsta) {
     try {
-        // sekvencijalni id (max + 1), isto kao u localStorage servisu
-        const snapshot = await getDocs(kolekcija());
-        const maxId = Math.max(0, ...snapshot.docs.map(d => Number(d.id) || 0));
-        const id = String(maxId + 1);
-
-        const { id: _ignoriraj, ...ostalo } = vrsta;
-        await setDoc(ref(id), ostalo);
-
-        return { success: true, id, data: { ...ostalo, id } };
+        // Uklanjamo id ako je poslan u objektu kako se ne bi duplirao kao polje unutar dokumenta
+        const { id, ...podaciZaSpremanje } = vrsta;
+        const skupVrsta = collection(getFirebaseDB(), PrefixStorage.VRSTE);
+        const docRef = await addDoc(skupVrsta, podaciZaSpremanje);
+        
+        return {
+            success: true,
+            id: docRef.id
+        };
     } catch (e) {
-        console.error("Greška kod dodavanja: ", e);
-        return { success: false, message: e.message };
+        console.error("Greška kod dodavanja vrste: ", e);
+        return {
+            success: false,
+            message: e.message
+        };
     }
 }
 
-async function promjeni(id, vrsta) {
+async function getById(id) {
     try {
-        const { id: _ignoriraj, ...ostalo } = vrsta;
-        await updateDoc(ref(id), ostalo);
+        const docRef = doc(getFirebaseDB(), PrefixStorage.VRSTE, id);
+        const docSnap = await getDoc(docRef);
+        if (docSnap.exists()) {
+            const data = docSnap.data();
+            return {
+                success: true,
+                data: {
+                    id: docSnap.id,
+                    ...data
+                }
+            };
+        } else {
+            return { 
+                success: false, 
+                message: "Vrsta s tim ID-jem ne postoji u bazi." 
+            };
+        }
+    } catch (e) {
+        console.error("Greška kod dohvaćanja po ID-ju: ", e);
+        return { 
+            success: false, 
+            message: e.message 
+        };
+    }
+}
+
+async function promijeni(id, vrsta) {
+    try {
+        const { id: _, ...podaciZaAzuriranje } = vrsta;
+        const docRef = doc(getFirebaseDB(), PrefixStorage.VRSTE, id);
+        await updateDoc(docRef, podaciZaAzuriranje);
+
         return { success: true };
     } catch (e) {
-        console.error("Greška kod promjene: ", e);
+        console.error("Greška kod promjene vrste: ", e);
         return { success: false, message: e.message };
     }
 }
 
 async function obrisi(id) {
     try {
-        await deleteDoc(ref(id));
-        return { success: true, message: "Uspješno obrisano" };
+        const docRef = doc(getFirebaseDB(), PrefixStorage.VRSTE, id);
+        await deleteDoc(docRef);
+        return {
+            success: true,
+            message: "Uspješno obrisano"
+        };
     } catch (e) {
-        console.error("Greška kod brisanja: ", e);
-        return { success: false, message: e.message };
+        console.error("Greška kod brisanja vrste: ", e);
+        return {
+            success: false,
+            message: e.message
+        };
     }
 }
 
 export default {
     get,
-    getById,
     dodaj,
-    promjeni,
+    promijeni,
+    getById,
     obrisi
 }
