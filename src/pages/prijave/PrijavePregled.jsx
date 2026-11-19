@@ -11,8 +11,10 @@ import { BiPlus, BiPencil, BiTrash, BiSearch } from "react-icons/bi";
 import { generirajPrijaveWord } from '../../utils/prijaveWordGenerator';
 import { BsFileEarmarkWord } from 'react-icons/bs';
 import OznakeService from "../../services/oznake/OznakeService";
+import useLoading from "../../hooks/useLoading";
 
 export default function PrijavePregled() {
+  const { showLoading, hideLoading } = useLoading();
   const [prijave, setPrijave] = useState([])
   const [vrste, setVrste] = useState([]);
   const [tipovi, setTipovi] = useState([]);
@@ -27,17 +29,20 @@ export default function PrijavePregled() {
 
   useEffect(() => {
     async function dohvatiInicijalnePodatke() {
+      showLoading();
       try {
         const [resVrste, resTipovi, resOznake] = await Promise.all([
           VrsteService.get(),
           TipService.get(),
           OznakeService.get(),
         ]);
-        setVrste(resVrste.data);
-        setTipovi(resTipovi.data);
-        setOznake(resOznake.data)
+      if (resVrste?.success) setVrste(resVrste.data);
+        if (resTipovi?.success) setTipovi(resTipovi.data);
+        if (resOznake?.success) setOznake(resOznake.data);
       } catch (error) {
         console.error("Greška pri dohvatu podataka:", error);
+      }finally {
+        hideLoading();
       }
     }
     dohvatiInicijalnePodatke();
@@ -47,6 +52,7 @@ export default function PrijavePregled() {
 
   useEffect(() => {
     async function ucitajStranicu() {
+       showLoading();
       try {
         const odgovor = await prijaveService.dohvatiStranicu(trenutnaStranica, velicinaStranice);
         setPrijave(odgovor.data);
@@ -54,6 +60,8 @@ export default function PrijavePregled() {
         postaviUkupnoStavki(odgovor.ukupnoStavki || 0);
       } catch (error) {
         console.error("Greška pri dohvatu stranice prijava:", error);
+      }finally {
+        hideLoading();
       }
     }
     ucitajStranicu();
@@ -64,7 +72,7 @@ export default function PrijavePregled() {
     if (!confirm('Brisanjem prijave brišu se i svi njezini tragovi. Nastaviti?')) {
       return
     }
-
+showLoading();
      try {
       const { data: tragovi } = await TragoviService.getByPrijava(id)
       for (const trag of tragovi) {
@@ -79,6 +87,8 @@ export default function PrijavePregled() {
       }
     } catch (error) {
       console.error("Greška pri brisanju prijave:", error)
+    }finally {
+      hideLoading();
     }
   }
   
@@ -97,12 +107,15 @@ export default function PrijavePregled() {
   };
 
   const handleExportWord = async () => {
+    showLoading();
     try {
       const res = await prijaveService.get();
       const svePrijave = res.data;
       generirajPrijaveWord(svePrijave, vrste, tipovi, oznake);
     } catch (error) {
       console.error("Greška pri dohvatu svih prijava za Word:", error);
+    }finally {
+      hideLoading();
     }
   };
   

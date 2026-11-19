@@ -128,8 +128,8 @@ export default function GeneriranjePodataka() {
             const postojeciEmailovi = (await OperaterServiceFireBase.get()).data.map((o) => o.email);
             for (const { id: _id, ...ostatak } of operateri) {
                 if (postojeciEmailovi.includes(ostatak.email)) continue;
-                const rez = await OperaterServiceFireBase.dodajBezHash(ostatak);
-                if (!rez.success) throw new Error(rez.message);
+                const rez = await OperaterServiceFireBase.dodaj(ostatak);
+                if (!rez?.success) throw new Error(rez?.message || 'Greška pri dodavanju operatera');
             }
 
             // 2. Vrste, tipovi i oznake (trebamo nove ID-ove za prijave)

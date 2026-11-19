@@ -41,6 +41,44 @@ async function get() {
     }
 }
 
+async function dohvatiStranicu(stranica = 1, velicinaStranice = 6) {
+    try {
+        const rezultat = await get();
+        if (!rezultat.success) {
+            return {
+                success: false,
+                data: [],
+                ukupnoStranica: 0,
+                ukupnoStavki: 0,
+                message: rezultat.message
+            };
+        }
+
+        const svePrijave = rezultat.data || [];
+        const ukupnoStavki = svePrijave.length;
+        const ukupnoStranica = Math.ceil(ukupnoStavki / velicinaStranice);
+        const sigurnaStranica = ukupnoStranica > 0 ? Math.min(Math.max(1, stranica), ukupnoStranica) : 1;
+        const pocetak = (sigurnaStranica - 1) * velicinaStranice;
+        const podaciStranice = svePrijave.slice(pocetak, pocetak + velicinaStranice);
+
+        return {
+            success: true,
+            data: podaciStranice,
+            ukupnoStranica,
+            ukupnoStavki
+        };
+    } catch (e) {
+        console.error("Greška kod dohvaćanja stranice prijava: ", e);
+        return {
+            success: false,
+            data: [],
+            ukupnoStranica: 0,
+            ukupnoStavki: 0,
+            message: e.message
+        };
+    }
+}
+
 async function dodaj(prijava) {
     try {
         const { id, ...podaciPrijave } = prijava;
@@ -127,6 +165,7 @@ async function obrisi(id) {
 
 export default {
     get,
+    dohvatiStranicu,
     dodaj,
     promijeni,
     getById,

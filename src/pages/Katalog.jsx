@@ -63,12 +63,6 @@ export default function Katalog() {
   const getNazivVrste = (id) => vrste.find((v) => Number(v.id) === Number(id))?.naziv ?? "";
   const getNazivTipa = (id) => tipovi.find((t) => Number(t.id) === Number(id))?.naziv ?? "";
 
-  const handleExportWord = () => {
-    generirajPrijaveWord(prijave, vrste, tipovi, oznake);
-  };
-
-
-
   const [animiraneSve, setAnimiraneSve] = useState(0);
   const [animiraneOtvorene, setAnimiraneOtvorene] = useState(0);
   const [animiraniHitni, setAnimiraniHitni] = useState(0);

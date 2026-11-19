@@ -30,11 +30,14 @@ import Login from './pages/login/Login'
 import Registracija from './pages/registracija/Registracija'
 import NadzornaPloca from './pages/NadzornaPloca'
 import MojProfil from './pages/MojProfil'
+import LoadingSpinner from "./components/LoadingSpinner"
 
 export default function App() {
   const { isLoggedIn, authUser } = useAuth()
 
   return (
+      <>
+      <LoadingSpinner />
     <Container>
       <ScrollToTop />
       <Navbar />
@@ -85,5 +88,6 @@ export default function App() {
       <div> &copy; {IME_APLIKACIJE}
       </div>
     </Container>
+    </>
   )
 }
