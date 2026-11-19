@@ -1,18 +1,46 @@
-import { collection, doc, getDoc, getDocs, setDoc, updateDoc, deleteDoc } from "firebase/firestore";
+import { collection, doc, updateDoc, getDoc, getDocs, addDoc, deleteDoc } from "firebase/firestore";
 import getFirebaseDB from "../Firebase";
 import { PrefixStorage } from "../../constants";
 
 async function get() {
     try {
         const skupTipova = collection(getFirebaseDB(), PrefixStorage.TIPOVI);
-        const snapshot = await getDocs(skupTipova);
+        const tipoviSnapshot = await getDocs(skupTipova);
         return {
             success: true,
-            data: snapshot.docs.map(d => ({ ...d.data(), id: d.id }))
+            data: tipoviSnapshot.docs.map(docSnap => {
+                const data = docSnap.data();
+                return {
+                    ...data,
+                    id: docSnap.id
+                };
+            })
         };
     } catch (e) {
-        console.error("Greška kod dohvaćanja: ", e);
-        return { success: false, data: [], message: e.message };
+        console.error("Greška kod dohvaćanja tipova: ", e);
+        return {
+            success: false,
+            message: e.message
+        };
+    }
+}
+
+async function dodaj(tip) {
+    try {
+        const { id, ...podaciTipa } = tip;
+        const skupTipova = collection(getFirebaseDB(), PrefixStorage.TIPOVI);
+        const docRef = await addDoc(skupTipova, podaciTipa);
+
+        return {
+            success: true,
+            id: docRef.id
+        };
+    } catch (e) {
+        console.error("Greška kod dodavanja tipa: ", e);
+        return {
+            success: false,
+            message: e.message
+        };
     }
 }
 
@@ -21,41 +49,38 @@ async function getById(id) {
         const docRef = doc(getFirebaseDB(), PrefixStorage.TIPOVI, String(id));
         const docSnap = await getDoc(docRef);
         if (docSnap.exists()) {
-            return { success: true, data: { ...docSnap.data(), id: docSnap.id } };
+            const data = docSnap.data();
+            return {
+                success: true,
+                data: {
+                    ...data,
+                    id: docSnap.id
+                }
+            };
+        } else {
+            return {
+                success: false,
+                message: "Tip s tim ID-jem ne postoji u bazi."
+            };
         }
-        return { success: false, data: undefined, message: "Tip ne postoji u bazi." };
     } catch (e) {
-        console.error("Greška kod dohvaćanja po id-u: ", e);
-        return { success: false, message: e.message };
+        console.error("Greška kod dohvaćanja tipa po ID-ju: ", e);
+        return {
+            success: false,
+            message: e.message
+        };
     }
 }
 
-async function dodaj(tip) {
+async function promijeni(id, tip) {
     try {
-        const skupTipova = collection(getFirebaseDB(), PrefixStorage.TIPOVI);
-        const snapshot = await getDocs(skupTipova);
-        const maxId = Math.max(0, ...snapshot.docs.map(d => Number(d.id) || 0));
-        const id = String(maxId + 1);
-
-        const { id: _ignoriraj, ...ostalo } = tip;
-        const docRef = doc(getFirebaseDB(), PrefixStorage.TIPOVI, id);
-        await setDoc(docRef, ostalo);
-
-        return { success: true, id, data: { ...ostalo, id } };
-    } catch (e) {
-        console.error("Greška kod dodavanja: ", e);
-        return { success: false, message: e.message };
-    }
-}
-
-async function promjeni(id, tip) {
-    try {
-        const { id: _ignoriraj, ...ostalo } = tip;
+        const { id: _, ...podaciTipa } = tip;
         const docRef = doc(getFirebaseDB(), PrefixStorage.TIPOVI, String(id));
-        await updateDoc(docRef, ostalo);
+        await updateDoc(docRef, podaciTipa);
+
         return { success: true };
     } catch (e) {
-        console.error("Greška kod promjene: ", e);
+        console.error("Greška kod promjene tipa: ", e);
         return { success: false, message: e.message };
     }
 }
@@ -64,17 +89,23 @@ async function obrisi(id) {
     try {
         const docRef = doc(getFirebaseDB(), PrefixStorage.TIPOVI, String(id));
         await deleteDoc(docRef);
-        return { success: true, message: "Uspješno obrisano" };
+        return {
+            success: true,
+            message: "Uspješno obrisano"
+        };
     } catch (e) {
-        console.error("Greška kod brisanja: ", e);
-        return { success: false, message: e.message };
+        console.error("Greška kod brisanja tipa: ", e);
+        return {
+            success: false,
+            message: e.message
+        };
     }
 }
 
 export default {
     get,
-    getById,
     dodaj,
-    promjeni,
+    promijeni,
+    getById,
     obrisi
-}
+};
