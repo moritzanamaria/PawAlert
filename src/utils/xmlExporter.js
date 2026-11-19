@@ -35,7 +35,7 @@ export async function izveziSveUXml() {
       prijave.map(async (p) => {
         try {
           const resTragovi = await TragoviService.getByPrijava(p.id);
-          const tragovi = toArray(resTragovi);
+          const tragovi = resTragovi.data;
           return { ...p, tragovi };
         } catch (err) {
           console.error(`Greška pri dohvatu tragova za prijavu ID ${p.id}:`, err);

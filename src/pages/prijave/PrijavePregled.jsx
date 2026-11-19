@@ -87,12 +87,12 @@ export default function PrijavePregled() {
   }
 
   const getNazivVrste = (id) => {
-    const vrsta = vrste.find(v => v.id === id);
+    const vrsta = vrste.find(v => String(v.id) === String(id));
     return vrsta ? vrsta.naziv : id;
   };
 
   const getNazivTipa = (id) => {
-    const tip = tipovi.find(t => t.id === id);
+    const tip = tipovi.find(t => String(t.id) === String(id));
     return tip ? tip.naziv : id;
   };
 

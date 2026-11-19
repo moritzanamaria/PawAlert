@@ -1,6 +1,6 @@
 import { DATA_SOURCE } from "../../constants";
 import { normalizirajLokaciju } from "../../utils/lokacija";
-import prijaveServiceFirebase from "./prijaveServiceFireBase";
+import prijaveServiceFireBase from "./prijaveServiceFireBase";
 import prijaveServiceLocalStorage from "./prijaveServiceLocalStorage";
 import prijaveServiceMemorija from "./prijaveServiceMemorija";
 
@@ -14,7 +14,7 @@ switch (DATA_SOURCE) {
     Servis = prijaveServiceLocalStorage;
     break;
   case 'firebase':
-    Servis = prijaveServiceFirebase;
+    Servis = prijaveServiceFireBase;
     break;
   default:
     Servis = null;

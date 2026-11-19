@@ -10,8 +10,6 @@ import FormatDatuma from "../components/FormatDatuma";
 import { RouteNames } from "../constants";
 import { BiPlus } from "react-icons/bi";
 import OznakeService from "../services/oznake/OznakeService";
-import { generirajPrijaveWord } from '../utils/prijaveWordGenerator';
-import { BsFileEarmarkWord } from 'react-icons/bs';
 import { slikaUrl } from "../utils/slika";
 import useAuth from "../hooks/useAuth";
 
@@ -133,21 +131,7 @@ export default function Katalog() {
           <div>
 
             <div className="d-flex align-items-center gap-3 mb-1">
-              <h3 className="fw-bold mb-1 text-dark">🎴 Katalog</h3>
-              <OverlayTrigger
-                placement="top"
-                trigger={["hover", "focus"]}
-                overlay={<Tooltip id="word-tooltip">Preuzmi Word katalog (.docx)</Tooltip>}
-              >
-                <Button
-                  onClick={handleExportWord}
-                  variant="light"
-                  className="btn-icon p-2 rounded-circle shadow-sm border d-flex align-items-center justify-content-center text-primary"
-                  style={{ width: "42px", height: "42px", transition: "all 0.2s" }}
-                >
-                  <BsFileEarmarkWord size={22} />
-                </Button>
-              </OverlayTrigger>
+              <h3 className="fw-bold mb-1 text-dark">🎴 Katalog</h3> 
             </div>
             <p className="text-muted small mb-0">Popis svih prijavljenih slučajeva</p>
           </div>

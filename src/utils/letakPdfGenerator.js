@@ -12,7 +12,7 @@ function hexUBoju(hex, zamjena) {
   if (!m) return zamjena;
   let h = m[1];
   if (h.length === 3) h = h.split("").map((c) => c + c).join("");
-  return [0, 2, 4].map((i) => h.slice(i, i + 2), 16);
+  return [0, 2, 4].map((i) => parseInt(h.slice(i, i + 2), 16));
 }
 
 function skratiTekst(doc, tekst, sirina, maxRedaka) {

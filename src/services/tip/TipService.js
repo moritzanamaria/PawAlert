@@ -1,5 +1,5 @@
 import { DATA_SOURCE } from "../../constants";
-import TipServiceFirebase from "./TipServiceFireBase";
+import TipServiceFireBase from "./TipServiceFireBase";
 import TipServiceLocalStorage from "./TipServiceLocalStorage";
 import TipServiceMemorija from "./TipServiceMemorija";
 
@@ -13,7 +13,7 @@ switch (DATA_SOURCE) {
     Servis = TipServiceLocalStorage
     break
   case 'firebase':
-    Servis = TipServiceFirebase
+    Servis = TipServiceFireBase
     break
   default:
     Servis = null

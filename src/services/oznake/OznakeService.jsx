@@ -1,5 +1,5 @@
 import { DATA_SOURCE } from "../../constants";
-import OznakeServiceFirebase from "./OznakeServiceFireBase";
+import OznakeServiceFireBase from "./OznakeServiceFireBase";
 import OznakeServiceLocalStorage from "./OznakeServiceLocalStorage";
 import OznakeServiceMemorija from "./OznakeServiceMemorija";
 
@@ -13,7 +13,7 @@ switch (DATA_SOURCE) {
     Servis = OznakeServiceLocalStorage
     break
   case 'firebase':
-    Servis = OznakeServiceFirebase
+    Servis = OznakeServiceFireBase
     break
   default:
     Servis = null

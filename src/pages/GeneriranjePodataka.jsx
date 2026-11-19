@@ -12,12 +12,12 @@ import { BsFileEarmarkCode } from 'react-icons/bs';
 import { brojSchema } from '../schemas/brojSchema';
 import OperaterService from '../services/operateri/OperaterService';
 import useAuth from '../hooks/useAuth';
-import OperaterServiceFirebase from '../services/operateri/OperaterServiceFireBase';
-import VrsteServiceFirebase from '../services/vrste/VrsteServiceFireBase';
-import TipServiceFirebase from '../services/tip/TipServiceFireBase';
-import OznakeServiceFirebase from '../services/oznake/OznakeServiceFireBase';
-import prijaveServiceFirebase from '../services/prijave/prijaveServiceFireBase';
-import TragoviServiceFirebase from '../services/tragovi/TragoviServiceFireBase';
+import OperaterServiceFireBase from '../services/operateri/OperaterServiceFireBase';
+import VrsteServiceFireBase from '../services/vrste/VrsteServiceFireBase';
+import TipServiceFireBase from '../services/tip/TipServiceFireBase';
+import OznakeServiceFireBase from '../services/oznake/OznakeServiceFireBase';
+import prijaveServiceFireBase from '../services/prijave/prijaveServiceFireBase';
+import TragoviServiceFireBase from '../services/tragovi/TragoviServiceFireBase';
 import VrsteServiceMemorija from '../services/vrste/VrsteServiceMemorija';
 import TipServiceMemorija from '../services/tip/TipServiceMemorija';
 import OznakeServiceMemorija from '../services/oznake/OznakeServiceMemorija';
@@ -114,7 +114,7 @@ export default function GeneriranjePodataka() {
         }
     };
 
-    const handleMemorijaUFirebase = async () => {
+    const handleMemorijaUFireBase = async () => {
         if (!window.confirm('Jeste li sigurni da želite pretočiti iz memorije u firebase?')) {
             return;
         }
@@ -125,19 +125,19 @@ export default function GeneriranjePodataka() {
             const { vrste, tipovi, oznake, prijave, tragovi, operateri } = await dohvatiIzMemorije();
 
             // 1. Operateri (lozinke su već hashirane); one s istim emailom preskačemo
-            const postojeciEmailovi = (await OperaterServiceFirebase.get()).data.map((o) => o.email);
+            const postojeciEmailovi = (await OperaterServiceFireBase.get()).data.map((o) => o.email);
             for (const { id: _id, ...ostatak } of operateri) {
                 if (postojeciEmailovi.includes(ostatak.email)) continue;
-                const rez = await OperaterServiceFirebase.dodajBezHash(ostatak);
+                const rez = await OperaterServiceFireBase.dodajBezHash(ostatak);
                 if (!rez.success) throw new Error(rez.message);
             }
 
             // 2. Vrste, tipovi i oznake (trebamo nove ID-ove za prijave)
-            const mapaVrsta = await prebaci(VrsteServiceFirebase, vrste);
-            const mapaTipova = await prebaci(TipServiceFirebase, tipovi);
-            const mapaOznaka = await prebaci(OznakeServiceFirebase, oznake);
+            const mapaVrsta = await prebaci(VrsteServiceFireBase, vrste);
+            const mapaTipova = await prebaci(TipServiceFireBase, tipovi);
+            const mapaOznaka = await prebaci(OznakeServiceFireBase, oznake);
 
-            // 3. Prijave (povezivanje starih ID-ova s novim Firebase ID-ovima)
+            // 3. Prijave (povezivanje starih ID-ova s novim FireBase ID-ovima)
             const mapaPrijava = new Map();
             for (const { id, ...ostatak } of prijave) {
                 ostatak.zivotinja_vrsta = mapaVrsta.get(String(ostatak.zivotinja_vrsta)) ?? null;
@@ -145,16 +145,16 @@ export default function GeneriranjePodataka() {
                 ostatak.oznake = (ostatak.oznake ?? [])
                     .map((o) => mapaOznaka.get(String(o)))
                     .filter((o) => o != null); // makni one koje nije našao
-                mapaPrijava.set(String(id), await dodajIliBaci(prijaveServiceFirebase, ostatak));
+                mapaPrijava.set(String(id), await dodajIliBaci(prijaveServiceFireBase, ostatak));
             }
 
             // 4. Tragovi
             for (const { id: _id, ...ostatak } of tragovi) {
                 ostatak.prijava = mapaPrijava.get(String(ostatak.prijava)) ?? null;
-                await dodajIliBaci(TragoviServiceFirebase, ostatak);
+                await dodajIliBaci(TragoviServiceFireBase, ostatak);
             }
 
-            setPoruka({ tip: 'success', tekst: 'Uspješno presipano u Firebase!' });
+            setPoruka({ tip: 'success', tekst: 'Uspješno presipano u FireBase!' });
         } catch (error) {
             console.error('Greška pri presipanju:', error);
             setPoruka({
@@ -892,35 +892,33 @@ export default function GeneriranjePodataka() {
                 </Card.Body>
                 <hr className="my-4" />
                 <Row className="m-2">
-                    <div className='mx-2'>
-                        <h3>Presipavanje podataka</h3>
-                        <p className="text-muted">
-                            Koristite ove opcije za kopiranje iz jednog izvora u drugi.
-                        </p>
-                    </div>
-                    <Col md={6}>
-                        <Row>
-                            <Col md={6}>
-                                <Button
-                                    variant="danger"
-                                    onClick={handleMemorijaULocalStorage}
-                                    disabled={loading}
-                                    className="w-100 mb-2"
-                                >
-                                    {loading ? 'Presipavanje...' : 'Iz memorije u localStorage'}
-                                </Button>
-                            </Col>
-                            <Col md={6}>
-                                <Button
-                                    variant="danger"
-                                    onClick={handleMemorijaUFirebase}
-                                    disabled={loading}
-                                    className="w-100 mb-2"
-                                >
-                                    {loading ? 'Pretakanje...' : 'Iz memorije u firebase'}
-                                </Button>
-                            </Col>
-                        </Row>
+                    <Col md={4}>
+                        <div className='mx-2'>
+                            <h3>Presipavanje podataka</h3>
+                            <p className="text-muted">
+                                Koristite ove opcije za kopiranje iz jednog izvora u drugi.
+                            </p>
+                        </div>
+                    </Col>
+                    <Col md={4} className='my-2'>
+                        <Button
+                            variant="danger"
+                            onClick={handleMemorijaULocalStorage}
+                            disabled={loading}
+                            className="w-100 mb-2"
+                        >
+                            {loading ? 'Presipavanje...' : 'Iz memorije u localStorage'}
+                        </Button>
+                    </Col>
+                    <Col md={4} className='my-2'>
+                        <Button
+                            variant="danger"
+                            onClick={handleMemorijaUFireBase}
+                            disabled={loading}
+                            className="w-100 mb-2"
+                        >
+                            {loading ? 'Pretakanje...' : 'Iz memorije u firebase'}
+                        </Button>
                     </Col>
                 </Row>
             </Card>

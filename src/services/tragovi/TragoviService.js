@@ -1,6 +1,6 @@
 import { DATA_SOURCE } from "../../constants";
 import { normalizirajLokaciju } from "../../utils/lokacija";
-import TragoviServiceFirebase from "./TragoviServiceFireBase"
+import TragoviServiceFireBase from "./TragoviServiceFireBase"
 import TragoviServiceLocalStorage from "./TragoviServiceLocalStorage";
 import TragoviServiceMemorija from "./TragoviServiceMemorija";
 
@@ -14,7 +14,7 @@ switch (DATA_SOURCE) {
     Servis = TragoviServiceLocalStorage
     break
   case 'firebase':
-    Servis = TragoviServiceFirebase
+    Servis = TragoviServiceFireBase
     break
   default:
     Servis = null

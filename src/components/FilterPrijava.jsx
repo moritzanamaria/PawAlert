@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Row, Col, Form, Button, Badge, Collapse } from "react-bootstrap";
 import { BiFilterAlt } from "react-icons/bi";
 import PretragaInput from "./PretragaInput";
-import VrstaSelect from "./VrstaSelect";
+import OdabirSelect from "./OdabirSelect";
 import { PRAZNI_FILTERI } from "../utils/filterHelpers";
 
 const SVA_POLJA = ["pretraga", "vrsta", "tip", "status", "hitno", "oznake"];
@@ -69,26 +69,29 @@ export default function FilterPrijava({
             <Row className="g-3 mt-1 align-items-end">
               {ima("vrsta") && (
                 <Col xs={6} md>
-                  <VrstaSelect
-                    vrsta={filteri.vrsta}
-                    setVrsta={(v) => promijeni("vrsta", v)}
-                    vrste={vrste}
+                  <OdabirSelect
+                    id="vrstaSelect"
+                    label="Vrsta"
+                    placeholder="Sve vrste"
+                    vrijednost={filteri.vrsta}
+                    setVrijednost={(v) => promijeni("vrsta", v)}
+                    stavke={vrste}
                   />
                 </Col>
               )}
 
               {ima("tip") && (
                 <Col xs={6} md>
-                  <label htmlFor="tipSelect" className="form-label small fw-bold text-muted mb-1">Tip</label>
-                  <Form.Select id="tipSelect" size="sm" value={filteri.tip} onChange={(e) => promijeni("tip", e.target.value)}>
-                    <option value="">Svi tipovi</option>
-                    {tipovi.map((t) => (
-                      <option key={t.id} value={t.id}>{t.naziv}</option>
-                    ))}
-                  </Form.Select>
+                  <OdabirSelect
+                    id="tipSelect"
+                    label="Tip"
+                    placeholder="Svi tipovi"
+                    vrijednost={filteri.tip}
+                    setVrijednost={(v) => promijeni("tip", v)}
+                    stavke={tipovi}
+                  />
                 </Col>
               )}
-
               {ima("oznake") && (
                 <Col xs={6} md>
                   <label htmlFor="oznakaSelect" className="form-label small fw-bold text-muted mb-1">Oznaka</label>

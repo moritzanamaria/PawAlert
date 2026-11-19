@@ -1,5 +1,5 @@
 import OperaterServiceLocalStorage from "./OperaterServiceLocalStorage"
-import OperaterServiceFirebase from "./OperaterServiceFireBase"
+import OperaterServiceFireBase from "./OperaterServiceFireBase"
 import OperaterServiceMemorija from "./OperaterServiceMemorija"
 import { DATA_SOURCE } from "../../constants"
 
@@ -13,7 +13,7 @@ switch (DATA_SOURCE) {
         Servis = OperaterServiceLocalStorage
         break
     case 'firebase':
-        Servis = OperaterServiceFirebase
+        Servis = OperaterServiceFireBase
         break
     default:
         Servis = null

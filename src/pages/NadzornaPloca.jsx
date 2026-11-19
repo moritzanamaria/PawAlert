@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
-import { Card, Col, Container, Row, Table } from "react-bootstrap";
+import { Button, Card, Col, Container, Row, Table } from "react-bootstrap";
 import Highcharts from "highcharts";
 import {
   BiCategory,
@@ -14,6 +14,8 @@ import {
 import { RouteNames, ZASTARJELO_DANA, putanja } from "../constants";
 import prijaveService from "../services/prijave/prijaveService";
 import FormatDatuma from "../components/FormatDatuma";
+import { izveziSveUXml } from '../utils/xmlExporter';
+import { BsFileEarmarkCode } from 'react-icons/bs';
 
 const PRECACI = [
   { naslov: "Pregled prijava", opis: "Sve prijave, uređivanje i brisanje", ikona: BiListUl, to: RouteNames.PRIJAVE_PREGLED, boja: "success" },
@@ -42,10 +44,20 @@ function PregledPrijavaChart({ podaci }) {
     const chart = Highcharts.chart(chartContainerRef.current, {
       chart: {
         type: "pie",
-        backgroundColor: "#ffffff",
+        backgroundColor: "#f5efef",
         height: 360,
+        borderRadius: "10px"
       },
-      
+      title: {
+        text: "📝 Prijave (🟢 otvorene / ⚫ zatvorene / 🔴 hitne)",
+        align: "left",
+        style: {
+          color: "#212529",
+          fontWeight: "600",
+          fontSize: "16px",
+          fontWeight: "bold"
+        },
+      },
       credits: {
         enabled: false,
       },
@@ -205,9 +217,18 @@ export default function NadzornaPloca() {
 
   return (
     <Container className="my-4">
-      
+        <div className="d-flex gap-2">
       <h3 className="fw-bold mb-4">📊 Nadzorna ploča</h3>
-
+       <Button
+                            onClick={izveziSveUXml}
+                            variant="outline-secondary"
+                            className="btn-icon p-2 rounded-circle shadow-sm border d-flex align-items-center justify-content-center"
+                            style={{ width: "38px", height: "38px" }}
+                            title="Izvezi cijelu bazu u XML"
+                        >
+                            <BsFileEarmarkCode size={20} />
+                        </Button>
+</div>
    <PregledPrijavaChart podaci={podaci} />
 
       <Row className="g-3 mb-4">
