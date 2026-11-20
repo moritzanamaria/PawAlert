@@ -12,12 +12,14 @@ import { slikaUrl } from "../../utils/slika";
 import { tragSchema } from "../../schemas/tragSchema";
 import { slikaFileSchema } from "../../schemas/slikaSchema";
 import useAuth from "../../hooks/useAuth";
+import useLoading from "../../hooks/useLoading";
 
 registerLocale("hr", hr);
 
 export default function TragPromjena() {
     const navigate = useNavigate();
     const { authUser } = useAuth();
+    const { loading, showLoading, hideLoading } = useLoading()
     const location = useLocation();
     const params = useParams();
 
@@ -105,16 +107,8 @@ export default function TragPromjena() {
         }
     }, [params.id]);
 
-    async function promijeni(podaci) {
-        try {
-            await TragoviService.promijeni(params.id, podaci)
-            navigate(povratak)
-        } catch (error) {
-            console.error("Greška pri promijeni:", error);
-        }
-    }
-
-   async function obradiSubmit(e) {
+    
+    async function obradiSubmit(e) {
         e.preventDefault()
         const podaci = new FormData(e.target)
 
@@ -132,29 +126,31 @@ export default function TragPromjena() {
             setErrors(noveGreske);
             return;
         }
-        let slikaPath = trag.slika || ""
-        if (slikaFile) {
-            try {
+        showLoading()
+        try {
+            let slikaPath = trag.slika || ""
+            if (slikaFile) {
                 const rez = await spremiSlikuFile(params.id, slikaFile)
                 if (!rez.success) {
                     alert(rez.message)
                     return
                 }
                 slikaPath = rez.path
-            } catch (err) {
-                console.error(err)
-                alert("Greška pri spremanju slike.")
-                return
             }
+            await TragoviService.promijeni(params.id, {
+                ...trag,
+                opis: rezultat.data.opis,
+                lokacija: rezultat.data.lokacija,
+                datum: rezultat.data.datum.toISOString(),
+                slika: slikaPath
+            })
+            navigate(povratak)
+        } catch (err) {
+            console.error(err)
+            alert("Greška pri spremanju: " + err.message)
+        } finally {
+            hideLoading()
         }
-
-        promijeni({
-            ...trag,
-            opis: rezultat.data.opis,
-            lokacija: rezultat.data.lokacija,
-            datum: rezultat.data.datum.toISOString(),
-            slika: slikaPath
-        })
     }
     return (
         <Container className="my-5" style={{ maxWidth: "850px" }}>
@@ -226,9 +222,13 @@ export default function TragPromjena() {
                         </Row>
                         <div className="d-flex justify-content-between align-items-center pt-2">
 
-                            <Link to={povratak} className="btn btn-outline-secondary px-4 fw-medium">Odustani</Link>
+                            <Link to={povratak} className="btn btn-outline-secondary px-4 fw-medium">
+                            Odustani
+                            </Link>
 
-                            <Button type="submit" variant="success" className="px-5 fw-bold">Spremi</Button>
+                            <Button type="submit" variant="success" className="px-5 fw-bold" disabled={loading}>
+                                Spremi
+                                </Button>
                         </div>
                     </Form>
                 </Card.Body>

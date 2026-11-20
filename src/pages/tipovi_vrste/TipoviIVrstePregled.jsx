@@ -8,13 +8,16 @@ import { Link } from "react-router-dom";
 import { BiPlus, BiTrash } from "react-icons/bi";
 import { EditText } from "react-edit-text";
 import "react-edit-text/dist/index.css";
+import useLoading from "../../hooks/useLoading";
 
 export default function TipoviPregled() {
   const [vrste, setVrste] = useState([]);
   const [tipovi, setTipovi] = useState([])
+    const { loading, showLoading, hideLoading } = useLoading();
 
   useEffect(() => {
     async function dohvatiPodatke() {
+      showLoading();
       try {
         const [resTipovi, resVrste] = await Promise.all([
           TipService.get(),
@@ -24,6 +27,8 @@ export default function TipoviPregled() {
         setTipovi(resTipovi.data);
       } catch (error) {
         console.error("Greška pri dohvatu podataka:", error);
+      } finally {
+        hideLoading();
       }
     }
     dohvatiPodatke();
@@ -40,8 +45,15 @@ export default function TipoviPregled() {
       return
     }
 
-    await VrsteService.obrisi(id)
-    setVrste(prev => prev.filter(v => v.id !== id));
+    showLoading()
+    try {
+      await VrsteService.obrisi(id)
+      setVrste(prev => prev.filter(v => v.id !== id));
+    } catch (error) {
+      alert(error.message)
+    } finally {
+      hideLoading()
+    }
   }
 
   async function obrisiTip(id) {
@@ -55,8 +67,15 @@ export default function TipoviPregled() {
       return;
     }
 
-    await TipService.obrisi(id);
-    setTipovi(prev => prev.filter(t => t.id !== id));
+   showLoading()
+    try {
+      await TipService.obrisi(id);
+      setTipovi(prev => prev.filter(t => t.id !== id));
+    } catch (error) {
+      alert(error.message)
+    } finally {
+      hideLoading()
+    }
   }
 
   return (
@@ -97,7 +116,7 @@ export default function TipoviPregled() {
                         />
                       </td>
                       <td className="text-center pe-4">
-                          <Button variant="outline-danger" onClick={() => obrisiTip(tip.id)} title="Obrisi">
+                          <Button variant="outline-danger" onClick={() => obrisiTip(tip.id)} title="Obrisi" disabled={loading}>
                             <BiTrash size={16} />
                           </Button>
                       </td>
@@ -151,7 +170,7 @@ export default function TipoviPregled() {
                         />
                       </td>
                       <td className="text-center pe-4">
-                          <Button variant="outline-danger" onClick={() => obrisiVrstu(vrsta.id)} title="Obriši">
+                          <Button variant="outline-danger" onClick={() => obrisiVrstu(vrsta.id)} title="Obriši" disabled={loading}>
                             <BiTrash size={16} />
                           </Button>
                       </td>

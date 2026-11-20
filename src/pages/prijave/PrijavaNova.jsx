@@ -13,7 +13,8 @@ import OznakeService from "../../services/oznake/OznakeService";
 import { spremiSliku } from "../../services/slike/SlikeService";
 import SlikaUploader from "../../components/SlikaUploader";
 import { prijavaSchema } from "../../schemas/prijavaSchema";
-import useAuth from "../../hooks/useAuth"
+import useAuth from "../../hooks/useAuth";
+import useLoading from "../../hooks/useLoading";
 
 registerLocale("hr", hr);
 
@@ -37,9 +38,11 @@ export default function PrijavaNova() {
     const [lokacija, setLokacija] = useState(null);
     const [novaSlika, setNovaSlika] = useState(null);
     const { authUser } = useAuth();
+    const { loading, showLoading, hideLoading } = useLoading();
 
     useEffect(() => {
         async function dohvatiPodatke() {
+            showLoading();
             try {
                 const [resVrste, resTipovi, resOznake] = await Promise.all([
                     VrsteService.get(),
@@ -51,6 +54,8 @@ export default function PrijavaNova() {
                 setOznake(resOznake.data);
             } catch (error) {
                 console.error("Greška pri dohvatu podataka:", error);
+            } finally {
+                hideLoading();
             }
         }
         dohvatiPodatke();
@@ -65,6 +70,7 @@ export default function PrijavaNova() {
     };
 
     async function dodaj(prijava) {
+        showLoading();
         try {
             const res = await prijaveService.dodaj(prijava);
             const nova = res?.data ?? res;
@@ -84,12 +90,14 @@ export default function PrijavaNova() {
                     await prijaveService.promijeni(noviId, { ...prijava, slika: rez.path });
                 } else {
                     alert("Prijava je spremljena, ali slika nije: " + rez.message);
-                }
+                } 
             }
 
             navigate(povratak);
         } catch (error) {
             alert(error.message);
+        } finally {
+            hideLoading();
         }
     }
 
@@ -355,7 +363,7 @@ export default function PrijavaNova() {
                                 Odustani
                             </Link>
 
-                            <Button type="submit" variant="success" className="px-5 fw-bold">
+                            <Button type="submit" variant="success" className="px-5 fw-bold" disabled={loading}>
                                 Spremi prijavu
                             </Button>
                         </div>

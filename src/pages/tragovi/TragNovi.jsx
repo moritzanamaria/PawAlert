@@ -10,7 +10,8 @@ import { RouteNames, putanja } from "../../constants";
 import { spremiSlikuFile } from "../../services/slike/SlikeService";
 import { tragSchema } from "../../schemas/tragSchema";
 import { slikaFileSchema } from "../../schemas/slikaSchema";
-import useAuth from "../../hooks/useAuth"
+import useAuth from "../../hooks/useAuth";
+import useLoading from "../../hooks/useLoading";
 
 registerLocale("hr", hr);
 
@@ -35,6 +36,7 @@ export default function TragNovi() {
     const [slikaFile, setSlikaFile] = useState(null)
     const pregled = useMemo(() => slikaFile ? URL.createObjectURL(slikaFile) : null, [slikaFile])
     const { authUser } = useAuth();
+    const { loading, showLoading, hideLoading } = useLoading();
 
     function odaberiSliku(e) {
         const file = e.target.files[0]
@@ -56,6 +58,7 @@ export default function TragNovi() {
     }
 
     async function dodaj(trag) {
+        showLoading();
         try {
             const res = await TragoviService.dodaj(trag)
             const noviId = (res?.data ?? res)?.id ?? trag.id
@@ -71,6 +74,8 @@ export default function TragNovi() {
             navigate(povratak)
         } catch (error) {
             alert(error.message)
+        } finally {
+            hideLoading();
         }
     }
     function obradiSubmit(e) {
@@ -182,7 +187,7 @@ export default function TragNovi() {
                                 Odustani
                             </Link>
 
-                            <Button type="submit" variant="success" className="px-5 fw-bold">
+                            <Button type="submit" variant="success" className="px-5 fw-bold" disabled={loading}>
                                 Dodaj
                             </Button>
                         </div>

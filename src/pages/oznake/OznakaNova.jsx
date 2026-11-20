@@ -6,9 +6,11 @@ import { RouteNames } from "../../constants";
 import Wheel from "@uiw/react-color-wheel";
 import { ShadeSlider, hsvaToHex, hexToHsva } from "@uiw/react-color";
 import { oznakaSchema } from "../../schemas/oznakaSchema";
+import useLoading from "../../hooks/useLoading";
 
 export default function OznakaNova() {
     const navigate = useNavigate();
+    const { loading, showLoading, hideLoading } = useLoading();
 
     const [errors, setErrors] = useState({});
 
@@ -31,12 +33,15 @@ export default function OznakaNova() {
     const bojaTekstaHex = hsvaToHex(bojaTekstaHsva);
 
     async function dodaj(oznaka) {
+        showLoading();
         try {
             await OznakeService.dodaj(oznaka);
             navigate(povratak);
         } catch (error) {
             console.error("Greška pri dodavanju oznake:", error);
             setErrors({ opcenito: "Oznaku nije moguće dodati. Pokušaj ponovno." });
+        } finally {
+            hideLoading();
         }
     }
 
@@ -132,7 +137,7 @@ export default function OznakaNova() {
                                 Odustani
                             </Link>
 
-                            <Button type="submit" variant="success" className="px-5 fw-bold">
+                            <Button type="submit" variant="success" className="px-5 fw-bold" disabled={loading}>
                                 Dodaj
                             </Button>
                         </div>

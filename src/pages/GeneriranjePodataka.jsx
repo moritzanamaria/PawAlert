@@ -24,6 +24,7 @@ import OznakeServiceMemorija from '../services/oznake/OznakeServiceMemorija';
 import prijaveServiceMemorija from '../services/prijave/prijaveServiceMemorija';
 import TragoviServiceMemorija from '../services/tragovi/TragoviServiceMemorija';
 import { operateri as operateriMemorija } from '../services/operateri/OperaterPodaci';
+import useLoading from "../hooks/useLoading";
 
 export default function GeneriranjePodataka() {
     const [brojVrsta, setBrojVrsta] = useState(5);
@@ -33,7 +34,7 @@ export default function GeneriranjePodataka() {
     const [brojTragova, setBrojTragova] = useState(20);
     const [brojOperatera, setBrojOperatera] = useState(5);
     const [poruka, setPoruka] = useState(null);
-    const [loading, setLoading] = useState(false);
+    const { loading, showLoading, hideLoading } = useLoading();    
     const [errors, setErrors] = useState({});
     const { authUser } = useAuth();
     const ocistiGresku = (nazivPolja) => {
@@ -80,7 +81,7 @@ export default function GeneriranjePodataka() {
             return;
         }
 
-        setLoading(true);
+        showLoading();
         setPoruka(null);
 
         try {
@@ -103,7 +104,7 @@ export default function GeneriranjePodataka() {
                 tekst: 'Greška pri presipavanju podataka: ' + error.message
             });
         } finally {
-            setLoading(false);
+            hideLoading();
         }
     };
 
@@ -111,7 +112,7 @@ export default function GeneriranjePodataka() {
         if (!window.confirm('Jeste li sigurni da želite pretočiti iz memorije u firebase?')) {
             return;
         }
-        setLoading(true);
+        showLoading();
         setPoruka(null);
 const ocistiUndefined = (obj) =>
     Object.fromEntries(Object.entries(obj).filter(([, v]) => v !== undefined));
@@ -169,7 +170,7 @@ const mapaOznaka = await prebaci(OznakeServiceFireBase, oznake, 'Oznake');
                 tekst: 'Došlo je do greške prilikom sinkronizacije: ' + error.message
             });
         } finally {
-            setLoading(false);
+            hideLoading();
         }
     };
     const generirajVrste = async (broj) => {
@@ -308,7 +309,7 @@ const mapaOznaka = await prebaci(OznakeServiceFireBase, oznake, 'Oznake');
         e.preventDefault();
 
         if (!provjeriBroj('brojVrsta', brojVrsta, 20)) return;
-        setLoading(true);
+        showLoading();
         setPoruka(null);
 
         try {
@@ -317,7 +318,7 @@ const mapaOznaka = await prebaci(OznakeServiceFireBase, oznake, 'Oznake');
         } catch (error) {
             setPoruka({ tip: 'danger', tekst: 'Greška pri generiranju vrsta: ' + error.message });
         } finally {
-            setLoading(false);
+            hideLoading();
         }
     };
 
@@ -325,7 +326,7 @@ const mapaOznaka = await prebaci(OznakeServiceFireBase, oznake, 'Oznake');
         e.preventDefault();
 
         if (!provjeriBroj('brojTipova', brojTipova, 20)) return;
-        setLoading(true);
+        showLoading();
         setPoruka(null);
 
         try {
@@ -334,7 +335,7 @@ const mapaOznaka = await prebaci(OznakeServiceFireBase, oznake, 'Oznake');
         } catch (error) {
             setPoruka({ tip: 'danger', tekst: 'Greška pri generiranju tipova: ' + error.message });
         } finally {
-            setLoading(false);
+            hideLoading();
         }
     };
 
@@ -342,7 +343,7 @@ const mapaOznaka = await prebaci(OznakeServiceFireBase, oznake, 'Oznake');
         e.preventDefault();
 
         if (!provjeriBroj('brojOznaka', brojOznaka, 20)) return;
-        setLoading(true);
+        showLoading();
         setPoruka(null);
 
         try {
@@ -351,7 +352,7 @@ const mapaOznaka = await prebaci(OznakeServiceFireBase, oznake, 'Oznake');
         } catch (error) {
             setPoruka({ tip: 'danger', tekst: 'Greška pri generiranju oznaka: ' + error.message });
         } finally {
-            setLoading(false);
+            hideLoading();
         }
     };
 
@@ -359,7 +360,7 @@ const mapaOznaka = await prebaci(OznakeServiceFireBase, oznake, 'Oznake');
         e.preventDefault();
 
         if (!provjeriBroj('brojPrijava', brojPrijava, 50)) return;
-        setLoading(true);
+        showLoading();
         setPoruka(null);
 
         try {
@@ -368,14 +369,14 @@ const mapaOznaka = await prebaci(OznakeServiceFireBase, oznake, 'Oznake');
         } catch (error) {
             setPoruka({ tip: 'danger', tekst: 'Greška pri generiranju prijava: ' + error.message });
         } finally {
-            setLoading(false);
+            hideLoading();
         }
     };
 
     const handleGenerirajTragove = async (e) => {
         e.preventDefault();
         if (!provjeriBroj('brojTragova', brojTragova, 100)) return;
-        setLoading(true);
+        showLoading();
         setPoruka(null);
 
         try {
@@ -384,13 +385,13 @@ const mapaOznaka = await prebaci(OznakeServiceFireBase, oznake, 'Oznake');
         } catch (error) {
             setPoruka({ tip: 'danger', tekst: 'Greška pri generiranju tragova: ' + error.message });
         } finally {
-            setLoading(false);
+            hideLoading();
         }
     };
 
     const handleObrisiVrste = async () => {
         if (!window.confirm('Jeste li sigurni da želite obrisati sve vrste?')) return;
-        setLoading(true);
+        showLoading();
         setPoruka(null);
 
         try {
@@ -409,13 +410,13 @@ const mapaOznaka = await prebaci(OznakeServiceFireBase, oznake, 'Oznake');
         } catch (error) {
             setPoruka({ tip: 'danger', tekst: 'Greška pri brisanju vrsta: ' + error.message });
         } finally {
-            setLoading(false);
+            hideLoading();
         }
     };
 
     const handleObrisiTipove = async () => {
         if (!window.confirm('Jeste li sigurni da želite obrisati sve tipove?')) return;
-        setLoading(true);
+        showLoading();
         setPoruka(null);
 
         try {
@@ -434,13 +435,13 @@ const mapaOznaka = await prebaci(OznakeServiceFireBase, oznake, 'Oznake');
         } catch (error) {
             setPoruka({ tip: 'danger', tekst: 'Greška pri brisanju tipova: ' + error.message });
         } finally {
-            setLoading(false);
+            hideLoading();
         }
     };
 
     const handleObrisiOznake = async () => {
         if (!window.confirm('Jeste li sigurni da želite obrisati sve oznake?')) return;
-        setLoading(true);
+        showLoading();
         setPoruka(null);
 
         try {
@@ -459,13 +460,13 @@ const mapaOznaka = await prebaci(OznakeServiceFireBase, oznake, 'Oznake');
         } catch (error) {
             setPoruka({ tip: 'danger', tekst: 'Greška pri brisanju oznaka: ' + error.message });
         } finally {
-            setLoading(false);
+            hideLoading();
         }
     };
 
     const handleObrisiPrijave = async () => {
         if (!window.confirm('Jeste li sigurni da želite obrisati sve prijave?')) return;
-        setLoading(true);
+        showLoading();
         setPoruka(null);
 
         try {
@@ -478,13 +479,13 @@ const mapaOznaka = await prebaci(OznakeServiceFireBase, oznake, 'Oznake');
         } catch (error) {
             setPoruka({ tip: 'danger', tekst: 'Greška pri brisanju prijava: ' + error.message });
         } finally {
-            setLoading(false);
+            hideLoading();
         }
     };
 
     const handleObrisiTragove = async () => {
         if (!window.confirm('Jeste li sigurni da želite obrisati sve tragove?')) return;
-        setLoading(true);
+        showLoading();
         setPoruka(null);
 
         try {
@@ -497,13 +498,13 @@ const mapaOznaka = await prebaci(OznakeServiceFireBase, oznake, 'Oznake');
         } catch (error) {
             setPoruka({ tip: 'danger', tekst: 'Greška pri brisanju tragova: ' + error.message });
         } finally {
-            setLoading(false);
+            hideLoading();
         }
     };
 
 
     const handleGenerirajSve = async () => {
-        setLoading(true);
+        showLoading();
         setPoruka(null);
 
         try {
@@ -520,13 +521,13 @@ const mapaOznaka = await prebaci(OznakeServiceFireBase, oznake, 'Oznake');
         } catch (error) {
             setPoruka({ tip: 'danger', tekst: 'Greška pri generiranju svih podataka: ' + error.message });
         } finally {
-            setLoading(false);
+            hideLoading();
         }
     };
 
     const handleObrisiSve = async () => {
         if (!window.confirm('Jeste li sigurni da želite obrisati SVE podatke (tragove, prijave, tipove, vrste, oznake i operatere)?')) return;
-        setLoading(true);
+        showLoading();
         setPoruka(null);
 
         try {
@@ -575,7 +576,7 @@ const mapaOznaka = await prebaci(OznakeServiceFireBase, oznake, 'Oznake');
         } catch (error) {
             setPoruka({ tip: 'danger', tekst: 'Greška pri brisanju svih podataka: ' + error.message });
         } finally {
-            setLoading(false);
+            hideLoading();
         }
     };
     if (DATA_SOURCE === 'memorija') {
@@ -612,7 +613,7 @@ const mapaOznaka = await prebaci(OznakeServiceFireBase, oznake, 'Oznake');
     const handleGenerirajOperatere = async (e) => {
         e.preventDefault();
         if (!provjeriBroj('brojOperatera', brojOperatera, 50)) return;
-        setLoading(true);
+        showLoading();
         setPoruka(null);
 
         try {
@@ -628,7 +629,7 @@ const mapaOznaka = await prebaci(OznakeServiceFireBase, oznake, 'Oznake');
                 tekst: 'Greška pri generiranju operatera: ' + error.message
             });
         } finally {
-            setLoading(false);
+            hideLoading();
         }
     };
 
@@ -637,7 +638,7 @@ const mapaOznaka = await prebaci(OznakeServiceFireBase, oznake, 'Oznake');
             return;
         }
 
-        setLoading(true);
+        showLoading();
         setPoruka(null);
 
         try {
@@ -659,7 +660,7 @@ const mapaOznaka = await prebaci(OznakeServiceFireBase, oznake, 'Oznake');
                 tekst: 'Greška pri brisanju operatera: ' + error.message
             });
         } finally {
-            setLoading(false);
+            hideLoading();
         }
     };
 

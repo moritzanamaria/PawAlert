@@ -4,18 +4,23 @@ import { RouteNames, putanja } from "../../constants";
 import { Badge, Button, Card, Container, Table, ButtonGroup } from "react-bootstrap";
 import { Link, useNavigate } from "react-router-dom";
 import { BiPlus, BiPencil, BiTrash } from "react-icons/bi";
+import useLoading from "../../hooks/useLoading";
 
 export default function OznakePregled() {
   const navigate = useNavigate();
   const [oznake, setOznake] = useState([]);
+  const { showLoading, hideLoading } = useLoading();
 
   useEffect(() => {
     async function ucitajOznake() {
+      showLoading();
       try {
         const res = await OznakeService.get();
         setOznake(res.data);
       } catch (error) {
         console.error("Greška pri učitavanju oznaka:", error);
+      } finally {
+        hideLoading();
       }
     }
     ucitajOznake();
@@ -25,12 +30,14 @@ export default function OznakePregled() {
     if (!confirm("Sigurno obrisati ovu oznaku?")) {
       return;
     }
-
+    showLoading();
     try {
       await OznakeService.obrisi(id);
       setOznake((prev) => prev.filter((o) => o.id !== id));
     } catch (error) {
       console.error("Greška pri brisanju:", error);
+    } finally {
+      hideLoading();
     }
   }
 
@@ -76,14 +83,14 @@ export default function OznakePregled() {
               {oznake && oznake.length > 0 ? (
                 oznake.map((oznaka) => (
                   <tr key={oznaka.id}>
-                    <td className="text-center"><span className="fw-bold badge d-inline-flex align-items-center px-2.5 py-1.5" 
-                      style={{  
-                            backgroundColor: oznaka.boja || "#6c757d",
-                            color:  oznaka.boja_teksta || "#fff",
-                            border: "2px solid rgba(0, 0, 0, 0.1)",
-                           }}>
-                        {oznaka.naziv}
-                      </span>
+                    <td className="text-center"><span className="fw-bold badge d-inline-flex align-items-center px-2.5 py-1.5"
+                      style={{
+                        backgroundColor: oznaka.boja || "#6c757d",
+                        color: oznaka.boja_teksta || "#fff",
+                        border: "2px solid rgba(0, 0, 0, 0.1)",
+                      }}>
+                      {oznaka.naziv}
+                    </span>
                     </td>
                     <td className="text-center pe-4">
                       <ButtonGroup size="sm">

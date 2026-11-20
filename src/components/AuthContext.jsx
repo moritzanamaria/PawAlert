@@ -2,6 +2,7 @@ import { createContext, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { RouteNames } from '../constants';
 import OperaterService from '../services/operateri/OperaterService';
+import useLoading from '../hooks/useLoading';
 
 export const AuthContext = createContext();
 
@@ -17,8 +18,11 @@ export function AuthProvider({ children }) {
   const [authUser, setAuthUser] = useState(() => procitajOperatera() ?? {});
   const [isLoggedIn, setIsLoggedIn] = useState(() => !!procitajOperatera());
   const navigate = useNavigate();
+    const { showLoading, hideLoading } = useLoading();
 
   async function login(email, lozinka) {
+      showLoading();
+    try {
     const odgovor = await OperaterService.prijava(email, lozinka);
     if (odgovor.success) {
       localStorage.setItem('operater', JSON.stringify(odgovor.data));
@@ -31,6 +35,11 @@ setAuthUser({});
       localStorage.setItem('operater', '');
       setAuthUser('');
       setIsLoggedIn(false);
+    }
+     } catch (e) {
+      alert(e.message);
+    } finally {
+      hideLoading();
     }
   }
 

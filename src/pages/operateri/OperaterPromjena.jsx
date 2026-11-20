@@ -4,14 +4,15 @@ import { Link, useNavigate, useParams } from "react-router-dom"
 import OperaterService from "../../services/operateri/OperaterService"
 import { Form, Button, Row, Col, Container, Card } from "react-bootstrap"
 import { RouteNames } from "../../constants"
-import { z } from 'zod'
+import { z } from 'zod';
+import useLoading from "../../hooks/useLoading";
 
 export default function OperaterPromjena() {
-
     const navigate = useNavigate()
     const params = useParams()
     const [operater, setOperater] = useState({})
     const [errors, setErrors] = useState({})
+        const { loading, showLoading, hideLoading } = useLoading();
 
     const emailUlogaSchema = z.object({
         email: z.string()
@@ -28,6 +29,8 @@ export default function OperaterPromjena() {
     }, [])
 
     async function ucitajOperatera() {
+         showLoading()
+        try {
         const odgovor = await OperaterService.getById(params.id)
         if (!odgovor.success) {
             alert('Operater nije pronađen')
@@ -35,14 +38,22 @@ export default function OperaterPromjena() {
             return
         }
         setOperater(odgovor.data)
+         } finally {
+            hideLoading()
+        }
     }
 
     async function promijeni(operater) {
+         showLoading()
+        try {
         const rezultat = await OperaterService.promijeni(params.id, operater)
         if (rezultat.success) {
             navigate(RouteNames.OPERATERI)
         } else {
             alert(rezultat.message || 'Greška pri promijeni operatera')
+        }
+         } finally {
+            hideLoading()
         }
     }
 
@@ -139,7 +150,7 @@ export default function OperaterPromjena() {
                                 <Link to={RouteNames.OPERATERI} className="btn btn-danger px-4">
                                     Odustani
                                 </Link>
-                                <Button type="submit" variant="success">
+                                <Button type="submit" variant="success" disabled={loading}>
                                     Promijeni operatera
                                 </Button>
                             </div>

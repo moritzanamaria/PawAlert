@@ -4,36 +4,48 @@ import { Table, Button } from "react-bootstrap"
 import { Link, useNavigate } from "react-router-dom"
 import { RouteNames } from "../../constants"
 import { FaEdit, FaTrash, FaKey } from "react-icons/fa"
+import useLoading from "../../hooks/useLoading";
 
 export default function OperaterPregled() {
 
-    const navigate = useNavigate()
-    const [operateri, setOperateri] = useState([])
+    const navigate = useNavigate();
+    const [operateri, setOperateri] = useState([]);
+        const { showLoading, hideLoading } = useLoading();
 
     useEffect(() => {
         ucitajOperatere()
     }, [])
 
-    async function ucitajOperatere() {
-        await OperaterService.get().then((odgovor) => {
+      async function ucitajOperatere() {
+        showLoading()
+        try {
+            const odgovor = await OperaterService.get()
             if (!odgovor.success) {
                 alert('Nije implementiran servis')
                 return
             }
             setOperateri(odgovor.data)
-        })
+        } finally {
+            hideLoading()
+        }
     }
 
+    
     async function brisanje(id) {
         if (!confirm('Sigurno obrisati operatera?')) return
         
+        showLoading()
+        try {
         const rezultat = await OperaterService.obrisi(id)
         if (rezultat.success) {
             ucitajOperatere()
         } else {
             alert(rezultat.message || 'Greška pri brisanju')
         }
+    } finally {
+        hideLoading();
     }
+}
 
     return (
         <>

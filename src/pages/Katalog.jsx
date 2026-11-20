@@ -12,6 +12,7 @@ import { BiPlus } from "react-icons/bi";
 import OznakeService from "../services/oznake/OznakeService";
 import { slikaUrl } from "../utils/slika";
 import useAuth from "../hooks/useAuth";
+import useLoading from "../hooks/useLoading";
 
 export default function Katalog() {
   const [prijave, setPrijave] = useState([]);
@@ -23,14 +24,31 @@ export default function Katalog() {
   const [trenutnaStranica, setTrenutnaStranica] = useState(1);
   const prijavaPoStranici = 6;
   const { isLoggedIn } = useAuth();
+  const { showLoading, hideLoading } = useLoading();
 
   useEffect(() => {
-    prijaveService.get().then((res) => setPrijave(res.data));
-    VrsteService.get().then((res) => setVrste(res.data));
-    TipService.get().then((res) => setTipovi(res.data));
-    OznakeService.get().then((res) => setOznake(res.data));
+    async function ucitaj() {
+      showLoading();
+      try {
+        const [rp, rv, rt, ro] = await Promise.all([
+          prijaveService.get(),
+          VrsteService.get(),
+          TipService.get(),
+          OznakeService.get(),
+        ]);
+        setPrijave(rp.data ?? []);
+        setVrste(rv.data ?? []);
+        setTipovi(rt.data ?? []);
+        setOznake(ro.data ?? []);
+      } catch (error) {
+        console.error("Greška pri dohvatu kataloga:", error);
+      } finally {
+        hideLoading();
+      }
+    }
+    ucitaj();
   }, []);
-
+  
   const filtriranePrijave = filtrirajPrijave(prijave, filteri);
 
   const sortiranePrijave = [...filtriranePrijave].sort((a, b) =>
@@ -156,14 +174,14 @@ export default function Katalog() {
           <Col xs={12} md={4} key={prijava.id}>
             <Card className={`h-100 rounded-3 position-relative ${prijava.hitno ? "border border-danger border-3" : "border-0 shadow-sm"}`}
               style={prijava.hitno ? { boxShadow: "0 0 0 .25rem rgba(220,53,69,.15)" } : undefined} >
-              {prijava.slika && (
-                <Card.Img
-                  variant="top"
-                  src={slikaUrl(prijava.slika) || `${import.meta.env.BASE_URL}nemaSlike.svg`}
-                  style={{ height: "200px", objectFit: "cover" }}
-                  alt={prijava.zivotinja_ime || "Slika prijave"}
-                />
-              )}
+
+              <Card.Img
+                variant="top"
+                src={slikaUrl(prijava.slika) || `${import.meta.env.BASE_URL}nemaSlike.svg`}
+                style={{ height: "200px", objectFit: "cover" }}
+                alt={prijava.zivotinja_ime || "Slika prijave"}
+              />
+
               <Card.Body className="d-flex flex-column">
                 <div className="d-flex justify-content-between align-items-start mb-2 justify-content-center col-12 col-md-auto">
                   <Card.Title className="mb-0 fw-bold fs-4">
@@ -194,7 +212,7 @@ export default function Katalog() {
                 {prijava.oznake && prijava.oznake.length > 0 && (
                   <div className="d-flex flex-wrap gap-1 mb-3 p-2">
                     {prijava.oznake.map((idOznake, idx) => {
-                      const o = oznake.find((item) => String(item.id) === String(idOznake)); 
+                      const o = oznake.find((item) => String(item.id) === String(idOznake));
                       if (!o) return null;
                       return (
                         <span

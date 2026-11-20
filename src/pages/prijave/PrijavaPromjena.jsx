@@ -13,7 +13,8 @@ import OznakeService from "../../services/oznake/OznakeService";
 import { spremiSliku } from "../../services/slike/SlikeService";
 import SlikaUploader from "../../components/SlikaUploader";
 import { prijavaSchema } from "../../schemas/prijavaSchema";
-import useAuth from "../../hooks/useAuth"
+import useAuth from "../../hooks/useAuth";
+import useLoading from "../../hooks/useLoading";
 
 registerLocale("hr", hr);
 
@@ -29,6 +30,7 @@ export default function PrijavaPromjena() {
         }
     };
     const { authUser } = useAuth();
+    const { loading, showLoading, hideLoading } = useLoading();
     const location = useLocation();
     const povratak = location.state?.povratak ?? RouteNames.PRIJAVE_PREGLED;
     const params = useParams()
@@ -99,12 +101,7 @@ export default function PrijavaPromjena() {
         return `${SLIKE_URL}/${prijava.slika}?t=${cacheBust}`;
     }
 
-    async function promijeni(podaciPrijave) {
-        await prijaveService.promijeni(params.id, podaciPrijave).then(() => {
-            navigate(povratak)
-        })
 
-    }
     async function obradiSubmit(e) {
         e.preventDefault()
         const podaci = new FormData(e.target)
@@ -124,42 +121,45 @@ export default function PrijavaPromjena() {
             return;
         }
 
-        let slikaPath = prijava.slika || "";
-        if (novaSlika === null) {
-            slikaPath = "";
-        } else if (novaSlika) {
-            try {
+       showLoading();
+        try {
+            let slikaPath = prijava.slika || "";
+            if (novaSlika === null) {
+                slikaPath = "";
+            } else if (novaSlika) {
                 const rez = await spremiSliku(params.id, novaSlika);
                 if (!rez.success) {
                     alert(rez.message);
                     return;
                 }
                 slikaPath = rez.path;
-            } catch (err) {
-                console.error(err);
-                alert("Greška pri spremanju slike.");
-                return;
             }
+
+            const p = rezultat.data
+            await prijaveService.promijeni(params.id, {
+                ...prijava,
+                zivotinja_ime: p.zivotinja_ime,
+                zivotinja_vrsta: p.zivotinja_vrsta,
+                zivotinja_opis: p.zivotinja_opis,
+                zivotinja_godine: p.zivotinja_godine,
+                cipirana: podaci.get('cipirana') === 'on',
+                tip_prijave: p.tip_prijave,
+                status: p.status,
+                lokacija: p.lokacija,
+                datum: p.datum.toISOString(),
+                slika: slikaPath,
+                hitno: podaci.get('hitno') === 'on',
+                oznake: odabraneOznake
+            });
+            navigate(povratak);
+        } catch (err) {
+            console.error(err);
+            alert("Greška pri spremanju: " + err.message);
+        } finally {
+            hideLoading();
         }
-
-        const p = rezultat.data
-
-        promijeni({
-            ...prijava,
-            zivotinja_ime: p.zivotinja_ime,
-            zivotinja_vrsta: p.zivotinja_vrsta,
-            zivotinja_opis: p.zivotinja_opis,
-            zivotinja_godine: p.zivotinja_godine,
-            cipirana: podaci.get('cipirana') === 'on',
-            tip_prijave: p.tip_prijave,
-            status: p.status,
-            lokacija: p.lokacija,
-            datum: p.datum.toISOString(),
-            slika: slikaPath,
-            hitno: podaci.get('hitno') === 'on',
-            oznake: odabraneOznake
-        })
     }
+    
     return (
         <Container className="my-5" style={{ maxWidth: "850px" }}>
             <Card className="shadow-sm border-0 rounded-3">
@@ -394,7 +394,7 @@ export default function PrijavaPromjena() {
                             >
                                 Odustani
                             </Link>
-                            <Button type="submit" variant="success" className="px-5 fw-bold">
+                            <Button type="submit" variant="success" className="px-5 fw-bold" disabled={loading}>
                                 Spremi
                             </Button>
                         </div>

@@ -15,6 +15,7 @@ import { slikaUrl } from "../utils/slika";
 import { Chrono } from "react-chrono";
 import "react-chrono/dist/style.css";
 import useAuth from "../hooks/useAuth";
+import useLoading from "../hooks/useLoading";
 
 export default function DetaljiSlucaja() {
     const { id } = useParams()
@@ -26,9 +27,12 @@ export default function DetaljiSlucaja() {
     const [prikaziLetak, setPrikaziLetak] = useState(false)
     const { isLoggedIn } = useAuth();
     const navigate = useNavigate();
+    const [ucitano, setUcitano] = useState(false)
+    const { showLoading, hideLoading } = useLoading()
 
     useEffect(() => {
         async function ucitaj() {
+            showLoading()
             try {
                 const [odgovor, t, resOznake, resVrste, resTipovi] = await Promise.all([
                     prijaveService.getById(id),
@@ -44,6 +48,9 @@ export default function DetaljiSlucaja() {
                 setTipovi(resTipovi.data ?? resTipovi ?? [])
             } catch (error) {
                 console.error("Greška pri dohvatu podataka:", error)
+            } finally {
+                hideLoading()
+                setUcitano(true)
             }
         }
         ucitaj()
@@ -118,6 +125,7 @@ export default function DetaljiSlucaja() {
     const nazivVrste = vrste.find((v) => String(v.id) === String(prijava?.zivotinja_vrsta))?.naziv ?? ""
     const nazivTipa = tipovi.find((t) => String(t.id) === String(prijava?.tip_prijave))?.naziv ?? ""
 
+    if (!ucitano) return null;
     if (!prijava) {
         return (
             <Container className="my-4">

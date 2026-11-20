@@ -4,9 +4,11 @@ import { Button, Card, Container, Form } from "react-bootstrap";
 import TipService from "../../services/tip/TipService";
 import { tipSchema } from "../../schemas/nazivSchema";
 import { useState } from "react";
+import useLoading from "../../hooks/useLoading";
 
 export default function TipNovi() {
     const navigate = useNavigate();
+        const { loading, showLoading, hideLoading } = useLoading();
 
     const [errors, setErrors] = useState({});
 
@@ -20,9 +22,15 @@ export default function TipNovi() {
 
 
     async function dodaj(tip) {
-        await TipService.dodaj(tip).then(() => {
-            navigate(RouteNames.TIPOVI_I_VRSTE_PREGLED)
-        })
+        showLoading();
+        try {
+            await TipService.dodaj(tip);
+            navigate(RouteNames.TIPOVI_I_VRSTE_PREGLED);
+        } catch (error) {
+            alert(error.message);
+        } finally {
+            hideLoading();
+        }
     }
 
     function obradiSubmit(e) {
@@ -80,7 +88,7 @@ export default function TipNovi() {
                                 Odustani
                             </Link>
 
-                            <Button type="submit" variant="success" className="px-5 fw-bold">
+                            <Button type="submit" variant="success" className="px-5 fw-bold" disabled={loading}>
                                 Dodaj
                             </Button>
                         </div>

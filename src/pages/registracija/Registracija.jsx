@@ -3,20 +3,27 @@ import { RouteNames } from "../../constants"
 import { useNavigate } from "react-router-dom"
 import OperaterService from "../../services/operateri/OperaterService"
 import { operaterSchema } from "../../schemas/operaterSchema"
-import { useState } from "react"
+import { useState } from "react";
+import useLoading from "../../hooks/useLoading";
 
 export default function Registracija() {
 
     const navigate = useNavigate()
     const [errors, setErrors] = useState({})
+    const { loading, showLoading, hideLoading } = useLoading();
 
     async function registriraj(operater) {
-        const rez = await OperaterService.dodaj(operater)
-        if (!rez.success) {
-            setErrors ({ email: rez.message })
-            return
-        }
+        showLoading()
+        try {
+            const rez = await OperaterService.dodaj(operater)
+            if (!rez.success) {
+                setErrors({ email: rez.message })
+                return
+            }
             navigate(RouteNames.LOGIN)
+        } finally {
+            hideLoading();
+        }
     }
 
     function odradiSubmit(e) {
@@ -131,10 +138,11 @@ export default function Registracija() {
                             <hr />
 
                             <div className="d-grid gap-2 d-md-flex justify-content-md-end mt-4">
-                                <Button 
-                                    type="submit" 
+                                <Button
+                                    type="submit"
                                     variant="success"
                                     className="px-4"
+                                    disabled={loading}
                                 >
                                     Registriraj se
                                 </Button>

@@ -16,6 +16,7 @@ import prijaveService from "../services/prijave/prijaveService";
 import FormatDatuma from "../components/FormatDatuma";
 import { izveziSveUXml } from '../utils/xmlExporter';
 import { BsFileEarmarkCode } from 'react-icons/bs';
+import useLoading from "../hooks/useLoading";
 
 const PRECACI = [
   { naslov: "Pregled prijava", opis: "Sve prijave, uređivanje i brisanje", ikona: BiListUl, to: RouteNames.PRIJAVE_PREGLED, boja: "success" },
@@ -173,9 +174,11 @@ function TablicaPrijava({ naslov, prijave, prazno }) {
 
 export default function NadzornaPloca() {
   const [podaci, setPodaci] = useState(null);
+  const { showLoading, hideLoading } = useLoading();
 
   useEffect(() => {
     async function ucitaj() {
+      showLoading();
       try {
         const prijave = (await prijaveService.get()).data;
         const otvorene = prijave.filter((p) => p.status === "otvorena");
@@ -192,14 +195,14 @@ export default function NadzornaPloca() {
         });
       } catch (error) {
         console.error("Greška pri dohvatu podataka nadzorne ploče:", error);
+      } finally {
+        hideLoading();
       }
     }
     ucitaj();
   }, []);
 
-  if (!podaci) {
-    return <Container className="my-5 text-center text-muted">Učitavanje...</Container>;
-  }
+   if (!podaci) return null;
 
   return (
     <Container className="my-4">

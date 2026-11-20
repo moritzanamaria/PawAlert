@@ -4,10 +4,11 @@ import { Button, Card, Container, Form } from "react-bootstrap";
 import VrsteService from "../../services/vrste/VrsteService";
 import { vrstaSchema } from "../../schemas/nazivSchema";
 import { useState } from "react";
+import useLoading from "../../hooks/useLoading";
 
 export default function VrstaNova() {
     const navigate = useNavigate()
-
+    const { loading, showLoading, hideLoading } = useLoading();
 
     const [errors, setErrors] = useState({});
 
@@ -20,9 +21,15 @@ export default function VrstaNova() {
     };
 
     async function dodaj(vrsta) {
-        await VrsteService.dodaj(vrsta).then(() => {
-            navigate(RouteNames.TIPOVI_I_VRSTE_PREGLED)
-        })
+        showLoading();
+        try {
+            await VrsteService.dodaj(vrsta);
+            navigate(RouteNames.TIPOVI_I_VRSTE_PREGLED);
+        } catch (error) {
+            alert(error.message);
+        } finally {
+            hideLoading();
+        }
     }
 
     function obradiSubmit(e) {
@@ -79,7 +86,7 @@ export default function VrstaNova() {
                                 Odustani
                             </Link>
 
-                            <Button type="submit" variant="success" className="px-5 fw-bold">
+                            <Button type="submit" variant="success" className="px-5 fw-bold" disabled={loading}>
                                 Spremi
                             </Button>
                         </div>

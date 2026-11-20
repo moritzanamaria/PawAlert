@@ -11,6 +11,7 @@ import { Link } from "react-router-dom";
 import { RouteNames } from "../constants";
 import OznakeService from "../services/oznake/OznakeService";
 import useAuth from "../hooks/useAuth";
+import useLoading from "../hooks/useLoading";
 
 function Home() {
   const [prijave, setPrijave] = useState([]);
@@ -19,10 +20,11 @@ function Home() {
   const [tipovi, setTipovi] = useState([]);
   const [oznake, setOznake] = useState([]);
   const { isLoggedIn } = useAuth();
-
+const { showLoading, hideLoading } = useLoading();
   useEffect(() => {
 
     async function dohvatiPodatke() {
+            showLoading();
       try {
         const [rezPrijave, rezVrste, rezTipovi, rezOznake] = await Promise.all([
           prijaveService.get(),
@@ -36,6 +38,8 @@ function Home() {
         setOznake(rezOznake.data);
       } catch (error) {
         console.error("Greška pri dohvaćanju podataka:", error);
+      } finally {
+        hideLoading();
       }
     }
     dohvatiPodatke();

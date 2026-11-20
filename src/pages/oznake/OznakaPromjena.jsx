@@ -6,10 +6,11 @@ import { RouteNames } from "../../constants";
 import Wheel from "@uiw/react-color-wheel";
 import { ShadeSlider, hsvaToHex, hexToHsva } from "@uiw/react-color";
 import { oznakaSchema } from "../../schemas/oznakaSchema";
+import useLoading from "../../hooks/useLoading";
 
 export default function OznakaPromjena() {
     const navigate = useNavigate();
-
+    const { loading, showLoading, hideLoading } = useLoading();
 
     const [errors, setErrors] = useState({});
 
@@ -39,6 +40,7 @@ export default function OznakaPromjena() {
 
     useEffect(() => {
         async function ucitajOznaku() {
+            showLoading();
             try {
                 const res = await OznakeService.getById(params.id);
                 const podaci = res.data;
@@ -53,6 +55,8 @@ export default function OznakaPromjena() {
                 }
             } catch (error) {
                 console.error("Greška pri učitavanju oznake:", error);
+            } finally {
+                hideLoading();
             }
         }
         if (params.id) {
@@ -61,11 +65,14 @@ export default function OznakaPromjena() {
     }, [params.id]);
 
     async function promijeni(podaci) {
+        showLoading();
         try {
             await OznakeService.promijeni(params.id, podaci);
             navigate(povratak);
         } catch (error) {
             console.error("Greška pri promijeni oznake:", error);
+        } finally {
+            hideLoading();
         }
     }
 
@@ -190,7 +197,7 @@ export default function OznakaPromjena() {
                                 Odustani
                             </Link>
 
-                            <Button type="submit" variant="success" className="px-5 fw-bold">
+                            <Button type="submit" variant="success" className="px-5 fw-bold" disabled={loading}>
                                 Spremi
                             </Button>
                         </div>

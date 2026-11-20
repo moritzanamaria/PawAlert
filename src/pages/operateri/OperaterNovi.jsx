@@ -3,19 +3,25 @@ import { RouteNames } from "../../constants"
 import { Link, useNavigate } from "react-router-dom"
 import OperaterService from "../../services/operateri/OperaterService"
 import { operaterSchema } from "../../schemas/operaterSchema"
-import { useState } from "react"
+import { useState } from "react";
+import useLoading from "../../hooks/useLoading";
 
 export default function OperaterNovi() {
-
-    const navigate = useNavigate()
-    const [errors, setErrors] = useState({})
+    const navigate = useNavigate();
+    const [errors, setErrors] = useState({});
+        const { loading, showLoading, hideLoading } = useLoading();
 
     async function dodaj(operater) {
+         showLoading()
+        try {
         const rezultat = await OperaterService.dodaj(operater)
         if (rezultat.success) {
             navigate(RouteNames.OPERATERI)
         } else {
             alert(rezultat.message || 'Greška pri dodavanju operatera')
+        } 
+    } finally {
+            hideLoading()
         }
     }
 
@@ -131,7 +137,7 @@ export default function OperaterNovi() {
                                 <Link to={RouteNames.OPERATERI} className="btn btn-danger px-4">
                                     Odustani
                                 </Link>
-                                <Button type="submit" variant="success">
+                                <Button type="submit" variant="success" disabled={loading}>
                                     Dodaj novog operatera
                                 </Button>
                             </div>
