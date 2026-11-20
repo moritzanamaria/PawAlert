@@ -1,5 +1,5 @@
-import { Spinner } from 'react-bootstrap';
 import useLoading from '../hooks/useLoading';
+import BrandMark from './BrandMark';
 
 export default function LoadingSpinner() {
   const { loading } = useLoading();
@@ -7,8 +7,13 @@ export default function LoadingSpinner() {
   return (
     <>
       {loading && (
-        <div className='loading-spinner-overlay'>
-          <Spinner animation='border' role='status' variant='primary' />
+        <div className='loading-spinner-overlay' role='status' aria-live='polite'>
+          <div className='pa-loader'>
+            <div className='pa-loader-krug'>
+              <span className='pa-loader-sapa'><BrandMark size={24} /></span>
+            </div>
+            <span className='pa-loader-tekst'>Učitavanje…</span>
+          </div>
         </div>
       )}
     </>

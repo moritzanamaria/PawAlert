@@ -8,13 +8,84 @@
 
 .loading-spinner-overlay {
   position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
-  background-color: #2d8a68;
+  inset: 0;
   z-index: 2000;
+  display: grid;
+  place-items: center;
+  background: rgba(243, 241, 234, 0.35);
+  -webkit-backdrop-filter: blur(4px);
+  backdrop-filter: blur(4px);
+  /* pojavi se tek nakon 150 ms, da ne bljesne kod brzih radnji */
+  animation: pa-loader-pojava 0.25s ease 0.15s both;
+}
+
+.pa-loader {
   display: flex;
+  flex-direction: column;
   align-items: center;
-  justify-content: center;
+  gap: 0.8rem;
+  padding: 1.4rem 2rem 1.2rem;
+  border-radius: 24px;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.82), rgba(255, 255, 255, 0.56));
+  -webkit-backdrop-filter: blur(18px) saturate(170%);
+  backdrop-filter: blur(18px) saturate(170%);
+  border: 1px solid rgba(255, 255, 255, 0.75);
+  box-shadow: 0 16px 40px rgba(22, 82, 60, 0.16), inset 0 1px 0 rgba(255, 255, 255, 0.95);
+}
+
+.pa-loader-krug {
+  position: relative;
+  width: 58px;
+  height: 58px;
+  display: grid;
+  place-items: center;
+  color: var(--pa-primary);
+}
+
+.pa-loader-krug::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  border: 4px solid rgba(45, 138, 104, 0.15);
+  border-top-color: var(--pa-primary);
+  animation: pa-loader-vrti 0.85s linear infinite;
+}
+
+.pa-loader-sapa {
+  display: grid;
+  animation: pa-loader-puls 1.2s ease-in-out infinite;
+}
+
+.pa-loader-tekst {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--pa-primary-dark);
+  letter-spacing: 0.01em;
+}
+
+@keyframes pa-loader-vrti {
+  to { transform: rotate(360deg); }
+}
+
+@keyframes pa-loader-puls {
+  0%, 100% { transform: scale(0.92); opacity: 0.75; }
+  50% { transform: scale(1.06); opacity: 1; }
+}
+
+@keyframes pa-loader-pojava {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+/* uz "smanji pokrete" spinner se i dalje vrti (inače ne bi bilo jasno da se nešto događa), samo sporije */
+@media (prefers-reduced-motion: reduce) {
+  .pa-loader-krug::before {
+    animation-duration: 2s !important;
+    animation-iteration-count: infinite !important;
+  }
+
+  .pa-loader-sapa {
+    animation: none;
+  }
 }

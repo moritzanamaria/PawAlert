@@ -31,63 +31,65 @@ import Registracija from './pages/registracija/Registracija'
 import NadzornaPloca from './pages/NadzornaPloca'
 import MojProfil from './pages/MojProfil'
 import LoadingSpinner from "./components/LoadingSpinner"
+import PotvrdaModal from './components/PotvrdaModal'
 
 export default function App() {
   const { isLoggedIn, authUser } = useAuth()
 
   return (
-      <>
+    <>
       <LoadingSpinner />
-    <Container>
-      <ScrollToTop />
-      <Navbar />
-      <Routes>
-        <Route path="*" element={<Navigate to={RouteNames.HOME} replace />} />
-        <Route path={RouteNames.HOME} element={<Pocetna />} />
-        <Route path={RouteNames.KATALOG} element={<Katalog />} />
-        <Route path={RouteNames.DETALJI_SLUCAJA} element={<DetaljiSlucaja />} />
-        {isLoggedIn ? (
-          <>
-            <Route path={RouteNames.PRIJAVA_NOVA} element={<PrijavaNova />} />
-            <Route path={RouteNames.PRIJAVA_PROMJENA} element={<PrijavaPromjena />} />
-            <Route path={RouteNames.TRAG_NOVI} element={<TragNovi />} />
-            <Route path={RouteNames.OZNAKA_NOVA} element={<OznakaNova />} />
-            <Route path={RouteNames.OZNAKA_PROMJENA} element={<OznakaPromjena />} />
-            <Route path={RouteNames.TRAG_PROMJENA} element={<TragPromjena />} />
-            <Route path={RouteNames.TIP_NOVI} element={<TipNovi />} />
-            <Route path={RouteNames.TIP_PROMJENA} element={<TipPromjena />} />
-            <Route path={RouteNames.VRSTA_NOVA} element={<VrstaNova />} />
-            <Route path={RouteNames.VRSTA_PROMJENA} element={<VrstaPromjena />} />
-            <Route path={RouteNames.MOJ_PROFIL} element={<MojProfil />} />
+      <PotvrdaModal />
+      <Container>
+        <ScrollToTop />
+        <Navbar />
+        <Routes>
+          <Route path="*" element={<Navigate to={RouteNames.HOME} replace />} />
+          <Route path={RouteNames.HOME} element={<Pocetna />} />
+          <Route path={RouteNames.KATALOG} element={<Katalog />} />
+          <Route path={RouteNames.DETALJI_SLUCAJA} element={<DetaljiSlucaja />} />
+          {isLoggedIn ? (
+            <>
+              <Route path={RouteNames.PRIJAVA_NOVA} element={<PrijavaNova />} />
+              <Route path={RouteNames.PRIJAVA_PROMJENA} element={<PrijavaPromjena />} />
+              <Route path={RouteNames.TRAG_NOVI} element={<TragNovi />} />
+              <Route path={RouteNames.OZNAKA_NOVA} element={<OznakaNova />} />
+              <Route path={RouteNames.OZNAKA_PROMJENA} element={<OznakaPromjena />} />
+              <Route path={RouteNames.TRAG_PROMJENA} element={<TragPromjena />} />
+              <Route path={RouteNames.TIP_NOVI} element={<TipNovi />} />
+              <Route path={RouteNames.TIP_PROMJENA} element={<TipPromjena />} />
+              <Route path={RouteNames.VRSTA_NOVA} element={<VrstaNova />} />
+              <Route path={RouteNames.VRSTA_PROMJENA} element={<VrstaPromjena />} />
+              <Route path={RouteNames.MOJ_PROFIL} element={<MojProfil />} />
 
-            {authUser.uloga === 'admin' && (
-              <>
-                <Route path={RouteNames.NADZORNA_PLOCA} element={<NadzornaPloca />} />
-                <Route path={RouteNames.TIPOVI_I_VRSTE_PREGLED} element={<TipoviIVrstePregled />} />
-                <Route path={RouteNames.PRIJAVE_PREGLED} element={<PrijavePregled />} />
-                <Route path={RouteNames.TRAG_PREGLED} element={<TragPregled />} />
-                <Route path={RouteNames.OZNAKE_PREGLED} element={<OznakePregled />} />
-                <Route path={RouteNames.OPERATERI} element={<OperaterPregled />} />
-                <Route path={RouteNames.OPERATERI_NOVI} element={<OperaterNovi />} />
-                <Route path={RouteNames.OPERATERI_PROMJENA} element={<OperaterPromjena />} />
-                <Route path={RouteNames.OPERATERI_PROMJENA_LOZINKE} element={<OperaterPromjenaLozinke />} />
-                <Route path={RouteNames.GENERIRANJE_PODATAKA} element={<GeneriranjePodataka />} />
-              </>
-            )}
+              {authUser.uloga === 'admin' && (
+                <>
+                  <Route path={RouteNames.NADZORNA_PLOCA} element={<NadzornaPloca />} />
+                  <Route path={RouteNames.TIPOVI_I_VRSTE_PREGLED} element={<TipoviIVrstePregled />} />
+                  <Route path={RouteNames.PRIJAVE_PREGLED} element={<PrijavePregled />} />
+                  <Route path={RouteNames.TRAG_PREGLED} element={<TragPregled />} />
+                  <Route path={RouteNames.OZNAKE_PREGLED} element={<OznakePregled />} />
+                  <Route path={RouteNames.OPERATERI} element={<OperaterPregled />} />
+                  <Route path={RouteNames.OPERATERI_NOVI} element={<OperaterNovi />} />
+                  <Route path={RouteNames.OPERATERI_PROMJENA} element={<OperaterPromjena />} />
+                  <Route path={RouteNames.OPERATERI_PROMJENA_LOZINKE} element={<OperaterPromjenaLozinke />} />
+                  <Route path={RouteNames.GENERIRANJE_PODATAKA} element={<GeneriranjePodataka />} />
+                </>
+              )}
 
-          </>
-        ) : (
-          <>
-            <Route path={RouteNames.LOGIN} element={<Login />} />
-            <Route path={RouteNames.REGISTRACIJA} element={<Registracija />} />
-          </>
-        )}
-      </Routes>
+            </>
+          ) : (
+            <>
+              <Route path={RouteNames.LOGIN} element={<Login />} />
+              <Route path={RouteNames.REGISTRACIJA} element={<Registracija />} />
+            </>
+          )}
+        </Routes>
 
-      <hr />
-      <div> &copy; {IME_APLIKACIJE}
-      </div>
-    </Container>
+        <hr />
+        <div> &copy; {IME_APLIKACIJE}
+        </div>
+      </Container>
     </>
   )
 }

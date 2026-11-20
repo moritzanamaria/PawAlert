@@ -65,13 +65,11 @@ export default function OperaterNovi() {
 
     return (
         <>
-            <h3>Unos novog operatera</h3>
             <Form onSubmit={odradiSubmit}>
                 <Container className="mt-4">
                     <Card className="shadow-sm">
                         <Card.Body>
                             <Card.Title className="mb-4">Podaci o operateru</Card.Title>
-
                             <Row>
                                 <Col xs={12}>
                                     <Form.Group controlId="email" className="mb-3">

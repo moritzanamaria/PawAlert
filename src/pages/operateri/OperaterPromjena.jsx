@@ -96,7 +96,6 @@ export default function OperaterPromjena() {
 
     return (
         <>
-            <h3>Promjena operatera</h3>
             <Form onSubmit={odradiSubmit}>
                 <Container className="mt-4">
                     <Card className="shadow-sm">

@@ -1,101 +1,142 @@
+/* ==========================================================================
+   Struktura:
+     1. Varijable
+     2. Osnova i tipografija
+     3. Pozadina stranice
+     4. Pomoćne klase i animacije
+     5. Kartice
+     6. Gumbi
+     7. Forme
+     8. Tablice
+     9. Značke, upozorenja, padajući izbornici
+    10. Izbornik (navbar)
+    11. Hero na početnoj
+    12. Straničenje, kartice (tabs), modal
+    13. Karte (Leaflet)
+    14. Vremenska crta (react-chrono) i kalendar (react-datepicker)
+    15. Pristupačnost, ispis, preglednici bez blura
+   ========================================================================== */
+
+/* 1. Varijable
+   ========================================================================== */
 :root {
-  /* Color Palette - Soft Sage & Muted Forest */
+  /* Boje */
   --pa-primary: #2d8a68;
-  --pa-primary-hover: #217053;
+  --pa-primary-hover: #237556;
   --pa-primary-dark: #16523c;
   --pa-primary-light: #e2f0e8;
-  --pa-primary-subtle: rgba(45, 138, 104, 0.09);
+  --pa-primary-subtle: rgba(45, 138, 104, 0.1);
+  --pa-primary-grad: linear-gradient(135deg, #34a079 0%, #2d8a68 45%, #1f6e51 100%);
 
   --pa-accent: #e07a2f;
   --pa-accent-dark: #b95f1c;
   --pa-accent-light: #fdeee2;
 
-  /* Neutrals & Soft Green Surfaces */
-  --pa-bg: #f5f3ee;
-  --pa-surface: #ffffff;
-  --pa-surface-alt: #f7fbf8;
-  --pa-card-bg: #e7f2ec;
-  --pa-navbar-bg: rgba(226, 240, 232, 0.88);
-  --pa-text: #182620;
-  --pa-text-muted: #52665c;
-  --pa-border: #dce6e0;
-  --pa-border-subtle: rgba(45, 138, 104, 0.16);
+  --pa-danger: #d6453d;
+  --pa-warning: #e9a23b;
 
-  /* Typography - Clean Geometric & Neo-Grotesque Sans-Serif */
+  --pa-bg: #f3f1ea;
+  --pa-text: #14221c;
+  --pa-text-muted: #56695f;
+  --pa-border: rgba(22, 82, 60, 0.12);
+
+  /* Staklo */
+  --pa-glass: rgba(255, 255, 255, 0.58);
+  --pa-glass-strong: rgba(255, 255, 255, 0.78);
+  --pa-glass-soft: rgba(255, 255, 255, 0.4);
+  --pa-glass-border: rgba(255, 255, 255, 0.7);
+  --pa-glass-blur: blur(18px) saturate(170%);
+  --pa-glass-highlight: inset 0 1px 0 rgba(255, 255, 255, 0.9);
+
+  /* Tipografija */
   --pa-font-sans: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
   --pa-font-display: "Plus Jakarta Sans", "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-  --timeline-font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-  --pa-heading-tracking: -0.025em;
+  --timeline-font-family: var(--pa-font-sans);
 
-  /* Radii */
-  --pa-radius-sm: 10px;
-  --pa-radius: 16px;
-  --pa-radius-lg: 22px;
-  --pa-radius-xl: 26px;
+  /* Zaobljenja */
+  --pa-radius-sm: 12px;
+  --pa-radius: 18px;
+  --pa-radius-lg: 24px;
+  --pa-radius-xl: 30px;
   --pa-radius-pill: 9999px;
 
-  /* Tinted Shadows for Natural Depth */
-  --pa-shadow-sm: 0 1px 3px rgba(22, 82, 60, 0.05), 0 1px 2px rgba(22, 82, 60, 0.03);
-  --pa-shadow: 0 4px 14px -2px rgba(22, 82, 60, 0.07), 0 10px 28px -8px rgba(22, 82, 60, 0.1);
-  --pa-shadow-elevated: 0 8px 22px -4px rgba(22, 82, 60, 0.09), 0 20px 48px -12px rgba(22, 82, 60, 0.18);
-  --pa-shadow-primary: 0 8px 20px -5px rgba(45, 138, 104, 0.38);
+  /* Sjene (tonirane zelenom za prirodniju dubinu) */
+  --pa-shadow-sm: 0 1px 2px rgba(22, 82, 60, 0.06), 0 2px 6px rgba(22, 82, 60, 0.04);
+  --pa-shadow: 0 6px 18px -6px rgba(22, 82, 60, 0.12), 0 14px 34px -14px rgba(22, 82, 60, 0.16);
+  --pa-shadow-elevated: 0 12px 28px -8px rgba(22, 82, 60, 0.16), 0 28px 60px -18px rgba(22, 82, 60, 0.24);
+  --pa-shadow-primary: 0 10px 24px -8px rgba(45, 138, 104, 0.55);
 
-  /* Motion */
-  --pa-transition: 0.22s cubic-bezier(0.25, 1, 0.5, 1);
-  --pa-transition-bounce: 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  /* Pokret */
+  --pa-ease: cubic-bezier(0.22, 1, 0.36, 1);
+  --pa-transition: 0.25s var(--pa-ease);
+  --pa-transition-bounce: 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
 
-  /* Bootstrap Overrides */
+  /* Bootstrap */
   --bs-body-font-family: var(--pa-font-sans);
   --bs-body-bg: var(--pa-bg);
   --bs-body-color: var(--pa-text);
   --bs-border-color: var(--pa-border);
+  --bs-secondary-color: var(--pa-text-muted);
 
-  --bs-success: var(--pa-primary);
-  --bs-success-rgb: 45, 138, 104;
   --bs-primary: var(--pa-primary);
   --bs-primary-rgb: 45, 138, 104;
-  --bs-secondary-rgb: 82, 102, 92;
+  --bs-success: var(--pa-primary);
+  --bs-success-rgb: 45, 138, 104;
+  --bs-secondary-rgb: 86, 105, 95;
+  --bs-danger-rgb: 214, 69, 61;
+  --bs-warning-rgb: 233, 162, 59;
 
   --bs-link-color: var(--pa-primary);
   --bs-link-color-rgb: 45, 138, 104;
   --bs-link-hover-color: var(--pa-primary-dark);
   --bs-link-hover-color-rgb: 22, 82, 60;
 
-  --bs-border-radius: 0.75rem;
-  --bs-border-radius-sm: 0.5rem;
-  --bs-border-radius-lg: 1rem;
-  --bs-border-radius-xl: 1.25rem;
-  --bs-border-radius-2xl: 1.5rem;
+  --bs-border-radius: 0.85rem;
+  --bs-border-radius-sm: 0.6rem;
+  --bs-border-radius-lg: 1.1rem;
+  --bs-border-radius-xl: 1.4rem;
+  --bs-border-radius-2xl: 1.75rem;
   --bs-border-radius-pill: 50rem;
 }
 
-/* Base & Typography */
-html,
+/* 2. Osnova i tipografija
+   ========================================================================== */
+html {
+  scroll-behavior: smooth;
+  background-color: var(--pa-bg);
+}
+
 body {
   font-family: var(--pa-font-sans);
-  background-color: var(--pa-bg);
-  background-image: 
-    radial-gradient(circle at 50% 0%, rgba(45, 138, 104, 0.06) 0%, transparent 45%),
-    linear-gradient(180deg, rgba(45, 138, 104, 0.03), transparent 360px);
-  background-repeat: no-repeat;
   color: var(--pa-text);
+  background-color: var(--pa-bg);
   line-height: 1.6;
   font-feature-settings: "cv02", "cv03", "cv04", "cv11";
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-rendering: optimizeLegibility;
+  min-height: 100vh;
 }
 
 h1, h2, h3, h4, h5, h6,
 .h1, .h2, .h3, .h4, .h5, .h6 {
   font-family: var(--pa-font-display);
-  letter-spacing: var(--pa-heading-tracking);
   font-weight: 700;
+  letter-spacing: -0.025em;
   color: var(--pa-text);
 }
 
-:is(.bg-success, .bg-secondary, .bg-primary, .bg-danger, .bg-warning, .bg-dark) :is(h1, h2, h3, h4, h5, h6) {
+:is(.bg-success, .bg-secondary, .bg-primary, .bg-danger, .bg-dark) :is(h1, h2, h3, h4, h5, h6) {
   color: inherit;
+}
+
+a {
+  text-underline-offset: 3px;
+}
+
+hr {
+  border-color: var(--pa-border);
+  opacity: 1;
 }
 
 ::selection {
@@ -103,7 +144,7 @@ h1, h2, h3, h4, h5, h6,
   color: #ffffff;
 }
 
-/* Custom Scrollbar */
+/* Klizač (Chrome, Edge, Safari) */
 ::-webkit-scrollbar {
   width: 10px;
   height: 10px;
@@ -114,28 +155,35 @@ h1, h2, h3, h4, h5, h6,
 }
 
 ::-webkit-scrollbar-thumb {
-  background-color: #c8d6ce;
+  background-color: rgba(22, 82, 60, 0.22);
   border-radius: var(--pa-radius-pill);
-  border: 2px solid var(--pa-bg);
+  border: 2px solid transparent;
+  background-clip: padding-box;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background-color: #a9bdb2;
+  background-color: rgba(22, 82, 60, 0.38);
 }
 
-/* Focus States */
-a:focus-visible,
-button:focus-visible,
-.btn:focus-visible,
-.form-control:focus,
-.form-select:focus,
-.form-check-input:focus {
-  outline: none;
-  box-shadow: 0 0 0 3.5px rgba(45, 138, 104, 0.24);
-  border-color: var(--pa-primary);
+/* 3. Pozadina stranice
+   Mekane mrlje boje ispod svega – staklo ih zamuti i dobije dubinu.
+   ========================================================================== */
+body::before {
+  content: "";
+  position: fixed;
+  inset: -10vmax;
+  z-index: -1;
+  pointer-events: none;
+  background:
+    radial-gradient(38vmax 38vmax at 8% 6%, rgba(52, 160, 121, 0.22), transparent 70%),
+    radial-gradient(34vmax 34vmax at 96% 12%, rgba(224, 122, 47, 0.14), transparent 70%),
+    radial-gradient(42vmax 42vmax at 78% 92%, rgba(45, 138, 104, 0.16), transparent 70%),
+    radial-gradient(30vmax 30vmax at 12% 88%, rgba(248, 194, 126, 0.16), transparent 70%),
+    var(--pa-bg);
 }
 
-/* Smooth Transitions */
+/* 4. Pomoćne klase i animacije
+   ========================================================================== */
 a,
 button,
 .btn,
@@ -144,7 +192,8 @@ button,
 .nav-link,
 .form-control,
 .form-select,
-.dropdown-item {
+.dropdown-item,
+.page-link {
   transition:
     background-color var(--pa-transition),
     border-color var(--pa-transition),
@@ -153,146 +202,227 @@ button,
     transform var(--pa-transition);
 }
 
-/* Entrance Animation */
 @keyframes pa-fade-in {
-  from {
-    opacity: 0;
-    transform: translateY(10px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
-.pa-fade-in {
-  animation: pa-fade-in 0.4s cubic-bezier(0.22, 1, 0.36, 1) both;
+.pa-fade-in,
+.pa-ulaz {
+  animation: pa-fade-in 0.55s var(--pa-ease) both;
 }
 
-@media (prefers-reduced-motion: reduce) {
-  *, *::before, *::after {
-    animation-duration: 0.01ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: 0.01ms !important;
-  }
+/* Fokus tipkovnicom – vidljiv, ali nenametljiv */
+a:focus-visible,
+button:focus-visible,
+.btn:focus-visible,
+.page-link:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 4px rgba(45, 138, 104, 0.28);
 }
 
-@media print {
-  body {
-    background-color: #ffffff !important;
-    background-image: none !important;
-  }
-  .pa-fade-in {
-    animation: none !important;
-  }
-}
-
-/* Cards - Solid Soft Sage Green */
+/* 5. Kartice – matirano staklo
+   ========================================================================== */
 .card {
-  border: 1px solid rgba(45, 138, 104, 0.2) !important;
-  border-radius: var(--pa-radius);
-  box-shadow: var(--pa-shadow);
-  background: var(--pa-card-bg) !important;
+  --bs-card-bg: transparent;
+  --bs-card-border-color: var(--pa-glass-border);
+  --bs-card-cap-bg: transparent;
+  background: linear-gradient(145deg, rgba(255, 255, 255, 0.72), rgba(255, 255, 255, 0.5)) !important;
+  -webkit-backdrop-filter: var(--pa-glass-blur);
+  backdrop-filter: var(--pa-glass-blur);
+  border: 1px solid var(--pa-glass-border) !important;
+  border-radius: var(--pa-radius-lg) !important;
+  box-shadow: var(--pa-shadow), var(--pa-glass-highlight);
+  overflow: hidden;
 }
 
 .card:hover {
-  border-color: rgba(45, 138, 104, 0.45) !important;
-  box-shadow: var(--pa-shadow-elevated);
-  transform: translateY(-2px);
+  box-shadow: var(--pa-shadow-elevated), var(--pa-glass-highlight);
+  transform: translateY(-3px);
+}
+
+/* kartice s formama i tablicama ne skaču pod mišem */
+.card:has(form),
+.card:has(table),
+.card:has(.leaflet-container),
+.card:has(.pa-timeline-wrapper) {
+  transform: none !important;
 }
 
 .card-header,
 .card-footer {
-  background: rgba(45, 138, 104, 0.04) !important;
-  border-color: rgba(45, 138, 104, 0.14) !important;
+  background: rgba(255, 255, 255, 0.35) !important;
+  border-color: rgba(22, 82, 60, 0.08) !important;
 }
 
-/* Buttons - Harmonized Muted Sage-Forest Green */
+/* bijele i svijetle podloge unutar stakla postaju prozirne, da staklo ostane staklo */
+.card .bg-white,
+.card .bg-light,
+.card.bg-white,
+.card.bg-light {
+  background-color: transparent !important;
+}
+
+.card-img-top {
+  border-top-left-radius: calc(var(--pa-radius-lg) - 1px);
+  border-top-right-radius: calc(var(--pa-radius-lg) - 1px);
+}
+
+.shadow-sm {
+  box-shadow: var(--pa-shadow-sm) !important;
+}
+
+/* 6. Gumbi
+   ========================================================================== */
 .btn {
-  border-radius: var(--pa-radius);
-  font-weight: 600;
+  --bs-btn-font-weight: 600;
+  border-radius: var(--pa-radius-pill);
   letter-spacing: -0.005em;
-  padding-block: 0.55rem;
-  padding-inline: 1.2rem;
+  padding: 0.6rem 1.35rem;
 }
 
 .btn-sm,
 .btn-group-sm > .btn {
-  border-radius: var(--pa-radius-sm);
-  padding-block: 0.35rem;
-  padding-inline: 0.85rem;
+  padding: 0.38rem 0.9rem;
+  font-size: 0.85rem;
 }
 
+.btn-group > .btn {
+  border-radius: var(--pa-radius-pill);
+}
+
+.btn-group > .btn:not(:last-child) {
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+}
+
+.btn-group > .btn:not(:first-child) {
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
+}
+
+/* Primarni – zeleni gradijent sa sjajem */
 .btn-success,
 .btn-primary {
+  --bs-btn-color: #ffffff;
+  --bs-btn-hover-color: #ffffff;
+  --bs-btn-active-color: #ffffff;
+  --bs-btn-disabled-color: #ffffff;
   --bs-btn-bg: var(--pa-primary);
-  --bs-btn-border-color: var(--pa-primary);
+  --bs-btn-border-color: transparent;
   --bs-btn-hover-bg: var(--pa-primary-hover);
-  --bs-btn-hover-border-color: var(--pa-primary-hover);
+  --bs-btn-hover-border-color: transparent;
   --bs-btn-active-bg: var(--pa-primary-dark);
-  --bs-btn-active-border-color: var(--pa-primary-dark);
+  --bs-btn-active-border-color: transparent;
   --bs-btn-disabled-bg: var(--pa-primary);
-  --bs-btn-disabled-border-color: var(--pa-primary);
+  --bs-btn-disabled-border-color: transparent;
   --bs-btn-focus-shadow-rgb: 45, 138, 104;
-
-  background-color: var(--pa-primary);
-  border: 1px solid rgba(22, 82, 60, 0.18);
-  box-shadow: 0 2px 6px rgba(45, 138, 104, 0.22), inset 0 1px 0 rgba(255, 255, 255, 0.22);
+  background-image: var(--pa-primary-grad);
+  box-shadow: 0 4px 12px -4px rgba(45, 138, 104, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.28);
 }
 
 .btn-success:hover,
-.btn-success:focus-visible,
-.btn-primary:hover,
-.btn-primary:focus-visible {
-  background-color: var(--pa-primary-hover);
-  transform: translateY(-1.5px);
-  box-shadow: var(--pa-shadow-primary), inset 0 1px 0 rgba(255, 255, 255, 0.25);
+.btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--pa-shadow-primary), inset 0 1px 0 rgba(255, 255, 255, 0.32);
+  filter: brightness(1.04);
 }
 
 .btn-success:active,
 .btn-primary:active {
-  transform: translateY(0) scale(0.985);
+  transform: translateY(0) scale(0.98);
 }
 
-.btn-outline-success {
+.btn:disabled,
+.btn.disabled {
+  opacity: 0.55;
+  transform: none !important;
+  box-shadow: none;
+}
+
+.btn-danger {
+  --bs-btn-bg: var(--pa-danger);
+  --bs-btn-border-color: transparent;
+  --bs-btn-hover-bg: #bf3a33;
+  --bs-btn-hover-border-color: transparent;
+  box-shadow: 0 4px 12px -4px rgba(214, 69, 61, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.25);
+}
+
+.btn-warning {
+  --bs-btn-bg: #f2b34f;
+  --bs-btn-border-color: transparent;
+  --bs-btn-hover-bg: #e9a23b;
+  --bs-btn-hover-border-color: transparent;
+  --bs-btn-color: #3a2604;
+  --bs-btn-hover-color: #3a2604;
+}
+
+/* Obrubljeni gumbi – staklene pilule */
+.btn-outline-success,
+.btn-outline-primary,
+.btn-outline-secondary,
+.btn-outline-danger,
+.btn-outline-warning,
+.btn-light {
+  background-color: rgba(255, 255, 255, 0.55);
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+  box-shadow: var(--pa-shadow-sm), var(--pa-glass-highlight);
+}
+
+.btn-outline-success,
+.btn-outline-primary {
   --bs-btn-color: var(--pa-primary-dark);
-  --bs-btn-border-color: rgba(45, 138, 104, 0.45);
+  --bs-btn-border-color: rgba(45, 138, 104, 0.35);
+  --bs-btn-hover-color: #ffffff;
   --bs-btn-hover-bg: var(--pa-primary);
   --bs-btn-hover-border-color: var(--pa-primary);
   --bs-btn-active-bg: var(--pa-primary-dark);
   --bs-btn-active-border-color: var(--pa-primary-dark);
-  --bs-btn-disabled-color: var(--pa-primary);
-  --bs-btn-disabled-border-color: var(--pa-primary);
   --bs-btn-focus-shadow-rgb: 45, 138, 104;
-  background-color: rgba(45, 138, 104, 0.05);
-}
-
-.btn-outline-success:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(45, 138, 104, 0.18);
 }
 
 .btn-outline-secondary {
-  border-color: var(--pa-border);
-  color: var(--pa-text-muted);
-  background-color: var(--pa-surface);
+  --bs-btn-color: var(--pa-text-muted);
+  --bs-btn-border-color: rgba(22, 82, 60, 0.16);
+  --bs-btn-hover-color: var(--pa-primary-dark);
+  --bs-btn-hover-bg: rgba(255, 255, 255, 0.9);
+  --bs-btn-hover-border-color: rgba(45, 138, 104, 0.35);
+  --bs-btn-active-color: var(--pa-primary-dark);
+  --bs-btn-active-bg: #ffffff;
 }
 
-.btn-outline-secondary:hover {
-  background-color: var(--pa-primary-light);
-  border-color: rgba(45, 138, 104, 0.3);
-  color: var(--pa-primary-dark);
+.btn-outline-danger {
+  --bs-btn-color: var(--pa-danger);
+  --bs-btn-border-color: rgba(214, 69, 61, 0.35);
+  --bs-btn-hover-bg: var(--pa-danger);
+  --bs-btn-hover-border-color: var(--pa-danger);
+}
+
+.btn-outline-warning {
+  --bs-btn-color: #9a6200;
+  --bs-btn-border-color: rgba(233, 162, 59, 0.5);
+  --bs-btn-hover-color: #3a2604;
+  --bs-btn-hover-bg: #f2b34f;
+  --bs-btn-hover-border-color: #f2b34f;
+}
+
+.btn-outline-success:hover,
+.btn-outline-primary:hover,
+.btn-outline-secondary:hover,
+.btn-outline-danger:hover,
+.btn-outline-warning:hover {
+  transform: translateY(-1px);
 }
 
 .btn-link {
   font-weight: 600;
   text-decoration: none;
+  box-shadow: none;
 }
 
 .btn-link:hover {
   text-decoration: underline;
-  text-underline-offset: 4px;
-  text-decoration-thickness: 1.5px;
 }
 
 .leaflet-container a.btn {
@@ -303,33 +433,68 @@ button,
   color: var(--bs-btn-hover-color);
 }
 
-/* Forms */
+/* 7. Forme
+   ========================================================================== */
 .form-label {
   font-weight: 600;
-  font-size: 0.875rem;
+  font-size: 0.86rem;
   color: var(--pa-text);
   margin-bottom: 0.4rem;
 }
 
 .form-control,
 .form-select {
-  border-color: var(--pa-border);
+  border: 1px solid rgba(22, 82, 60, 0.14);
   border-radius: var(--pa-radius-sm);
-  background-color: var(--pa-surface-alt);
+  background-color: rgba(255, 255, 255, 0.7);
   color: var(--pa-text);
   font-size: 0.95rem;
-  padding-block: 0.55rem;
-  box-shadow: var(--pa-shadow-sm);
+  padding: 0.62rem 0.9rem;
+  box-shadow: inset 0 1px 2px rgba(22, 82, 60, 0.05);
 }
 
-.form-control:hover:not(:focus),
-.form-select:hover:not(:focus) {
-  border-color: rgba(45, 138, 104, 0.4);
+.form-select {
+  padding-right: 2.25rem;
+}
+
+.form-control::placeholder {
+  color: #8a9a91;
+}
+
+.form-control:hover:not(:focus):not(:disabled),
+.form-select:hover:not(:focus):not(:disabled) {
+  border-color: rgba(45, 138, 104, 0.35);
+  background-color: rgba(255, 255, 255, 0.85);
 }
 
 .form-control:focus,
 .form-select:focus {
-  background-color: var(--pa-surface);
+  background-color: #ffffff;
+  border-color: var(--pa-primary);
+  box-shadow: 0 0 0 4px rgba(45, 138, 104, 0.18);
+}
+
+.form-control:disabled,
+.form-select:disabled {
+  background-color: rgba(255, 255, 255, 0.4);
+  color: var(--pa-text-muted);
+}
+
+.form-control.is-invalid,
+.form-select.is-invalid {
+  border-color: var(--pa-danger);
+  background-color: rgba(255, 245, 244, 0.85);
+}
+
+.form-control.is-invalid:focus,
+.form-select.is-invalid:focus {
+  box-shadow: 0 0 0 4px rgba(214, 69, 61, 0.15);
+}
+
+.invalid-feedback {
+  color: var(--pa-danger);
+  font-weight: 500;
+  font-size: 0.82rem;
 }
 
 .form-text {
@@ -337,11 +502,31 @@ button,
   font-size: 0.82rem;
 }
 
-/* Tables */
+.form-check-input {
+  border-color: rgba(22, 82, 60, 0.3);
+  background-color: rgba(255, 255, 255, 0.85);
+}
+
+.form-check-input:checked {
+  background-color: var(--pa-primary);
+  border-color: var(--pa-primary);
+}
+
+.form-check-input:focus {
+  box-shadow: 0 0 0 4px rgba(45, 138, 104, 0.18);
+  border-color: var(--pa-primary);
+}
+
+/* 8. Tablice
+   ========================================================================== */
 .table {
-  --bs-table-hover-bg: rgba(45, 138, 104, 0.08);
-  --bs-table-hover-color: var(--pa-text);
   --bs-table-bg: transparent;
+  --bs-table-color: var(--pa-text);
+  --bs-table-border-color: rgba(22, 82, 60, 0.08);
+  --bs-table-hover-bg: rgba(255, 255, 255, 0.55);
+  --bs-table-hover-color: var(--pa-text);
+  --bs-table-striped-bg: rgba(255, 255, 255, 0.3);
+  margin-bottom: 0;
 }
 
 .table thead th {
@@ -350,90 +535,151 @@ button,
   text-transform: uppercase;
   letter-spacing: 0.08em;
   color: var(--pa-text-muted);
-  border-bottom: 1.5px solid var(--pa-border);
-  padding-block: 0.85rem;
+  background: rgba(255, 255, 255, 0.45);
+  border-bottom: 1px solid rgba(22, 82, 60, 0.1);
+  padding-block: 0.9rem;
   white-space: nowrap;
 }
 
 .table td,
 .table th {
   vertical-align: middle;
+  padding-inline: 0.9rem;
 }
 
-/* Badges & Alerts */
+.table tbody tr {
+  transition: background-color var(--pa-transition);
+}
+
+/* tablica izvan kartice dobiva vlastito staklo */
+.table-responsive:not(.card .table-responsive) {
+  background: rgba(255, 255, 255, 0.55);
+  -webkit-backdrop-filter: var(--pa-glass-blur);
+  backdrop-filter: var(--pa-glass-blur);
+  border: 1px solid var(--pa-glass-border);
+  border-radius: var(--pa-radius);
+  box-shadow: var(--pa-shadow), var(--pa-glass-highlight);
+  overflow: hidden;
+}
+
+/* 9. Značke, upozorenja, padajući izbornici
+   ========================================================================== */
 .badge {
   font-weight: 600;
-  letter-spacing: 0.015em;
-  padding: 0.4em 0.75em;
+  letter-spacing: 0.01em;
+  padding: 0.42em 0.8em;
+  border-radius: var(--pa-radius-pill);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.25);
 }
 
 .alert {
   border: 1px solid transparent;
   border-radius: var(--pa-radius);
+  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(12px);
 }
 
 .alert-danger {
-  background-color: #fdf0ec;
-  border-color: #f4d2c5;
-  color: #8a3a1c;
+  background-color: rgba(253, 236, 234, 0.85);
+  border-color: rgba(214, 69, 61, 0.25);
+  color: #8a2a24;
+}
+
+.alert-warning {
+  background-color: rgba(255, 244, 222, 0.85);
+  border-color: rgba(233, 162, 59, 0.35);
+  color: #6b4500;
 }
 
 .alert-info {
-  background-color: #eef5f9;
-  border-color: #d2e2ed;
-  color: #284f6e;
+  background-color: rgba(232, 243, 250, 0.85);
+  border-color: rgba(60, 130, 180, 0.25);
+  color: #1f4b6e;
 }
 
-/* Dropdowns */
+.alert-success {
+  background-color: rgba(226, 240, 232, 0.85);
+  border-color: rgba(45, 138, 104, 0.25);
+  color: var(--pa-primary-dark);
+}
+
 .dropdown-menu {
-  border: 1px solid var(--pa-border-subtle);
-  box-shadow: var(--pa-shadow-elevated);
+  background: rgba(255, 255, 255, 0.78);
+  -webkit-backdrop-filter: var(--pa-glass-blur);
+  backdrop-filter: var(--pa-glass-blur);
+  border: 1px solid var(--pa-glass-border);
   border-radius: var(--pa-radius);
-  padding: 0.45rem;
-  background-color: var(--pa-surface-alt);
+  box-shadow: var(--pa-shadow-elevated), var(--pa-glass-highlight);
+  padding: 0.4rem;
 }
 
 .dropdown-item {
   font-weight: 500;
-  border-radius: 10px;
-  padding: 0.5rem 0.85rem;
+  border-radius: 12px;
+  padding: 0.52rem 0.9rem;
   color: var(--pa-text);
 }
 
-.dropdown-item.active {
-  background-color: var(--pa-card-bg);
+.dropdown-item:hover,
+.dropdown-item:focus {
+  background-color: rgba(45, 138, 104, 0.1);
+  color: var(--pa-primary-dark);
+}
+
+.dropdown-item.active,
+.dropdown-item:active {
+  background-color: rgba(45, 138, 104, 0.16);
   color: var(--pa-primary-dark);
   font-weight: 600;
 }
 
-.dropdown-item:hover:not(.active) {
-  background-color: var(--pa-primary-light);
+.tooltip-inner {
+  background: rgba(20, 34, 28, 0.9);
+  border-radius: 10px;
+  padding: 0.4rem 0.7rem;
 }
 
-/* Navbar - Rounded & Soft Sage Green */
-.navbar-toggler {
-  border-color: rgba(45, 138, 104, 0.28);
+/* 10. Izbornik (navbar) – liquid glass
+   ========================================================================== */
+.pa-navbar {
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.66) 0%, rgba(255, 255, 255, 0.32) 55%, rgba(226, 240, 232, 0.42) 100%);
+  -webkit-backdrop-filter: blur(24px) saturate(185%);
+  backdrop-filter: blur(24px) saturate(185%);
+  border: 1px solid rgba(255, 255, 255, 0.7);
   border-radius: var(--pa-radius-pill);
-  box-shadow: none;
+  box-shadow:
+    0 10px 30px rgba(22, 82, 60, 0.12),
+    0 2px 6px rgba(22, 82, 60, 0.06),
+    inset 0 1px 0 rgba(255, 255, 255, 0.95),
+    inset 0 -1px 0 rgba(255, 255, 255, 0.35);
+  margin: 0.85rem auto 1.5rem;
+  width: calc(100% - 1.5rem);
+  max-width: 1320px;
+  min-height: 64px;
+  padding-block: 0.4rem;
+  padding-inline: 0.9rem 0.55rem;
+  isolation: isolate;
+}
+
+/* odsjaj na vrhu stakla */
+.pa-navbar::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: radial-gradient(120% 140% at 15% -40%, rgba(255, 255, 255, 0.8), transparent 55%);
+  pointer-events: none;
+  z-index: -1;
+}
+
+.navbar-toggler {
+  border: none;
+  border-radius: var(--pa-radius-pill);
+  padding: 0.45rem 0.6rem;
 }
 
 .navbar-toggler:focus {
-  box-shadow: 0 0 0 3px rgba(45, 138, 104, 0.22);
-}
-
-.pa-navbar {
-  background: var(--pa-navbar-bg);
-  -webkit-backdrop-filter: saturate(1.6) blur(16px);
-  backdrop-filter: saturate(1.6) blur(16px);
-  border: 1px solid rgba(45, 138, 104, 0.2);
-  border-radius: var(--pa-radius-xl);
-  box-shadow: var(--pa-shadow);
-  margin: 0.75rem auto 1.25rem;
-  width: calc(100% - 1.5rem);
-  max-width: 1320px;
-  min-height: 68px;
-  padding-block: 0.45rem;
-  padding-inline: 1.25rem;
+  box-shadow: 0 0 0 4px rgba(45, 138, 104, 0.22);
 }
 
 .pa-brand {
@@ -441,9 +687,9 @@ button,
   align-items: center;
   gap: 0.65rem;
   font-family: var(--pa-font-display);
-  font-weight: 700;
-  font-size: 1.32rem;
-  letter-spacing: -0.03em;
+  font-weight: 800;
+  font-size: 1.3rem;
+  letter-spacing: -0.035em;
   color: var(--pa-primary-dark);
   text-decoration: none;
 }
@@ -458,19 +704,23 @@ button,
   flex: 0 0 auto;
   display: grid;
   place-items: center;
-  background: var(--pa-primary);
-  border-radius: 13px;
+  background: var(--pa-primary-grad);
+  border-radius: 14px;
   color: #ffffff;
-  box-shadow: 0 3px 10px rgba(45, 138, 104, 0.32), inset 0 1px 0 rgba(255, 255, 255, 0.28);
+  box-shadow: 0 6px 14px -4px rgba(45, 138, 104, 0.55), inset 0 1px 0 rgba(255, 255, 255, 0.35);
   transition: transform var(--pa-transition-bounce);
 }
 
 .pa-brand:hover .pa-brand-mark {
-  transform: rotate(-8deg) scale(1.06);
+  transform: rotate(-8deg) scale(1.07);
+}
+
+.pa-brand-ind {
+  color: var(--pa-text-muted);
+  opacity: 0.8;
 }
 
 .pa-brand-badge {
-  font-family: var(--pa-font-sans);
   font-size: 0.68rem;
   font-weight: 600;
   letter-spacing: 0.05em;
@@ -498,23 +748,61 @@ button,
 .pa-nav-dropdown > .nav-link:hover,
 .pa-nav-dropdown > .nav-link.show {
   color: var(--pa-primary-dark);
-  background: rgba(255, 255, 255, 0.65);
+  background: rgba(255, 255, 255, 0.55);
 }
 
+/* aktivna stavka = manja staklena "kapljica" */
 .pa-nav-link.active {
   color: var(--pa-primary-dark);
-  background: #ffffff;
   font-weight: 600;
-  box-shadow: 0 2px 6px rgba(22, 82, 60, 0.08);
+  background: rgba(255, 255, 255, 0.82);
+  box-shadow:
+    0 2px 8px rgba(22, 82, 60, 0.1),
+    inset 0 1px 0 #ffffff,
+    inset 0 0 0 1px rgba(45, 138, 104, 0.12);
 }
 
 .pa-nav-cta {
-  border-radius: var(--pa-radius-pill);
-  font-weight: 600;
   padding-inline: 1.3rem;
 }
 
-/* Hero Section */
+/* mobitel: bočni izbornik kao staklena ploča */
+@media (max-width: 991.98px) {
+  .offcanvas.pa-offcanvas {
+    background: rgba(245, 249, 246, 0.74);
+    -webkit-backdrop-filter: blur(26px) saturate(180%);
+    backdrop-filter: blur(26px) saturate(180%);
+    border-left: 1px solid rgba(255, 255, 255, 0.7) !important;
+    box-shadow: -12px 0 40px rgba(22, 82, 60, 0.15);
+  }
+
+  .pa-offcanvas .offcanvas-header {
+    border-bottom-color: rgba(45, 138, 104, 0.12) !important;
+  }
+
+  .pa-offcanvas .pa-nav-link {
+    display: block;
+    padding: 0.72rem 1rem;
+    font-size: 1.02rem;
+  }
+
+  .pa-offcanvas .dropdown-menu {
+    box-shadow: none;
+    background: rgba(255, 255, 255, 0.5);
+  }
+}
+
+/* svjetlija pozadina iza bočnog izbornika i modala (Bootstrap stavlja 50% crne) */
+.offcanvas-backdrop.show {
+  opacity: 0.18;
+}
+
+.modal-backdrop.show {
+  opacity: 0.28;
+}
+
+/* 11. Hero na početnoj
+   ========================================================================== */
 .pa-hero {
   position: relative;
   overflow: hidden;
@@ -522,22 +810,39 @@ button,
   color: #ffffff;
   border-radius: var(--pa-radius-xl);
   background:
-    radial-gradient(65% 120% at 90% -15%, rgba(255, 255, 255, 0.18), transparent 58%),
-    radial-gradient(55% 110% at -5% 115%, rgba(224, 122, 47, 0.32), transparent 62%),
-    linear-gradient(135deg, #134a36 0%, #1e6b4f 52%, #2d8a68 100%);
-  box-shadow: var(--pa-shadow-elevated), inset 0 1px 0 rgba(255, 255, 255, 0.16);
+    radial-gradient(60% 120% at 92% -20%, rgba(255, 255, 255, 0.22), transparent 58%),
+    radial-gradient(50% 110% at -5% 115%, rgba(240, 140, 60, 0.38), transparent 62%),
+    linear-gradient(135deg, #0f3f2d 0%, #1b6449 50%, #2d8a68 100%);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  box-shadow: var(--pa-shadow-elevated), inset 0 1px 0 rgba(255, 255, 255, 0.2);
 }
 
+/* uzorak šapa koji blijedi prema lijevo */
 .pa-hero::before {
   content: "";
   position: absolute;
   inset: 0;
   z-index: 0;
   pointer-events: none;
-  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='120' height='120' viewBox='0 0 32 32'><g fill='%23ffffff' fill-opacity='0.06'><ellipse cx='16' cy='21.5' rx='7.4' ry='5.8'/><ellipse cx='7.4' cy='14.6' rx='3.2' ry='4.2' transform='rotate(-20 7.4 14.6)'/><ellipse cx='13' cy='10.2' rx='3.2' ry='4.2' transform='rotate(-7 13 10.2)'/><ellipse cx='19' cy='10.2' rx='3.2' ry='4.2' transform='rotate(7 19 10.2)'/><ellipse cx='24.6' cy='14.6' rx='3.2' ry='4.2' transform='rotate(20 24.6 14.6)'/></g></svg>");
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='120' height='120' viewBox='0 0 32 32'><g fill='%23ffffff' fill-opacity='0.07'><ellipse cx='16' cy='21.5' rx='7.4' ry='5.8'/><ellipse cx='7.4' cy='14.6' rx='3.2' ry='4.2' transform='rotate(-20 7.4 14.6)'/><ellipse cx='13' cy='10.2' rx='3.2' ry='4.2' transform='rotate(-7 13 10.2)'/><ellipse cx='19' cy='10.2' rx='3.2' ry='4.2' transform='rotate(7 19 10.2)'/><ellipse cx='24.6' cy='14.6' rx='3.2' ry='4.2' transform='rotate(20 24.6 14.6)'/></g></svg>");
   background-size: 130px 130px;
-  -webkit-mask-image: linear-gradient(105deg, transparent 42%, #000 100%);
-  mask-image: linear-gradient(105deg, transparent 42%, #000 100%);
+  -webkit-mask-image: linear-gradient(105deg, transparent 40%, #000 100%);
+  mask-image: linear-gradient(105deg, transparent 40%, #000 100%);
+}
+
+/* svjetlosna mrlja koja daje dubinu */
+.pa-hero::after {
+  content: "";
+  position: absolute;
+  width: 420px;
+  height: 420px;
+  right: -120px;
+  top: -160px;
+  z-index: 0;
+  pointer-events: none;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(110, 231, 183, 0.35), transparent 65%);
+  filter: blur(10px);
 }
 
 .pa-hero > * {
@@ -553,31 +858,35 @@ button,
   font-weight: 700;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  color: #edf7f2;
-  padding: 0.42rem 0.9rem;
+  color: #effaf4;
+  padding: 0.42rem 0.95rem;
   border-radius: var(--pa-radius-pill);
-  background: rgba(255, 255, 255, 0.12);
-  border: 1px solid rgba(255, 255, 255, 0.24);
-  -webkit-backdrop-filter: blur(6px);
-  backdrop-filter: blur(6px);
+  background: rgba(255, 255, 255, 0.14);
+  border: 1px solid rgba(255, 255, 255, 0.28);
+  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.25);
 }
 
 .pa-hero h1 {
   color: #ffffff;
-  font-size: clamp(2rem, 3.6vw, 2.85rem);
-  font-weight: 700;
-  line-height: 1.08;
-  letter-spacing: -0.03em;
+  font-size: clamp(2.1rem, 4vw, 3.1rem);
+  font-weight: 800;
+  line-height: 1.05;
+  letter-spacing: -0.035em;
 }
 
+.pa-hero-akcent,
 .pa-hero-accent {
   font-style: normal;
-  color: #f8c27e;
-  text-shadow: 0 2px 16px rgba(224, 122, 47, 0.25);
+  background: linear-gradient(120deg, #ffd59e 0%, #f8a65a 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
 }
 
 .pa-hero-lead {
-  font-size: 1.05rem;
+  font-size: 1.06rem;
   line-height: 1.65;
   color: rgba(255, 255, 255, 0.88);
   max-width: 48ch;
@@ -586,36 +895,39 @@ button,
 .pa-hero-btn-cta {
   background: #ffffff;
   color: var(--pa-primary-dark);
-  font-weight: 600;
+  font-weight: 700;
   border: none;
   border-radius: var(--pa-radius-pill);
-  padding: 0.7rem 1.6rem;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.18), inset 0 -2px 0 rgba(22, 82, 60, 0.14);
+  padding: 0.75rem 1.7rem;
+  box-shadow: 0 8px 22px -8px rgba(0, 0, 0, 0.35), inset 0 -2px 0 rgba(22, 82, 60, 0.12);
 }
 
 .pa-hero-btn-cta:hover {
-  background: #f7fbf8;
+  background: #f4fbf7;
   color: var(--pa-primary-dark);
   transform: translateY(-2px);
-  box-shadow: 0 14px 30px -8px rgba(0, 0, 0, 0.35), inset 0 -2px 0 rgba(22, 82, 60, 0.14);
+  box-shadow: 0 16px 32px -10px rgba(0, 0, 0, 0.4), inset 0 -2px 0 rgba(22, 82, 60, 0.12);
 }
 
 .pa-hero-btn-cta:active {
-  transform: translateY(0) scale(0.985);
+  transform: translateY(0) scale(0.98);
 }
 
 .pa-hero-btn-outline {
-  border: 1.5px solid rgba(255, 255, 255, 0.55);
-  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.45);
+  background: rgba(255, 255, 255, 0.1);
+  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
   color: #ffffff;
   font-weight: 600;
   border-radius: var(--pa-radius-pill);
-  padding: 0.7rem 1.6rem;
+  padding: 0.75rem 1.7rem;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.25);
 }
 
 .pa-hero-btn-outline:hover {
-  background: rgba(255, 255, 255, 0.16);
-  border-color: #ffffff;
+  background: rgba(255, 255, 255, 0.2);
+  border-color: rgba(255, 255, 255, 0.8);
   color: #ffffff;
   transform: translateY(-2px);
 }
@@ -625,233 +937,260 @@ button,
   font-variant-numeric: tabular-nums;
 }
 
-/* Footer */
-/* ==========================================================================
-   Footer - Layered Organic Forest & Glass Bento Design
+/* 12. Straničenje, kartice (tabs), modal
    ========================================================================== */
-.pa-footer {
-  position: relative;
-  overflow: hidden;
-  isolation: isolate;
-  margin-top: 4rem;
-  margin-bottom: 1.5rem;
-  border-radius: 28px;
-  padding: 2.75rem 2.75rem 2rem;
-  background:
-    radial-gradient(60% 100% at 95% 5%, rgba(45, 138, 104, 0.35), transparent 60%),
-    radial-gradient(45% 90% at 5% 100%, rgba(224, 122, 47, 0.22), transparent 65%),
-    linear-gradient(155deg, #0d3325 0%, #144734 55%, #1a5941 100%);
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  box-shadow: var(--pa-shadow-elevated), inset 0 1px 0 rgba(255, 255, 255, 0.14);
-  color: #c2d6cc;
-  font-size: 0.92rem;
-}
-
-/* Suptilni organski/topografski linijski uzorak u pozadini */
-.pa-footer::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  z-index: 0;
-  pointer-events: none;
-  opacity: 0.07;
-  background-image: url("data:image/svg+xml,%3Csvg width='180' height='180' viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0 90 Q 45 45, 90 90 T 180 90 M0 135 Q 45 90, 90 135 T 180 135 M0 45 Q 45 0, 90 45 T 180 45' fill='none' stroke='%23ffffff' stroke-width='1.5'/%3E%3C/svg%3E");
-  background-size: 180px 180px;
-}
-
-.pa-footer > * {
-  position: relative;
-  z-index: 1;
-}
-
-/* Gornja "Staklena" kartica unutar footera (CTA / Istaknuta traka) */
-.pa-footer-banner {
-  display: flex;
+.pagination {
+  --bs-pagination-color: var(--pa-text-muted);
+  --bs-pagination-bg: rgba(255, 255, 255, 0.6);
+  --bs-pagination-border-color: rgba(255, 255, 255, 0.7);
+  --bs-pagination-hover-color: var(--pa-primary-dark);
+  --bs-pagination-hover-bg: #ffffff;
+  --bs-pagination-hover-border-color: rgba(45, 138, 104, 0.25);
+  --bs-pagination-active-color: #ffffff;
+  --bs-pagination-active-bg: var(--pa-primary);
+  --bs-pagination-active-border-color: var(--pa-primary);
+  --bs-pagination-disabled-bg: rgba(255, 255, 255, 0.35);
+  --bs-pagination-disabled-color: #a3b2aa;
+  --bs-pagination-focus-box-shadow: 0 0 0 4px rgba(45, 138, 104, 0.2);
+  gap: 0.3rem;
   flex-wrap: wrap;
-  align-items: center;
-  justify-content: space-between;
-  gap: 1.5rem;
-  padding: 1.5rem 1.75rem;
-  margin-bottom: 2.5rem;
-  border-radius: 20px;
-  background: rgba(255, 255, 255, 0.07);
-  border: 1px solid rgba(255, 255, 255, 0.14);
+}
+
+.pagination .page-link {
+  border-radius: var(--pa-radius-pill) !important;
+  min-width: 2.4rem;
+  text-align: center;
+  font-weight: 600;
   -webkit-backdrop-filter: blur(10px);
   backdrop-filter: blur(10px);
+  box-shadow: var(--pa-shadow-sm);
 }
 
-.pa-footer-banner-title {
-  font-family: var(--pa-font-display) !important;
-  font-size: 1.25rem;
-  font-weight: 700;
-  color: #ffffff;
-  margin: 0 0 0.25rem;
-  letter-spacing: -0.02em;
+.pagination .page-item.active .page-link {
+  background-image: var(--pa-primary-grad);
+  box-shadow: 0 6px 14px -6px rgba(45, 138, 104, 0.6);
 }
 
-.pa-footer-banner-sub {
-  color: #b8cfc4;
-  margin: 0;
-  font-size: 0.9rem;
-}
-
-/* Brand & Logo */
-.pa-footer-mark {
-  width: 46px;
-  height: 46px;
-  flex: 0 0 auto;
-  display: grid;
-  place-items: center;
-  border-radius: 14px;
-  background: linear-gradient(145deg, rgba(255, 255, 255, 0.16), rgba(255, 255, 255, 0.06));
-  border: 1px solid rgba(255, 255, 255, 0.22);
-  color: #ffffff;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-  transition: transform var(--pa-transition-bounce);
-}
-
-.pa-footer-mark:hover {
-  transform: rotate(-6deg) scale(1.06);
-}
-
-.pa-footer-brand {
-  font-family: var(--pa-font-display) !important;
-  font-size: 1.35rem;
-  font-weight: 700;
-  color: #ffffff;
-  letter-spacing: -0.025em;
-}
-
-.pa-footer-tagline {
-  font-size: 0.9rem;
-  line-height: 1.6;
-  color: #b4cbc0;
-  max-width: 36ch;
-}
-
-/* Naslovi stupaca i linkovi */
-.pa-footer-heading {
-  font-size: 0.75rem;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.09em;
-  color: #f8c27e;
-  margin-bottom: 1rem;
-}
-
-.pa-footer-links {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 0.6rem;
-}
-
-.pa-footer-link {
-  position: relative;
-  display: inline-flex;
-  align-items: center;
-  gap: 0.4rem;
-  color: #d6e6de;
-  text-decoration: none;
-  font-weight: 500;
+.nav-tabs {
+  gap: 0.35rem;
+  border-bottom: none;
+  padding: 0.3rem;
   width: fit-content;
-}
-
-.pa-footer-link::after {
-  content: "";
-  position: absolute;
-  left: 0;
-  bottom: -2px;
-  width: 0;
-  height: 1.5px;
-  background-color: #f8c27e;
-  transition: width var(--pa-transition);
-}
-
-.pa-footer-link:hover {
-  color: #ffffff;
-  transform: translateX(3px);
-}
-
-.pa-footer-link:hover::after {
-  width: 100%;
-}
-
-/* Donja traka (Copyright + Status pilula) */
-.pa-footer-bottom {
-  margin-top: 2.25rem;
-  padding-top: 1.5rem;
-  border-top: 1px solid rgba(255, 255, 255, 0.12);
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: space-between;
-  gap: 1rem;
-}
-
-.pa-footer-copyright {
-  font-weight: 500;
-  color: #a9c2b6;
-  font-size: 0.85rem;
-}
-
-.pa-footer-status {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.5rem;
-  padding: 0.35rem 0.85rem;
+  max-width: 100%;
   border-radius: var(--pa-radius-pill);
-  background: rgba(255, 255, 255, 0.08);
-  border: 1px solid rgba(255, 255, 255, 0.14);
-  color: #e2f2ea;
-  font-size: 0.8rem;
+  background: rgba(255, 255, 255, 0.45);
+  -webkit-backdrop-filter: blur(14px);
+  backdrop-filter: blur(14px);
+  border: 1px solid var(--pa-glass-border);
+  box-shadow: var(--pa-shadow-sm), var(--pa-glass-highlight);
+}
+
+.nav-tabs .nav-link {
+  border: none;
+  border-radius: var(--pa-radius-pill);
+  color: var(--pa-text-muted);
   font-weight: 600;
+  padding: 0.5rem 1.1rem;
 }
 
-.pa-footer-status-dot {
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  background-color: #4ade80;
-  box-shadow: 0 0 8px #4ade80;
+.nav-tabs .nav-link:hover {
+  color: var(--pa-primary-dark);
+  background: rgba(255, 255, 255, 0.55);
 }
-/* ==========================================================================
-   Global Sans-Serif & React-Chrono Overrides
+
+.nav-tabs .nav-link.active {
+  color: var(--pa-primary-dark);
+  background: #ffffff;
+  box-shadow: 0 2px 8px rgba(22, 82, 60, 0.12);
+}
+
+.modal-content {
+  background: rgba(255, 255, 255, 0.82);
+  -webkit-backdrop-filter: blur(24px) saturate(170%);
+  backdrop-filter: blur(24px) saturate(170%);
+  border: 1px solid var(--pa-glass-border);
+  border-radius: var(--pa-radius-lg);
+  box-shadow: var(--pa-shadow-elevated), var(--pa-glass-highlight);
+}
+
+.modal-header,
+.modal-footer {
+  border-color: rgba(22, 82, 60, 0.08);
+}
+
+/* 13. Karte (Leaflet)
    ========================================================================== */
-*,
-*::before,
-*::after {
-  --timeline-font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif !important;
-  font-family: var(--pa-font-sans) !important;
+.leaflet-container {
+  border-radius: var(--pa-radius);
+  font-family: var(--pa-font-sans);
+  box-shadow: inset 0 0 0 1px rgba(22, 82, 60, 0.08);
 }
 
-h1, h2, h3, h4, h5, h6,
-.h1, .h2, .h3, .h4, .h5, .h6,
-.pa-brand,
-.pa-footer-brand {
-  font-family: var(--pa-font-display) !important;
+.leaflet-bar {
+  border: none !important;
+  border-radius: 14px !important;
+  overflow: hidden;
+  box-shadow: var(--pa-shadow), var(--pa-glass-highlight) !important;
 }
 
-/* Preserve icon fonts if used */
-[class^="bi-"], [class*=" bi-"],
-[class^="fa-"], [class*=" fa-"],
-.material-icons {
-  font-family: "bootstrap-icons", "Font Awesome 6 Free", "Font Awesome 5 Free", "Material Icons" !important;
+.leaflet-bar a {
+  background: rgba(255, 255, 255, 0.82) !important;
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+  color: var(--pa-primary-dark) !important;
+  border-bottom-color: rgba(22, 82, 60, 0.08) !important;
+  width: 34px !important;
+  height: 34px !important;
+  line-height: 34px !important;
 }
 
-/* React-Chrono Card Styling - Solid Soft Sage Green */
-[class*="TimelineCardContent"],
-[class*="timeline-card-content"],
-[class*="CardWrapper"],
-[class*="card-wrapper"] {
-  background: var(--pa-card-bg) !important;
-  border: 1px solid rgba(45, 138, 104, 0.2) !important;
+.leaflet-bar a:hover {
+  background: #ffffff !important;
+}
+
+.leaflet-popup-content-wrapper {
+  background: rgba(255, 255, 255, 0.88);
+  -webkit-backdrop-filter: blur(16px) saturate(170%);
+  backdrop-filter: blur(16px) saturate(170%);
+  border: 1px solid var(--pa-glass-border);
+  border-radius: var(--pa-radius);
+  box-shadow: var(--pa-shadow-elevated);
+}
+
+.leaflet-popup-content {
+  margin: 0.9rem 1.1rem;
+  line-height: 1.5;
+}
+
+.leaflet-popup-tip {
+  background: rgba(255, 255, 255, 0.88);
+}
+
+.leaflet-container a.leaflet-popup-close-button {
+  top: 6px;
+  right: 6px;
+  color: var(--pa-text-muted);
+}
+
+.leaflet-control-attribution {
+  background: rgba(255, 255, 255, 0.65) !important;
+  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
+  border-top-left-radius: 10px;
+  font-size: 0.68rem;
+}
+
+/* 14. Vremenska crta (react-chrono) i kalendar (react-datepicker)
+   ========================================================================== */
+.pa-timeline-wrapper [class*="TimelineCardContent"],
+.pa-timeline-wrapper [class*="timeline-card-content"],
+.pa-timeline-wrapper [class*="CardWrapper"],
+.pa-timeline-wrapper [class*="card-wrapper"] {
+  background: rgba(255, 255, 255, 0.7) !important;
+  -webkit-backdrop-filter: blur(14px);
+  backdrop-filter: blur(14px);
+  border: 1px solid var(--pa-glass-border) !important;
   border-radius: var(--pa-radius) !important;
-  box-shadow: var(--pa-shadow) !important;
+  box-shadow: var(--pa-shadow-sm), var(--pa-glass-highlight) !important;
 }
 
 .react-datepicker-popper {
   z-index: 9999 !important;
+}
+
+.react-datepicker {
+  font-family: var(--pa-font-sans) !important;
+  border: 1px solid var(--pa-glass-border) !important;
+  border-radius: var(--pa-radius) !important;
+  background: rgba(255, 255, 255, 0.92) !important;
+  -webkit-backdrop-filter: var(--pa-glass-blur);
+  backdrop-filter: var(--pa-glass-blur);
+  box-shadow: var(--pa-shadow-elevated);
+  overflow: hidden;
+}
+
+.react-datepicker__header {
+  background: rgba(226, 240, 232, 0.7) !important;
+  border-bottom: 1px solid rgba(22, 82, 60, 0.08) !important;
+}
+
+.react-datepicker__day--selected,
+.react-datepicker__day--keyboard-selected,
+.react-datepicker__time-list-item--selected {
+  background: var(--pa-primary) !important;
+  color: #ffffff !important;
+  border-radius: 50% !important;
+}
+
+.react-datepicker__day:hover {
+  border-radius: 50% !important;
+  background: rgba(45, 138, 104, 0.12) !important;
+}
+
+.react-datepicker__triangle {
+  display: none;
+}
+
+/* 15. Pristupačnost, ispis, preglednici bez blura
+   ========================================================================== */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+
+  .card:hover,
+  .btn:hover {
+    transform: none;
+  }
+}
+
+/* manje zamućenja na mobitelu – štedi bateriju i ubrzava skrolanje */
+@media (max-width: 767.98px) {
+  .card {
+    -webkit-backdrop-filter: blur(10px) saturate(150%);
+    backdrop-filter: blur(10px) saturate(150%);
+  }
+
+  .card:hover {
+    transform: none;
+  }
+}
+
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  .card,
+  .modal-content,
+  .dropdown-menu,
+  .pa-navbar {
+    background: rgba(250, 252, 250, 0.97) !important;
+  }
+
+  .offcanvas.pa-offcanvas {
+    background: #f5f9f6;
+  }
+}
+
+@media print {
+  body::before,
+  .pa-navbar,
+  .loading-spinner-overlay {
+    display: none !important;
+  }
+
+  .card {
+    background: #ffffff !important;
+    box-shadow: none;
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+  }
+
+  .pa-fade-in,
+  .pa-ulaz {
+    animation: none !important;
+  }
 }

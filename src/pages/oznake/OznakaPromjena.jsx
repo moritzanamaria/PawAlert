@@ -104,20 +104,11 @@ export default function OznakaPromjena() {
     }
 
     return (
-        <Container className="my-5" style={{ maxWidth: "850px" }}>
+        <Container className="my-5" >
             <Card className="shadow-sm border-0 rounded-3">
                 <Card.Header className="bg-warning text-dark p-4 rounded-top-3 d-flex align-items-center gap-3">
-                    <lord-icon
-                        src="https://cdn.lordicon.com/puzgkqsp.json"
-                        trigger="loop"
-                        colors="primary:#212529,secondary:#495057"
-                        style={{ width: "45px", height: "45px" }}
-                    ></lord-icon>
                     <div>
-                        <h3 className="mb-0 fw-bold fs-4">Promjena oznake</h3>
-                        <p className="mb-0 text-muted small">
-                            Ažurirajte naziv i boju oznake.
-                        </p>
+                        <h3 className="p-3 mb-0 fw-bold fs-4">Promjena oznake</h3>
                     </div>
                 </Card.Header>
 
