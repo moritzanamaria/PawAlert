@@ -11,9 +11,12 @@ export default function Registracija() {
     const [errors, setErrors] = useState({})
 
     async function registriraj(operater) {
-        await OperaterService.dodaj(operater).then(() => {
+        const rez = await OperaterService.dodaj(operater)
+        if (!rez.success) {
+            setErrors ({ email: rez.message })
+            return
+        }
             navigate(RouteNames.LOGIN)
-        })
     }
 
     function odradiSubmit(e) {

@@ -53,9 +53,8 @@ function PregledPrijavaChart({ podaci }) {
         align: "left",
         style: {
           color: "#212529",
-          fontWeight: "600",
+          fontWeight: "900",
           fontSize: "16px",
-          fontWeight: "bold"
         },
       },
       credits: {
@@ -84,22 +83,9 @@ function PregledPrijavaChart({ podaci }) {
             },
           ],
           data: [
-            {
-              name: "Hitne",
-              y: podaci.hitne.length,
-              color: "#dc3545",
-            },
-           
-            {
-              name: "Otvorene",
-              y: podaci.otvorene,
-              color: "#198754", 
-            },
-            {
-              name: "Zatvorene",
-              y: podaci.zatvorene,
-              color: "#6c757d", 
-            },
+            { name: "Hitne", y: podaci.hitne.length, color: "#dc3545" },
+            { name: "Otvorene", y: podaci.otvorene - podaci.hitne.length, color: "#198754" },
+            { name: "Zatvorene", y: podaci.zatvorene, color: "#6c757d" },
           ].filter((item) => item.y > 0),
         },
       ],
@@ -217,19 +203,19 @@ export default function NadzornaPloca() {
 
   return (
     <Container className="my-4">
-        <div className="d-flex gap-2">
-      <h3 className="fw-bold mb-4">📊 Nadzorna ploča</h3>
-       <Button
-                            onClick={izveziSveUXml}
-                            variant="outline-secondary"
-                            className="btn-icon p-2 rounded-circle shadow-sm border d-flex align-items-center justify-content-center"
-                            style={{ width: "38px", height: "38px" }}
-                            title="Izvezi cijelu bazu u XML"
-                        >
-                            <BsFileEarmarkCode size={20} />
-                        </Button>
-</div>
-   <PregledPrijavaChart podaci={podaci} />
+      <div className="d-flex gap-2">
+        <h3 className="fw-bold mb-4">📊 Nadzorna ploča</h3>
+        <Button
+          onClick={izveziSveUXml}
+          variant="outline-secondary"
+          className="btn-icon p-2 rounded-circle shadow-sm border d-flex align-items-center justify-content-center"
+          style={{ width: "38px", height: "38px" }}
+          title="Izvezi cijelu bazu u XML"
+        >
+          <BsFileEarmarkCode size={20} />
+        </Button>
+      </div>
+      <PregledPrijavaChart podaci={podaci} />
 
       <Row className="g-3 mb-4">
         <Col lg={6}>

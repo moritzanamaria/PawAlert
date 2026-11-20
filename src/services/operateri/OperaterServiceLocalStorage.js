@@ -25,46 +25,51 @@ async function get() {
         email: op.email,
         uloga: op.uloga
     }))
-    return {success: true, data: [...operateriBezcLozinki]}
+    return { success: true, data: [...operateriBezcLozinki] }
 }
 
 async function getById(id) {
     const operateri = dohvatiSveIzStorage()
     const operater = operateri.find(o => o.id === id)
     if (!operater) {
-        return {success: false, data: null}
+        return { success: false, data: null }
     }
-    return {success: true, data: {
-        id: operater.id,
-        email: operater.email,
-        uloga: operater.uloga
-    }}
+    return {
+        success: true, data: {
+            id: operater.id,
+            email: operater.email,
+            uloga: operater.uloga
+        }
+    }
 }
 
 async function dodaj(operater) {
     const operateri = dohvatiSveIzStorage()
-    
+    if (operateri.some(o => o.email.toLowerCase() === operater.email.toLowerCase())) {
+        return { success: false, message: "Operater s tim emailom već postoji." }
+    }
     if (operateri.length === 0) {
         operater.id = '1'
     } else {
-        operater.id = String((operateri[operateri.length - 1].id) + 1)
+        const maxId = Math.max(...operateri.map(o => o.id))
+        operater.id = String(maxId + 1)
     }
-    
+
     operater.lozinka = bcrypt.hashSync(operater.lozinka, 10)
-    
+
     operateri.push(operater)
     spremiUStorage(operateri)
-    return {success: true, data: {id: operater.id, email: operater.email}}
+    return { success: true, data: { id: operater.id, email: operater.email } }
 }
 
 async function promijeni(id, operater) {
     const operateri = dohvatiSveIzStorage()
     const index = operateri.findIndex(o => o.id === id)
-    
+
     if (index === -1) {
-        return {success: false, message: "Operater nije pronađen"}
+        return { success: false, message: "Operater nije pronađen" }
     }
-    
+
     operateri[index] = {
         ...operateri[index],
         email: operater.email,
@@ -72,50 +77,50 @@ async function promijeni(id, operater) {
         id: id
     }
     spremiUStorage(operateri)
-    return {success: true, data: {id: operateri[index].id, email: operateri[index].email, uloga: operateri[index].uloga}}
+    return { success: true, data: { id: operateri[index].id, email: operateri[index].email, uloga: operateri[index].uloga } }
 }
 
 async function promijeniLozinku(id, novaLozinka) {
     const operateri = dohvatiSveIzStorage()
     const index = operateri.findIndex(o => o.id === id)
-    
+
     if (index === -1) {
-        return {success: false, message: "Operater nije pronađen"}
+        return { success: false, message: "Operater nije pronađen" }
     }
-    
+
     operateri[index].lozinka = bcrypt.hashSync(novaLozinka, 10)
     spremiUStorage(operateri)
-    
-    return {success: true, message: "Lozinka uspješno promijenjena"}
+
+    return { success: true, message: "Lozinka uspješno promijenjena" }
 }
 
 async function obrisi(id) {
     let operateri = dohvatiSveIzStorage()
     const initialLength = operateri.length
     operateri = operateri.filter(o => o.id !== id)
-    
+
     if (operateri.length === initialLength) {
-        return {success: false, message: "Operater nije pronađen"}
+        return { success: false, message: "Operater nije pronađen" }
     }
-    
+
     spremiUStorage(operateri)
-    return {success: true, message: 'Operater obrisan'}
+    return { success: true, message: 'Operater obrisan' }
 }
 
 async function prijava(email, lozinka) {
     const operateri = dohvatiSveIzStorage()
     const operater = operateri.find(o => o.email === email)
     if (!operater) {
-        return {success: false, message: "Email i lozinka ne odgovaraju"} // iako bi ovdje mogli napisati i da email ne postoji ali to onda napadačima omogućuje da zna tko je a tko nije registriran
+        return { success: false, message: "Email i lozinka ne odgovaraju" } // iako bi ovdje mogli napisati i da email ne postoji ali to onda napadačima omogućuje da zna tko je a tko nije registriran
     }
-    
+
     const isMatch = bcrypt.compareSync(lozinka, operater.lozinka)
     if (!isMatch) {
-        return {success: false, message: "Email i lozinka ne odgovaraju"}
+        return { success: false, message: "Email i lozinka ne odgovaraju" }
     }
-    
+
     return {
-        success: true, 
+        success: true,
         data: {
             id: operater.id,
             email: operater.email,

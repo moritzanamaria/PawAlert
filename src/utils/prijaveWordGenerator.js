@@ -7,9 +7,8 @@ export const generirajPrijaveWord = async (prijave = [], vrste = [], tipovi = []
         return;
     }
 
-    const getNazivVrste = (id) => vrste.find((v) => Number(v.id) === Number(id))?.naziv ?? "-";
-    const getNazivTipa = (id) => tipovi.find((t) => Number(t.id) === Number(id))?.naziv ?? "-";
-
+    const getNazivVrste = (id) => vrste.find((v) => String(v.id) === String(id))?.naziv ?? "-";
+    const getNazivTipa = (id) => tipovi.find((t) => String(t.id) === String(id))?.naziv ?? "-";
     const docChildren = [];
 
     prijave.forEach((prijava, index) => {
@@ -23,11 +22,10 @@ export const generirajPrijaveWord = async (prijave = [], vrste = [], tipovi = []
             prijava.oznaka_id != null ? [prijava.oznaka_id] : (prijava.oznaka != null ? [prijava.oznaka] : [])
         );
         const naziviOznaka = oznakeIDs
-            .map(id => oznake.find(o => Number(o.id) === Number(typeof id === 'object' ? id.id : id))?.naziv)
-            .filter(Boolean)
+            .map(id => oznake.find(o => String(o.id) === String(typeof id === 'object' ? id.id : id))?.naziv).filter(Boolean)
             .join(', ');
 
-        const datumStr = prijava.datum 
+        const datumStr = prijava.datum
             ? new Date(prijava.datum).toLocaleDateString('hr-HR', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' })
             : 'Nepoznato';
 
@@ -99,7 +97,7 @@ function stvoriZaglavljeTablice(kol1, kol2) {
                 width: { size: 35, type: WidthType.PERCENTAGE },
                 shading: { fill: "1E293B", type: ShadingType.CLEAR, color: "auto" },
                 children: [
-                    new Paragraph({ 
+                    new Paragraph({
                         children: [new TextRun({ text: kol1, bold: true, size: 22, color: "FFFFFF" })],
                         spacing: { before: 160, after: 160 }
                     })
@@ -110,7 +108,7 @@ function stvoriZaglavljeTablice(kol1, kol2) {
                 width: { size: 65, type: WidthType.PERCENTAGE },
                 shading: { fill: "1E293B", type: ShadingType.CLEAR, color: "auto" },
                 children: [
-                    new Paragraph({ 
+                    new Paragraph({
                         children: [new TextRun({ text: kol2, bold: true, size: 22, color: "FFFFFF" })],
                         spacing: { before: 160, after: 160 }
                     })
@@ -127,7 +125,7 @@ function stvoriRedakTablice(label, value) {
             new TableCell({
                 width: { size: 35, type: WidthType.PERCENTAGE },
                 children: [
-                    new Paragraph({ 
+                    new Paragraph({
                         children: [new TextRun({ text: label, bold: true, size: 22, color: "334155" })],
                         spacing: { before: 140, after: 140 }
                     })
@@ -143,7 +141,7 @@ function stvoriRedakTablice(label, value) {
             new TableCell({
                 width: { size: 65, type: WidthType.PERCENTAGE },
                 children: [
-                    new Paragraph({ 
+                    new Paragraph({
                         children: [new TextRun({ text: String(value), size: 22, color: "0F172A" })],
                         spacing: { before: 140, after: 140 }
                     })

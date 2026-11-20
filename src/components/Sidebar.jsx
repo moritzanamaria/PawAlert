@@ -80,8 +80,7 @@ function Sidebar({ prijave = [], oznake = [] }) {
                   {prijava.oznake && prijava.oznake.length > 0 && (
                     <div className="d-flex flex-column align-items-end gap-2">
                       {prijava.oznake.map((idOznake) => {
-                        const o = oznake.find((item) => item.id === Number(idOznake));
-                        if (!o) return null;
+                        const o = oznake.find((item) => String(item.id) === String(idOznake)); if (!o) return null;
                         return (
                           <span
                             key={o.id}

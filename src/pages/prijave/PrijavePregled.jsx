@@ -19,7 +19,7 @@ export default function PrijavePregled() {
   const [vrste, setVrste] = useState([]);
   const [tipovi, setTipovi] = useState([]);
   const [oznake, setOznake] = useState([]);
-  
+
   const navigate = useNavigate();
 
   const [trenutnaStranica, postaviTrenutnuStranicu] = useState(1);
@@ -36,12 +36,12 @@ export default function PrijavePregled() {
           TipService.get(),
           OznakeService.get(),
         ]);
-      if (resVrste?.success) setVrste(resVrste.data);
-        if (resTipovi?.success) setTipovi(resTipovi.data);
-        if (resOznake?.success) setOznake(resOznake.data);
+        setVrste(resVrste.data ?? []);
+        setTipovi(resTipovi.data ?? []);
+        setOznake(resOznake.data ?? []);
       } catch (error) {
         console.error("Greška pri dohvatu podataka:", error);
-      }finally {
+      } finally {
         hideLoading();
       }
     }
@@ -52,7 +52,7 @@ export default function PrijavePregled() {
 
   useEffect(() => {
     async function ucitajStranicu() {
-       showLoading();
+      showLoading();
       try {
         const odgovor = await prijaveService.dohvatiStranicu(trenutnaStranica, velicinaStranice);
         setPrijave(odgovor.data);
@@ -60,7 +60,7 @@ export default function PrijavePregled() {
         postaviUkupnoStavki(odgovor.ukupnoStavki || 0);
       } catch (error) {
         console.error("Greška pri dohvatu stranice prijava:", error);
-      }finally {
+      } finally {
         hideLoading();
       }
     }
@@ -72,14 +72,14 @@ export default function PrijavePregled() {
     if (!confirm('Brisanjem prijave brišu se i svi njezini tragovi. Nastaviti?')) {
       return
     }
-showLoading();
-     try {
+    showLoading();
+    try {
       const { data: tragovi } = await TragoviService.getByPrijava(id)
       for (const trag of tragovi) {
         await TragoviService.obrisi(trag.id)
       }
-    await prijaveService.obrisi(id)
-  
+      await prijaveService.obrisi(id)
+
       if (prijave.length === 1 && trenutnaStranica > 1) {
         postaviTrenutnuStranicu(trenutnaStranica - 1)
       } else {
@@ -87,11 +87,11 @@ showLoading();
       }
     } catch (error) {
       console.error("Greška pri brisanju prijave:", error)
-    }finally {
+    } finally {
       hideLoading();
     }
   }
-  
+
   function promijeniStranicu(stranica) {
     postaviTrenutnuStranicu(stranica);
   }
@@ -114,32 +114,32 @@ showLoading();
       generirajPrijaveWord(svePrijave, vrste, tipovi, oznake);
     } catch (error) {
       console.error("Greška pri dohvatu svih prijava za Word:", error);
-    }finally {
+    } finally {
       hideLoading();
     }
   };
-  
+
   return (
     <Container>
       <Card className="shadow-sm border-0 rounded-3">
         <Card.Header className="bg-white p-4 border-0 d-flex justify-content-between align-items-center flex-wrap gap-3">
           <div>
             <div className="d-flex align-items-center gap-3 mb-1">
-            <h3 className="fw-bold mb-1 text-dark">📋 Pregled prijava</h3>
-             <OverlayTrigger
-              placement="top"
-              trigger={["hover", "focus"]}
-              overlay={<Tooltip id="word-tooltip">Preuzmi Word katalog (.docx)</Tooltip>}
-            >
-              <Button
-                onClick={handleExportWord}
-                variant="light"
-                className="btn-icon p-2 rounded-circle shadow-sm border d-flex align-items-center justify-content-center text-primary"
-                style={{ width: "42px", height: "42px", transition: "all 0.2s" }}
+              <h3 className="fw-bold mb-1 text-dark">📋 Pregled prijava</h3>
+              <OverlayTrigger
+                placement="top"
+                trigger={["hover", "focus"]}
+                overlay={<Tooltip id="word-tooltip">Preuzmi Word katalog (.docx)</Tooltip>}
               >
-                <BsFileEarmarkWord size={22} />
-              </Button>
-            </OverlayTrigger>
+                <Button
+                  onClick={handleExportWord}
+                  variant="light"
+                  className="btn-icon p-2 rounded-circle shadow-sm border d-flex align-items-center justify-content-center text-primary"
+                  style={{ width: "42px", height: "42px", transition: "all 0.2s" }}
+                >
+                  <BsFileEarmarkWord size={22} />
+                </Button>
+              </OverlayTrigger>
             </div>
             <p className="text-muted small mb-0">Popis svih uočenih i prijavljenih slučajeva</p>
           </div>
@@ -184,7 +184,7 @@ showLoading();
                   <td className="text-center pe-4">
                     <ButtonGroup size="sm">
                       <Link to={putanja(RouteNames.TRAG_PREGLED, prijava.id)} className="btn btn-outline-primary" title="Tragovi">
-                        <BiSearch size={16} /> 
+                        <BiSearch size={16} />
                       </Link>
                       <Button variant="outline-warning" onClick={() => navigate(putanja(RouteNames.PRIJAVA_PROMJENA, prijava.id))} title="Uredi">
                         <BiPencil size={16} />
@@ -199,55 +199,55 @@ showLoading();
             </tbody>
           </Table>
         </Card.Body>
-         {ukupnoStavki > 0 && (
+        {ukupnoStavki > 0 && (
           <div className="d-flex flex-column align-items-center p-3">
-        {ukupnoStranica > 1 && (
-            <Pagination  className="mb-2 flex-wrap justify-content-center">
-              <Pagination.First
-                onClick={() => promijeniStranicu(1)}
-                disabled={trenutnaStranica === 1}
-              />
-              <Pagination.Prev
-                onClick={() => promijeniStranicu(trenutnaStranica - 1)}
-                disabled={trenutnaStranica === 1}
-              />
+            {ukupnoStranica > 1 && (
+              <Pagination className="mb-2 flex-wrap justify-content-center">
+                <Pagination.First
+                  onClick={() => promijeniStranicu(1)}
+                  disabled={trenutnaStranica === 1}
+                />
+                <Pagination.Prev
+                  onClick={() => promijeniStranicu(trenutnaStranica - 1)}
+                  disabled={trenutnaStranica === 1}
+                />
 
-              {[...Array(ukupnoStranica)].map((_, indeks) => {
-                const brojStranice = indeks + 1;
-                if (
-                  brojStranice === 1 ||
-                  brojStranice === ukupnoStranica ||
-                  (brojStranice >= trenutnaStranica - 2 && brojStranice <= trenutnaStranica + 2)
-                ) {
-                  return (
-                    <Pagination.Item
-                      key={brojStranice}
-                      active={brojStranice === trenutnaStranica}
-                      onClick={() => promijeniStranicu(brojStranice)}
-                    >
-                      {brojStranice}
-                    </Pagination.Item>
-                  );
-                } else if (
-                  brojStranice === trenutnaStranica - 3 ||
-                  brojStranice === trenutnaStranica + 3
-                ) {
-                  return <Pagination.Ellipsis key={brojStranice} disabled />;
-                }
-                return null;
-              })}
+                {[...Array(ukupnoStranica)].map((_, indeks) => {
+                  const brojStranice = indeks + 1;
+                  if (
+                    brojStranice === 1 ||
+                    brojStranice === ukupnoStranica ||
+                    (brojStranice >= trenutnaStranica - 2 && brojStranice <= trenutnaStranica + 2)
+                  ) {
+                    return (
+                      <Pagination.Item
+                        key={brojStranice}
+                        active={brojStranice === trenutnaStranica}
+                        onClick={() => promijeniStranicu(brojStranice)}
+                      >
+                        {brojStranice}
+                      </Pagination.Item>
+                    );
+                  } else if (
+                    brojStranice === trenutnaStranica - 3 ||
+                    brojStranice === trenutnaStranica + 3
+                  ) {
+                    return <Pagination.Ellipsis key={brojStranice} disabled />;
+                  }
+                  return null;
+                })}
 
-              <Pagination.Next
-                onClick={() => promijeniStranicu(trenutnaStranica + 1)}
-                disabled={trenutnaStranica === ukupnoStranica}
-              />
-              <Pagination.Last
-                onClick={() => promijeniStranicu(ukupnoStranica)}
-                disabled={trenutnaStranica === ukupnoStranica}
-              />
-            </Pagination>
-        )}
-       <small className="text-muted text-center">
+                <Pagination.Next
+                  onClick={() => promijeniStranicu(trenutnaStranica + 1)}
+                  disabled={trenutnaStranica === ukupnoStranica}
+                />
+                <Pagination.Last
+                  onClick={() => promijeniStranicu(ukupnoStranica)}
+                  disabled={trenutnaStranica === ukupnoStranica}
+                />
+              </Pagination>
+            )}
+            <small className="text-muted text-center">
               Prikazano{" "}
               {(trenutnaStranica - 1) * velicinaStranice + 1}
               {" – "}

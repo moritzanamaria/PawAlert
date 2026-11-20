@@ -115,8 +115,8 @@ export default function DetaljiSlucaja() {
     const oznakeZaLetak = (prijava?.oznake ?? [])
         .map((oid) => oznake.find((o) => String(o.id) === String(typeof oid === "object" ? oid.id : oid)))
         .filter(Boolean)
-    const nazivVrste = vrste.find((v) => v.id === prijava?.zivotinja_vrsta)?.naziv ?? ""
-    const nazivTipa = tipovi.find((t) => t.id === prijava?.tip_prijave)?.naziv ?? ""
+    const nazivVrste = vrste.find((v) => String(v.id) === String(prijava?.zivotinja_vrsta))?.naziv ?? ""
+    const nazivTipa = tipovi.find((t) => String(t.id) === String(prijava?.tip_prijave))?.naziv ?? ""
 
     if (!prijava) {
         return (

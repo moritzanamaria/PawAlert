@@ -45,7 +45,7 @@ async function dodaj(tip) {
   
 async function obrisi(id){
   let tipovi= dohvatiSveIzStorage()  
-  tipovi = tipovi.filter(t=>String(t.id) === String(id))
+  tipovi = tipovi.filter(t=>String(t.id) !== String(id))
   spremiUStorage(tipovi)
     
 }

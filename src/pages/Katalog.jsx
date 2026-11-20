@@ -60,8 +60,8 @@ export default function Katalog() {
     setTrenutnaStranica(novaStranica);
   }
 
-  const getNazivVrste = (id) => vrste.find((v) => Number(v.id) === Number(id))?.naziv ?? "";
-  const getNazivTipa = (id) => tipovi.find((t) => Number(t.id) === Number(id))?.naziv ?? "";
+  const getNazivVrste = (id) => vrste.find((v) => String(v.id) === String(id))?.naziv ?? "";
+  const getNazivTipa = (id) => tipovi.find((t) => String(t.id) === String(id))?.naziv ?? "";
 
   const [animiraneSve, setAnimiraneSve] = useState(0);
   const [animiraneOtvorene, setAnimiraneOtvorene] = useState(0);
@@ -125,7 +125,7 @@ export default function Katalog() {
           <div>
 
             <div className="d-flex align-items-center gap-3 mb-1">
-              <h3 className="fw-bold mb-1 text-dark">🎴 Katalog</h3> 
+              <h3 className="fw-bold mb-1 text-dark">🎴 Katalog</h3>
             </div>
             <p className="text-muted small mb-0">Popis svih prijavljenih slučajeva</p>
           </div>
@@ -194,7 +194,7 @@ export default function Katalog() {
                 {prijava.oznake && prijava.oznake.length > 0 && (
                   <div className="d-flex flex-wrap gap-1 mb-3 p-2">
                     {prijava.oznake.map((idOznake, idx) => {
-                      const o = oznake.find((item) => Number(item.id) === Number(idOznake));
+                      const o = oznake.find((item) => String(item.id) === String(idOznake)); 
                       if (!o) return null;
                       return (
                         <span

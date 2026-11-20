@@ -1,14 +1,14 @@
-import { collection, doc, updateDoc, getDoc, getDocs, addDoc, deleteDoc } from "firebase/firestore";
+import { collection, doc, updateDoc, getDoc, getDocs, addDoc, deleteDoc, query, where } from "firebase/firestore";
 import getFirebaseDB from "../Firebase";
 import { PrefixStorage } from "../../constants";
 
 async function get() {
     try {
-        const skupTipova = collection(getFirebaseDB(), PrefixStorage.TIPOVI);
-        const tipoviSnapshot = await getDocs(skupTipova);
+        const skupTragova = collection(getFirebaseDB(), PrefixStorage.TRAGOVI);
+        const tragoviSnapshot = await getDocs(skupTragova);
         return {
             success: true,
-            data: tipoviSnapshot.docs.map(docSnap => {
+            data: tragoviSnapshot.docs.map(docSnap => {
                 const data = docSnap.data();
                 return {
                     ...data,
@@ -17,7 +17,7 @@ async function get() {
             })
         };
     } catch (e) {
-        console.error("Greška kod dohvaćanja tipova: ", e);
+        console.error("Greška kod dohvaćanja tragova: ", e);
         return {
             success: false,
             message: e.message
@@ -25,18 +25,38 @@ async function get() {
     }
 }
 
-async function dodaj(tip) {
+async function getByPrijava(prijavaId) {
     try {
-        const { id, ...podaciTipa } = tip;
-        const skupTipova = collection(getFirebaseDB(), PrefixStorage.TIPOVI);
-        const docRef = await addDoc(skupTipova, podaciTipa);
+        const upit = query(
+            collection(getFirebaseDB(), PrefixStorage.TRAGOVI),
+            where("prijava", "==", String(prijavaId))
+        );
+        const tragoviSnapshot = await getDocs(upit);
+        return {
+            success: true,
+            data: tragoviSnapshot.docs.map(docSnap => ({ ...docSnap.data(), id: docSnap.id }))
+        };
+    } catch (e) {
+        console.error("Greška kod dohvaćanja tragova prijave: ", e);
+        return {
+            success: false,
+            message: e.message
+        };
+    }
+}
+
+async function dodaj(trag) {
+    try {
+        const { id: _, ...podaciTraga } = trag;
+        const skupTragova = collection(getFirebaseDB(), PrefixStorage.TRAGOVI);
+        const docRef = await addDoc(skupTragova, podaciTraga);
 
         return {
             success: true,
             id: docRef.id
         };
     } catch (e) {
-        console.error("Greška kod dodavanja tipa: ", e);
+        console.error("Greška kod dodavanja traga: ", e);
         return {
             success: false,
             message: e.message
@@ -46,7 +66,7 @@ async function dodaj(tip) {
 
 async function getById(id) {
     try {
-        const docRef = doc(getFirebaseDB(), PrefixStorage.TIPOVI, String(id));
+        const docRef = doc(getFirebaseDB(), PrefixStorage.TRAGOVI, String(id));
         const docSnap = await getDoc(docRef);
         if (docSnap.exists()) {
             const data = docSnap.data();
@@ -60,11 +80,11 @@ async function getById(id) {
         } else {
             return {
                 success: false,
-                message: "Tip s tim ID-jem ne postoji u bazi."
+                message: "Trag s tim ID-jem ne postoji u bazi."
             };
         }
     } catch (e) {
-        console.error("Greška kod dohvaćanja tipa po ID-ju: ", e);
+        console.error("Greška kod dohvaćanja traga po ID-ju: ", e);
         return {
             success: false,
             message: e.message
@@ -72,29 +92,29 @@ async function getById(id) {
     }
 }
 
-async function promijeni(id, tip) {
+async function promijeni(id, trag) {
     try {
-        const { id: _, ...podaciTipa } = tip;
-        const docRef = doc(getFirebaseDB(), PrefixStorage.TIPOVI, String(id));
-        await updateDoc(docRef, podaciTipa);
+        const { id: _, ...podaciTraga } = trag;
+        const docRef = doc(getFirebaseDB(), PrefixStorage.TRAGOVI, String(id));
+        await updateDoc(docRef, podaciTraga);
 
         return { success: true };
     } catch (e) {
-        console.error("Greška kod promjene tipa: ", e);
+        console.error("Greška kod promjene traga: ", e);
         return { success: false, message: e.message };
     }
 }
 
 async function obrisi(id) {
     try {
-        const docRef = doc(getFirebaseDB(), PrefixStorage.TIPOVI, String(id));
+        const docRef = doc(getFirebaseDB(), PrefixStorage.TRAGOVI, String(id));
         await deleteDoc(docRef);
         return {
             success: true,
             message: "Uspješno obrisano"
         };
     } catch (e) {
-        console.error("Greška kod brisanja tipa: ", e);
+        console.error("Greška kod brisanja traga: ", e);
         return {
             success: false,
             message: e.message
@@ -104,6 +124,7 @@ async function obrisi(id) {
 
 export default {
     get,
+    getByPrijava,
     dodaj,
     promijeni,
     getById,

@@ -1,4 +1,5 @@
-import { collection, doc, updateDoc, getDoc, getDocs, addDoc, deleteDoc } from "firebase/firestore";
+import { collection, doc, updateDoc, getDoc, getDocs, addDoc, deleteDoc, query, where, limit } from "firebase/firestore";
+import bcrypt from "bcryptjs";
 import getFirebaseDB from "../Firebase";
 import { PrefixStorage } from "../../constants";
 
@@ -27,10 +28,12 @@ async function get() {
 
 async function dodaj(operater) {
     try {
-        const { id, ...podaciOperatera } = operater;
+        const { id: _, ...podaciOperatera } = operater;
+        if (!podaciOperatera.lozinka.startsWith("$2")) {
+            podaciOperatera.lozinka = bcrypt.hashSync(podaciOperatera.lozinka, 10);
+        }
         const skupOperatera = collection(getFirebaseDB(), PrefixStorage.OPERATERI);
         const docRef = await addDoc(skupOperatera, podaciOperatera);
-
         return {
             success: true,
             id: docRef.id
@@ -102,10 +105,57 @@ async function obrisi(id) {
     }
 }
 
+async function promijeniLozinku(id, novaLozinka) {
+    try {
+        const hashiranaLozinka = bcrypt.hashSync(novaLozinka, 10);
+        const docRef = doc(getFirebaseDB(), PrefixStorage.OPERATERI, String(id));
+        await updateDoc(docRef, {
+            lozinka: hashiranaLozinka
+        });
+
+        return { success: true, message: "Lozinka uspješno promijenjena" };
+    } catch (e) {
+        console.error("Greška kod promjene lozinke: ", e);
+        return { success: false, message: e.message };
+    }
+}
+
+async function prijava(email, lozinka) {
+    try {
+        const skupOperatera = collection(getFirebaseDB(), PrefixStorage.OPERATERI);
+        const q = query(skupOperatera, where("email", "==", email), limit(1));
+        const querySnapshot = await getDocs(q);
+        const operaterDoc = querySnapshot.docs[0];
+        if (!operaterDoc) {
+            return { success: false, message: "Email i lozinka ne odgovaraju" };
+        }
+        const operaterPodaci = operaterDoc.data();
+        const isMatch = bcrypt.compareSync(lozinka, operaterPodaci.lozinka);
+        if (!isMatch) {
+            return { success: false, message: "Email i lozinka ne odgovaraju" };
+        }
+
+        return {
+            success: true,
+            data: {
+                id: operaterDoc.id,
+                email: operaterPodaci.email,
+                uloga: operaterPodaci.uloga
+            }
+        };
+    } catch (e) {
+        console.error("Greška kod prijave: ", e);
+        return { success: false, message: e.message };
+    }
+}
+
 export default {
     get,
     dodaj,
-    promijeni,
     getById,
-    obrisi
+    promijeni,
+    promijeniLozinku,
+    getById,
+    obrisi,
+    prijava
 };

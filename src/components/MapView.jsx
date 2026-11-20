@@ -21,7 +21,7 @@ function useLista(propLista, service) {
   return imaProp ? propLista : dohvaceno;
 }
 
-const naziv = (lista, id) => lista.find((x) => x.id === id)?.naziv;
+const naziv = (lista, id) => lista.find((x) => String(x.id) === String(id))?.naziv;
 
 function MapView({ prijave = [], vrste: propVrste = [], tipovi: propTipovi = [], oznake: propOznake = [] }) {
   const vrste = useLista(propVrste, VrsteService);
@@ -36,7 +36,7 @@ function MapView({ prijave = [], vrste: propVrste = [], tipovi: propTipovi = [],
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright" target="_blank">OpenStreetMap</a> contributors'
         />
-        {prijave.map((p) => (
+        {prijave.filter((p) => p.lokacija?.lat != null).map((p) => (
           <Marker key={p.id} position={[p.lokacija.lat, p.lokacija.lng]} icon={dohvatiIkonu(p.tip_prijave)}>
             <Popup maxWidth={240}>
               <div>
@@ -53,8 +53,8 @@ function MapView({ prijave = [], vrste: propVrste = [], tipovi: propTipovi = [],
                 <br />
                 <span>Tip: {naziv(tipovi, p.tip_prijave)}</span>
                 <div className="d-flex flex-wrap gap-1 my-1">
-                  {p.oznake.map((id) => {
-                    const o = oznake.find((x) => x.id === id);
+                  {(p.oznake ?? []).map((id) => {
+                    const o = oznake.find((x) => String(x.id) === String(id));
                     return (
                       o && (
                         <span
