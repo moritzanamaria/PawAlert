@@ -27,7 +27,7 @@ async function get() {
 
 async function dodaj(tip) {
     try {
-        const { id, ...podaciTipa } = tip;
+        const { id: _, ...podaciTipa } = tip;
         const skupTipova = collection(getFirebaseDB(), PrefixStorage.TIPOVI);
         const docRef = await addDoc(skupTipova, podaciTipa);
 

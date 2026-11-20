@@ -31,7 +31,7 @@ export default function TipoviPregled() {
 
   async function obrisiVrstu(id) {
     const res = await prijaveService.get()
-    const koristi = (res?.data ?? res).filter(p => String(p.zivotinja_vrsta) === String(id))
+    const koristi = (res?.data ?? res).filter(p => String(p.zivotinja_vrsta) === String(id)).length
     if (koristi > 0) {
       alert(`Vrsta se koristi u ${koristi} prijava i ne može se obrisati.`)
       return
@@ -46,7 +46,7 @@ export default function TipoviPregled() {
 
   async function obrisiTip(id) {
     const res = await prijaveService.get()
-    const koristi = (res?.data ?? res).filter(p => String(p.tip_prijave) === String(id))
+    const koristi = (res?.data ?? res).filter(p => String(p.tip_prijave) === String(id)).length
     if (koristi > 0) {
       alert(`Tip se koristi u ${koristi} prijava i ne može se obrisati.`)
       return

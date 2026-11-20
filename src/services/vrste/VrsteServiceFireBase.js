@@ -27,8 +27,7 @@ async function get() {
 
 async function dodaj(vrsta) {
     try {
-        // Uklanjamo id ako je poslan u objektu kako se ne bi duplirao kao polje unutar dokumenta
-        const { id, ...podaciZaSpremanje } = vrsta;
+        const { id: _, ...podaciZaSpremanje } = vrsta;
         const skupVrsta = collection(getFirebaseDB(), PrefixStorage.VRSTE);
         const docRef = await addDoc(skupVrsta, podaciZaSpremanje);
         

@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { Button, Container, Row, Col, Card, Pagination, Tooltip, OverlayTrigger } from "react-bootstrap";
+import { Container, Row, Col, Card, Pagination } from "react-bootstrap";
 import prijaveService from "../services/prijave/prijaveService";
 import VrsteService from "../services/vrste/VrsteService";
 import TipService from "../services/tip/TipService";

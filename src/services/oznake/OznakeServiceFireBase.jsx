@@ -27,8 +27,7 @@ async function get() {
 
 async function dodaj(oznaka) {
     try {
-        // Ako ulazni objekt ima lokalni numerički id, uklanjamo ga da Firestore generira svoj ID dokumenta
-        const { id, ...podaciOznake } = oznaka;
+        const { id: _, ...podaciOznake } = oznaka;
         const skupOznaka = collection(getFirebaseDB(), PrefixStorage.OZNAKE);
         const docRef = await addDoc(skupOznaka, podaciOznake);
 

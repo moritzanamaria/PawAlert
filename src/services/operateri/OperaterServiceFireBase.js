@@ -155,7 +155,6 @@ export default {
     getById,
     promijeni,
     promijeniLozinku,
-    getById,
     obrisi,
     prijava
 };

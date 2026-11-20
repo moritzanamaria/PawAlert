@@ -81,7 +81,7 @@ async function dohvatiStranicu(stranica = 1, velicinaStranice = 6) {
 
 async function dodaj(prijava) {
     try {
-        const { id, ...podaciPrijave } = prijava;
+        const { id: _, ...podaciPrijave } = prijava;
         podaciPrijave.datum = pretvoriDatumUTimestamp(podaciPrijave.datum);
 
         const skupPrijava = collection(getFirebaseDB(), PrefixStorage.PRIJAVE);

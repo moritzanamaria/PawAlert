@@ -75,13 +75,6 @@ export default function GeneriranjePodataka() {
         return rez?.id ?? rez?.data?.id;
     };
 
-    const prebaci = async (servis, stavke) => {
-        const mapa = new Map();
-        for (const { id, ...ostatak } of stavke) {
-            mapa.set(String(id), await dodajIliBaci(servis, ostatak));
-        }
-        return mapa;
-    };
     const handleMemorijaULocalStorage = async () => {
         if (!window.confirm('Presipati podatke iz memorije u localStorage? Postojeći podaci u localStorageu bit će zamijenjeni.')) {
             return;
