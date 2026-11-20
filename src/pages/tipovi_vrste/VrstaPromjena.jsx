@@ -33,8 +33,8 @@ export default function VrstaPromjena() {
         ucitajVrstu();
     }, [params.id]);
 
-    async function promjeni(podaci) {
-        await VrsteService.promjeni(params.id, podaci).then(() => {
+    async function promijeni(podaci) {
+        await VrsteService.promijeni(params.id, podaci).then(() => {
             navigate(RouteNames.TIPOVI_I_VRSTE_PREGLED)
         })
     }
@@ -57,7 +57,7 @@ export default function VrstaPromjena() {
             return;
         }
 
-        promjeni({
+        promijeni({
             ...vrsta,
             naziv: rezultat.data.naziv
         })

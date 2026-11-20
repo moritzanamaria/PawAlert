@@ -40,7 +40,7 @@ async function dodaj(trag) {
   return{data: trag}
   }
 
-  async function promjeni(id, trag) {
+  async function promijeni(id, trag) {
     const tragovi = dohvatiSveIzStorage()
     const index = tragovi.findIndex(t => String(t.id)===String(id))
     tragovi[index] = { ...tragovi[index], ...trag, id: String(id)}
@@ -64,6 +64,6 @@ export default {
   getById,
   getByPrijava,
   dodaj,
-  promjeni,
+  promijeni,
   obrisi
 }

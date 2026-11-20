@@ -22,7 +22,7 @@ const PrazanServis = {
   get: async () => ({ data: [] }),
   getById: async () => ({ data: {} }),
   dodaj: async () => { console.error('Servis nije implementiran') },
-  promjeni: async () => { console.error('Servis nije implementiran') },
+  promijeni: async () => { console.error('Servis nije implementiran') },
   obrisi: async () => { console.error('Servis nije implementiran') },
 }
 
@@ -40,6 +40,6 @@ export default {
     return { data: zapis };
   },
   dodaj: (tip) => AktivniServis.dodaj(tip),
-  promjeni: (id, tip) => AktivniServis.promjeni(id, tip),
+  promijeni: (id, tip) => AktivniServis.promijeni(id, tip),
   obrisi: (id) => AktivniServis.obrisi(id)
 }

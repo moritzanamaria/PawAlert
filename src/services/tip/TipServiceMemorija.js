@@ -18,7 +18,7 @@ async function dodaj(tip) {
   tipovi.push(tip)
 }
 
-async function promjeni(id, tip) {
+async function promijeni(id, tip) {
   const index = nadiIndex(id)
   if (index === -1) return
   tipovi[index] = { ...tipovi[index], ...tip, id: parseInt(id) }
@@ -40,6 +40,6 @@ export default {
   get,
   getById,
   dodaj,
-  promjeni,
+  promijeni,
   obrisi,
 }

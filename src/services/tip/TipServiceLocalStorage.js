@@ -34,7 +34,7 @@ async function dodaj(tip) {
   spremiUStorage(tipovi)
   }
 
-  async function promjeni(id, tip) {
+  async function promijeni(id, tip) {
     const tipovi = dohvatiSveIzStorage()
     const index = tipovi.findIndex(t=>String(t.id) === String(id))
     tipovi[index] = { ...tipovi[index], ...tip, id: String(id)}
@@ -55,6 +55,6 @@ export default {
   get,
   getById,
   dodaj,
-  promjeni,
+  promijeni,
   obrisi,
 }

@@ -22,7 +22,7 @@ async function dodaj(trag) {
   return { data: trag }
 }
 
-async function promjeni(id, trag) {
+async function promijeni(id, trag) {
   const index = nadiIndex(id)
   if (index === -1) return
   tragovi[index] = { ...tragovi[index], ...trag, id: parseInt(id) }
@@ -44,6 +44,6 @@ export default {
   getById,
   getByPrijava,
   dodaj,
-  promjeni,
+  promijeni,
   obrisi,
 }

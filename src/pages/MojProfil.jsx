@@ -61,7 +61,7 @@ export default function MojProfil() {
     if (!confirm(poruka)) return;
 
     try {
-      await prijaveService.promjeni(prijava.id, { ...prijava, status: novi });
+      await prijaveService.promijeni(prijava.id, { ...prijava, status: novi });
       setOsvjezi((n) => n + 1);
     } catch (error) {
       alert(error.message);

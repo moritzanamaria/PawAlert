@@ -32,8 +32,8 @@ export default function TipPromjena() {
         ucitajTip();
     }, [params.id]);
 
-    async function promjeni(podaci) {
-        await TipService.promjeni(params.id, podaci).then(() => {
+    async function promijeni(podaci) {
+        await TipService.promijeni(params.id, podaci).then(() => {
             navigate(RouteNames.TIPOVI_I_VRSTE_PREGLED)
         })
     }
@@ -57,7 +57,7 @@ export default function TipPromjena() {
             return;
         }
 
-        promjeni({
+        promijeni({
             ...tip,
             naziv: rezultat.data.naziv
         })

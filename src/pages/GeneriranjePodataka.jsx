@@ -120,7 +120,22 @@ export default function GeneriranjePodataka() {
         }
         setLoading(true);
         setPoruka(null);
+const ocistiUndefined = (obj) =>
+    Object.fromEntries(Object.entries(obj).filter(([, v]) => v !== undefined));
 
+const prebaci = async (servis, stavke, naziv = '') => {
+    const mapa = new Map();
+    for (const { id, ...ostatak } of stavke) {
+        try {
+            const noviId = await dodajIliBaci(servis, ocistiUndefined(ostatak));
+            mapa.set(String(id), noviId);
+        } catch (err) {
+            console.error(`Greška u [${naziv}] za id=${id}:`, err, ostatak);
+            throw err;
+        }
+    }
+    return mapa;
+};
         try {
             const { vrste, tipovi, oznake, prijave, tragovi, operateri } = await dohvatiIzMemorije();
 
@@ -133,10 +148,9 @@ export default function GeneriranjePodataka() {
             }
 
             // 2. Vrste, tipovi i oznake (trebamo nove ID-ove za prijave)
-            const mapaVrsta = await prebaci(VrsteServiceFireBase, vrste);
-            const mapaTipova = await prebaci(TipServiceFireBase, tipovi);
-            const mapaOznaka = await prebaci(OznakeServiceFireBase, oznake);
-
+         const mapaVrsta = await prebaci(VrsteServiceFireBase, vrste, 'Vrste');
+const mapaTipova = await prebaci(TipServiceFireBase, tipovi, 'Tipovi');
+const mapaOznaka = await prebaci(OznakeServiceFireBase, oznake, 'Oznake');
             // 3. Prijave (povezivanje starih ID-ova s novim FireBase ID-ovima)
             const mapaPrijava = new Map();
             for (const { id, ...ostatak } of prijave) {

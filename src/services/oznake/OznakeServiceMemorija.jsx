@@ -17,7 +17,7 @@ async function dodaj(oznaka) {
   oznake.push(oznaka)
 }
 
-async function promjeni(id, oznaka) {
+async function promijeni(id, oznaka) {
   const index = nadiIndex(id)
   if (index === -1) return
   oznake[index] = { ...oznake[index], ...oznaka, id: parseInt(id) }
@@ -37,6 +37,6 @@ export default {
   get,
   getById,
   dodaj,
-  promjeni,
+  promijeni,
   obrisi,
 }

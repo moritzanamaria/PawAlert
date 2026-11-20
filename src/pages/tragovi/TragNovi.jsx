@@ -63,7 +63,7 @@ export default function TragNovi() {
             if (slikaFile && noviId) {
                 const rez = await spremiSlikuFile(noviId, slikaFile)
                 if (rez.success) {
-                    await TragoviService.promjeni(noviId, { ...trag, slika: rez.path })
+                    await TragoviService.promijeni(noviId, { ...trag, slika: rez.path })
                 } else {
                     alert("Trag je spremljen, ali slika nije: " + rez.message)
                 }

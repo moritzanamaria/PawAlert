@@ -99,8 +99,8 @@ export default function PrijavaPromjena() {
         return `${SLIKE_URL}/${prijava.slika}?t=${cacheBust}`;
     }
 
-    async function promjeni(podaciPrijave) {
-        await prijaveService.promjeni(params.id, podaciPrijave).then(() => {
+    async function promijeni(podaciPrijave) {
+        await prijaveService.promijeni(params.id, podaciPrijave).then(() => {
             navigate(povratak)
         })
 
@@ -144,7 +144,7 @@ export default function PrijavaPromjena() {
 
         const p = rezultat.data
 
-        promjeni({
+        promijeni({
             ...prijava,
             zivotinja_ime: p.zivotinja_ime,
             zivotinja_vrsta: p.zivotinja_vrsta,

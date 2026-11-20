@@ -26,13 +26,13 @@ export default function OperaterPromjenaLozinke() {
         setOperater(odgovor.data)
     }
 
-    async function promjeniLozinku(novaLozinka) {
-        const rezultat = await OperaterService.promjeniLozinku(params.id, novaLozinka)
+    async function promijeniLozinku(novaLozinka) {
+        const rezultat = await OperaterService.promijeniLozinku(params.id, novaLozinka)
         if (rezultat.success) {
             alert('Lozinka uspješno promijenjena!')
             navigate(RouteNames.OPERATERI)
         } else {
-            alert(rezultat.message || 'Greška pri promjeni lozinke')
+            alert(rezultat.message || 'Greška pri promijeni lozinke')
         }
     }
 
@@ -60,7 +60,7 @@ export default function OperaterPromjenaLozinke() {
             return
         }
 
-        promjeniLozinku(podaci.get('novaLozinka'))
+        promijeniLozinku(podaci.get('novaLozinka'))
     }
 
     const ocistiGresku = (nazivPolja) => {
@@ -136,7 +136,7 @@ export default function OperaterPromjenaLozinke() {
                                     Odustani
                                 </Link>
                                 <Button type="submit" variant="success">
-                                    Promjeni lozinku
+                                    Promijeni lozinku
                                 </Button>
                             </div>
                         </Card.Body>

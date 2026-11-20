@@ -46,7 +46,7 @@ async function dodaj(prijava) {
    return { data: prijava }
 }
 
-async function promjeni(id, prijava) {
+async function promijeni(id, prijava) {
   const prijave = dohvatiSveIzStorage()
   const index = prijave.findIndex(p =>  String(p.id) === String(id))
   prijave[index] = { ...prijave[index], ...prijava, id: String(id)}
@@ -84,7 +84,7 @@ export default {
   get,
   getById,
   dodaj,
-  promjeni,
+  promijeni,
   obrisi,
   dohvatiStranicu
 }

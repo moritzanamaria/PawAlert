@@ -32,7 +32,7 @@ async function dodaj(vrsta) {
   spremiUStorage(vrste)
   }
 
-  async function promjeni(id, vrsta) {
+  async function promijeni(id, vrsta) {
     const vrste = dohvatiSveIzStorage()
     const index = vrste.findIndex(v=>String(v.id) === String(id))
      if (index === -1) return
@@ -53,6 +53,6 @@ export default {
   get,
   getById,
   dodaj,
-  promjeni,
+  promijeni,
   obrisi
 }

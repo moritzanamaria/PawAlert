@@ -60,12 +60,12 @@ export default function OznakaPromjena() {
         }
     }, [params.id]);
 
-    async function promjeni(podaci) {
+    async function promijeni(podaci) {
         try {
-            await OznakeService.promjeni(params.id, podaci);
+            await OznakeService.promijeni(params.id, podaci);
             navigate(povratak);
         } catch (error) {
-            console.error("Greška pri promjeni oznake:", error);
+            console.error("Greška pri promijeni oznake:", error);
         }
     }
 
@@ -88,7 +88,7 @@ export default function OznakaPromjena() {
             return;
         }
 
-        promjeni({
+        promijeni({
             ...oznaka,
             naziv: rezultat.data.naziv,
             boja: bojaHex,

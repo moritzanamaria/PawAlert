@@ -25,7 +25,7 @@ const PrazanServis = {
   getById: async () => ({ data: {} }),
   getByPrijava: async () => ({ data: [] }),
   dodaj: async () => { console.error('Servis nije implementiran') },
-  promjeni: async () => { console.error('Servis nije implementiran') },
+  promijeni: async () => { console.error('Servis nije implementiran') },
   obrisi: async () => { console.error('Servis nije implementiran') },
 }
 
@@ -48,6 +48,6 @@ export default {
     return { data: toLista(res).map(normalizirajLokaciju) }
   },
   dodaj: (trag) => AktivniServis.dodaj(trag),
-  promjeni: (id, trag) => AktivniServis.promjeni(id, trag),
+  promijeni: (id, trag) => AktivniServis.promijeni(id, trag),
   obrisi: (id) => AktivniServis.obrisi(id)
 }

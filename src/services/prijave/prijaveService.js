@@ -24,7 +24,7 @@ const PrazanServis = {
   get: async () => ({ data: [] }),
   getById: async () => ({ data: {} }),
   dodaj: async () => { console.error('Servis nije implementiran') },
-  promjeni: async () => { console.error('Servis nije implementiran') },
+  promijeni: async () => { console.error('Servis nije implementiran') },
   obrisi: async () => { console.error('Servis nije implementiran') },
   dohvatiStranicu: async () => ({ data: [], ukupnoStranica: 0, ukupnoStavki: 0 })
 }
@@ -43,7 +43,7 @@ export default {
     return { data: normalizirajLokaciju(zapis) }
   },
   dodaj: (prijava) => AktivniServis.dodaj(prijava),
-  promjeni: (id, prijava) => AktivniServis.promjeni(id, prijava),
+  promijeni: (id, prijava) => AktivniServis.promijeni(id, prijava),
   obrisi: (id) => AktivniServis.obrisi(id),
   dohvatiStranicu: async (stranica, velicinaStranice) => {
     const res = await AktivniServis.dohvatiStranicu(stranica, velicinaStranice);

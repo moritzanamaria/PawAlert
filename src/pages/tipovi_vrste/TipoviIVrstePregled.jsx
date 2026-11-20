@@ -91,7 +91,7 @@ export default function TipoviPregled() {
                           defaultValue={tip.naziv}
                           style={{ width: "100%" }}
                           onSave={async ({ value }) => {
-                            await TipService.promjeni(tip.id, { naziv: value })
+                            await TipService.promijeni(tip.id, { naziv: value })
                             setTipovi(prev => prev.map(t => t.id === tip.id ? { ...t, naziv: value } : t))
                           }}
                         />
@@ -145,7 +145,7 @@ export default function TipoviPregled() {
                           defaultValue={vrsta.naziv}
                           style={{ width: "100%" }}
                           onSave={async ({ value }) => {
-                            await VrsteService.promjeni(vrsta.id, { naziv: value })
+                            await VrsteService.promijeni(vrsta.id, { naziv: value })
                             setVrste(prev => prev.map(v => v.id === vrsta.id ? { ...v, naziv: value } : v))
                           }}
                         />

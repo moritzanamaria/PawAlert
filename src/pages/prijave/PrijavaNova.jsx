@@ -81,7 +81,7 @@ export default function PrijavaNova() {
 
                 const rez = await spremiSliku(noviId, novaSlika);
                 if (rez.success) {
-                    await prijaveService.promjeni(noviId, { ...prijava, slika: rez.path });
+                    await prijaveService.promijeni(noviId, { ...prijava, slika: rez.path });
                 } else {
                     alert("Prijava je spremljena, ali slika nije: " + rez.message);
                 }

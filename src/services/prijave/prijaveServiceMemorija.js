@@ -23,7 +23,7 @@ async function dodaj(prijava) {
    return { data: prijava }
 }
 
-async function promjeni(id, prijava) {
+async function promijeni(id, prijava) {
   const index = nadiIndex(id)
   if (index === -1) return
   prijave[index] = { ...prijave[index], ...prijava, id: parseInt(id) }
@@ -59,7 +59,7 @@ export default {
   get,
   getById,
   dodaj,
-  promjeni,
+  promijeni,
   obrisi,
   dohvatiStranicu
 }

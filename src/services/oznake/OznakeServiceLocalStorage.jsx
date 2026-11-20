@@ -36,7 +36,7 @@ async function dodaj(oznaka) {
   spremiUStorage(oznake);
 }
 
-async function promjeni(id, oznaka) {
+async function promijeni(id, oznaka) {
   const oznake = dohvatiSveIzStorage();
   const index = oznake.findIndex(o => String(o.id) === String(id));
   if (index !== -1) {
@@ -55,6 +55,6 @@ export default {
   get,
   getById,
   dodaj,
-  promjeni,
+  promijeni,
   obrisi,
 }

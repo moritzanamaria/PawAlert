@@ -65,7 +65,7 @@ export default function OperaterPregled() {
                                         variant="outline-primary"
                                         size="sm"
                                         onClick={() => navigate(`/operateri/${operater.id}`)}
-                                        title="Promjeni email"
+                                        title="Promijeni email"
                                     >
                                         <FaEdit />
                                     </Button>
@@ -73,7 +73,7 @@ export default function OperaterPregled() {
                                         variant="outline-warning"
                                         size="sm"
                                         onClick={() => navigate(`/operateri/${operater.id}/lozinka`)}
-                                        title="Promjeni lozinku"
+                                        title="Promijeni lozinku"
                                     >
                                         <FaKey />
                                     </Button>

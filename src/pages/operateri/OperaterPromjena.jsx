@@ -37,12 +37,12 @@ export default function OperaterPromjena() {
         setOperater(odgovor.data)
     }
 
-    async function promjeni(operater) {
-        const rezultat = await OperaterService.promjeni(params.id, operater)
+    async function promijeni(operater) {
+        const rezultat = await OperaterService.promijeni(params.id, operater)
         if (rezultat.success) {
             navigate(RouteNames.OPERATERI)
         } else {
-            alert(rezultat.message || 'Greška pri promjeni operatera')
+            alert(rezultat.message || 'Greška pri promijeni operatera')
         }
     }
 
@@ -69,7 +69,7 @@ export default function OperaterPromjena() {
             return
         }
 
-        promjeni({
+        promijeni({
             email: podaci.get('email'),
             uloga: podaci.get('uloga')
         })
@@ -140,7 +140,7 @@ export default function OperaterPromjena() {
                                     Odustani
                                 </Link>
                                 <Button type="submit" variant="success">
-                                    Promjeni operatera
+                                    Promijeni operatera
                                 </Button>
                             </div>
                         </Card.Body>

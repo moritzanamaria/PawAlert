@@ -105,12 +105,12 @@ export default function TragPromjena() {
         }
     }, [params.id]);
 
-    async function promjeni(podaci) {
+    async function promijeni(podaci) {
         try {
-            await TragoviService.promjeni(params.id, podaci)
+            await TragoviService.promijeni(params.id, podaci)
             navigate(povratak)
         } catch (error) {
-            console.error("Greška pri promjeni:", error);
+            console.error("Greška pri promijeni:", error);
         }
     }
 
@@ -148,7 +148,7 @@ export default function TragPromjena() {
             }
         }
 
-        promjeni({
+        promijeni({
             ...trag,
             opis: rezultat.data.opis,
             lokacija: rezultat.data.lokacija,

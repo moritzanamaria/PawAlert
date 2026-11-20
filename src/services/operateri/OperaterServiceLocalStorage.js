@@ -57,7 +57,7 @@ async function dodaj(operater) {
     return {success: true, data: {id: operater.id, email: operater.email}}
 }
 
-async function promjeni(id, operater) {
+async function promijeni(id, operater) {
     const operateri = dohvatiSveIzStorage()
     const index = operateri.findIndex(o => o.id === id)
     
@@ -75,7 +75,7 @@ async function promjeni(id, operater) {
     return {success: true, data: {id: operateri[index].id, email: operateri[index].email, uloga: operateri[index].uloga}}
 }
 
-async function promjeniLozinku(id, novaLozinka) {
+async function promijeniLozinku(id, novaLozinka) {
     const operateri = dohvatiSveIzStorage()
     const index = operateri.findIndex(o => o.id === id)
     
@@ -128,8 +128,8 @@ export default {
     get,
     dodaj,
     getById,
-    promjeni,
-    promjeniLozinku,
+    promijeni,
+    promijeniLozinku,
     obrisi,
     prijava
 }

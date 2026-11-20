@@ -18,7 +18,7 @@ async function dodaj(vrsta) {
   vrste.push(vrsta)
 }
 
-async function promjeni(id, vrsta) {
+async function promijeni(id, vrsta) {
   const index = nadiIndex(id)
   if (index === -1) return
   vrste[index] = { ...vrste[index], ...vrsta, id: parseInt(id) }
@@ -39,6 +39,6 @@ export default {
   get,
   getById,
   dodaj,
-  promjeni,
+  promijeni,
   obrisi,
 }

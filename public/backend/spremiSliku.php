@@ -70,7 +70,7 @@ if (!is_dir($targetDir)) {
     mkdir($targetDir, 0755, true);
 }
 
-// Pri promjeni slike obriši stare verzije (npr. 12.png kad stigne 12.jpg)
+// Pri promijeni slike obriši stare verzije (npr. 12.png kad stigne 12.jpg)
 foreach ($dozvoljeno as $e) {
     $stara = $targetDir . '/' . $idClean . '.' . $e;
     if (is_file($stara)) {
