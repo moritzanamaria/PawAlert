@@ -10,8 +10,7 @@ export default function LoadingSpinner() {
         <div className='loading-spinner-overlay' role='status' aria-live='polite'>
           <div className='pa-loader'>
             <div className='pa-loader-krug'>
-              <span className='pa-loader-sapa'><BrandMark size={24} /></span>
-            </div>
+              <span className='pa-loader-sapa'><BrandMark size={30} valovi={false} /></span>            </div>
             <span className='pa-loader-tekst'>Učitavanje…</span>
           </div>
         </div>

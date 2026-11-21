@@ -2,6 +2,7 @@
 import { Link } from "react-router-dom";
 import { RouteNames, putanja } from "../constants";
 import { useEffect, useState } from "react";
+import BrandMark from "./BrandMark";
 
 function ProtekloVrijeme({ datum }) {
   const [sada, setSada] = useState(Date.now());
@@ -40,7 +41,7 @@ function Sidebar({ prijave = [], oznake = [] }) {
   return (
     <div className="d-flex flex-column gap-3 h-100">
       <div className="card shadow-sm border-0 p-4 text-center animirani-sidebar">
-        <div style={{ fontSize: "3rem" }}>🐾</div>
+        <div><BrandMark size={64} /></div>
         <h3 className="fw-bold mt-2 mb-1">Aktivni sustav prijava</h3>
         <p className="text-muted small mb-3">
           Pratite lokacije prijavljenih životinja u stvarnom vremenu na području Osijeka.
@@ -70,7 +71,7 @@ function Sidebar({ prijave = [], oznake = [] }) {
                         title="Pogledaj tragove"
                         className="text-decoration-none fs-3 lh-1 px-1"
                       >
-                        🐾
+                       <BrandMark size={30} valovi={false} />
                       </Link>
                     </div>
                     <div className="text-muted small mt-1">

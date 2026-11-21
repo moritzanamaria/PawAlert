@@ -3,7 +3,7 @@ import { Container, Nav, Navbar as BsNavbar, Offcanvas, NavDropdown } from "reac
 import { FaMemory } from 'react-icons/fa';
 import { GrServer, GrStatusUnknown, GrVirtualStorage } from 'react-icons/gr';
 import { Link, NavLink, useLocation } from "react-router-dom"
-import { DATA_SOURCE, IME_APLIKACIJE, RouteNames } from "../constants"
+import { DATA_SOURCE, RouteNames } from "../constants"
 import useAuth from "../hooks/useAuth";
 import BrandMark from "./BrandMark";
 import { pronadiStranicu } from "../utils/stranice";
@@ -34,8 +34,8 @@ function Navbar() {
     <BsNavbar expand="lg" collapseOnSelect className="pa-navbar sticky-top" role="navigation" aria-label="Glavni izbornik">
       <Container>
         <BsNavbar.Brand as={Link} to={RouteNames.HOME} className="pa-brand">
-          <span className="pa-brand-mark"><BrandMark size={22} /></span>
-          {IME_APLIKACIJE}
+          <span className="pa-brand-mark"><BrandMark size={30} /></span>
+          <span>Paw<span className="pa-brand-alert">Alert</span></span>
           <span className="pa-brand-ind d-none d-md-inline-flex align-items-center gap-1">{izvor()}</span>
         </BsNavbar.Brand>
 
@@ -56,8 +56,8 @@ function Navbar() {
         >
           <Offcanvas.Header closeButton className="border-bottom">
             <Offcanvas.Title id="offcanvas-navbar-label" className="fw-bold">
-              {IME_APLIKACIJE}
-            </Offcanvas.Title>
+              <span className="pa-brand-mark"><BrandMark size={30} /></span>
+              <span>Paw<span className="pa-brand-alert">Alert</span></span>            </Offcanvas.Title>
           </Offcanvas.Header>
 
           <Offcanvas.Body className="d-flex flex-column flex-lg-row justify-content-between align-items-lg-center gap-3">
