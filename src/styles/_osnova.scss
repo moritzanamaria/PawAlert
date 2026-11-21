@@ -1,0 +1,211 @@
+// CSS varijable (:root), osnova, tipografija, pozadina i pomoćne klase
+@use 'sass:meta';
+@use 'varijable' as *;
+
+:root {
+  // U CSS varijablu SCSS vrijednost se upisuje s #{ } (interpolacija).
+  // Bez #{ } preglednik bi doslovno dobio tekst "$primarna".
+
+  /* Boje */
+  --pa-primary: #{$primarna};
+  --pa-primary-hover: #{$primarna-hover};
+  --pa-primary-dark: #{$primarna-tamna};
+  --pa-primary-light: #{$primarna-pozadina};
+  --pa-primary-subtle: #{rgba($primarna, 0.1)};
+  --pa-primary-grad: #{$gradijent-primarni};
+
+  /* narančasta iz logotipa ("Alert", točka na pinu) */
+  --pa-accent: #{$akcent};
+  --pa-accent-dark: #{$akcent-dubok};
+  --pa-accent-light: #{$akcent-pozadina};
+  --pa-accent-grad: #{$gradijent-akcent};
+
+  --pa-danger: #{$opasnost};
+  --pa-warning: #{$upozorenje};
+
+  --pa-bg: #{$pozadina};
+  --pa-text: #{$tekst};
+  --pa-text-muted: #{$tekst-prigusen};
+  --pa-border: #{rgba($sjena-boja, 0.12)};
+
+  /* Staklo */
+  --pa-glass: #{rgba($bijela, 0.58)};
+  --pa-glass-strong: #{rgba($bijela, 0.78)};
+  --pa-glass-soft: #{rgba($bijela, 0.4)};
+  --pa-glass-border: #{rgba($bijela, 0.7)};
+  --pa-glass-blur: blur(18px) saturate(170%);
+  --pa-glass-highlight: inset 0 1px 0 #{rgba($bijela, 0.9)};
+
+  /* Tipografija */
+  --pa-font-sans: #{meta.inspect($font-tekst)};  // inspect čuva navodnike oko "Inter"
+  --pa-font-display: #{meta.inspect($font-naslovi)};
+  --timeline-font-family: var(--pa-font-sans);
+
+  /* Zaobljenja */
+  --pa-radius-sm: #{$radius-sm};
+  --pa-radius: #{$radius};
+  --pa-radius-lg: #{$radius-lg};
+  --pa-radius-xl: #{$radius-xl};
+  --pa-radius-pill: #{$radius-pill};
+
+  /* Sjene (tonirane zelenom za prirodniju dubinu) */
+  --pa-shadow-sm: 0 1px 2px #{rgba($sjena-boja, 0.06)}, 0 2px 6px #{rgba($sjena-boja, 0.04)};
+  --pa-shadow: 0 6px 18px -6px #{rgba($sjena-boja, 0.12)}, 0 14px 34px -14px #{rgba($sjena-boja, 0.16)};
+  --pa-shadow-elevated: 0 12px 28px -8px #{rgba($sjena-boja, 0.16)}, 0 28px 60px -18px #{rgba($sjena-boja, 0.24)};
+  --pa-shadow-primary: 0 10px 24px -8px #{rgba($primarna, 0.55)};
+
+  /* Pokret */
+  --pa-ease: #{$ease};
+  --pa-transition: 0.25s var(--pa-ease);
+  --pa-transition-bounce: 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+
+  /* Bootstrap */
+  --bs-body-font-family: var(--pa-font-sans);
+  --bs-body-bg: var(--pa-bg);
+  --bs-body-color: var(--pa-text);
+  --bs-border-color: var(--pa-border);
+  --bs-secondary-color: var(--pa-text-muted);
+
+  // Bootstrap za ove traži tri broja (R, G, B) – isti su kao $primarna, $opasnost...
+  --bs-primary: var(--pa-primary);
+  --bs-primary-rgb: 45, 138, 104;
+  --bs-success: var(--pa-primary);
+  --bs-success-rgb: 45, 138, 104;
+  --bs-secondary-rgb: 86, 105, 95;
+  --bs-danger-rgb: 214, 69, 61;
+  --bs-warning-rgb: 233, 162, 59;
+
+  --bs-link-color: var(--pa-primary);
+  --bs-link-color-rgb: 45, 138, 104;
+  --bs-link-hover-color: var(--pa-primary-dark);
+  --bs-link-hover-color-rgb: 22, 82, 60;
+
+  --bs-border-radius: 0.85rem;
+  --bs-border-radius-sm: 0.6rem;
+  --bs-border-radius-lg: 1.1rem;
+  --bs-border-radius-xl: 1.4rem;
+  --bs-border-radius-2xl: 1.75rem;
+  --bs-border-radius-pill: 50rem;
+}
+
+/* 2. Osnova i tipografija
+   ========================================================================== */
+html {
+  scroll-behavior: smooth;
+  background-color: var(--pa-bg);
+}
+
+body {
+  font-family: var(--pa-font-sans);
+  color: var(--pa-text);
+  background-color: var(--pa-bg);
+  line-height: 1.6;
+  font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+  min-height: 100vh;
+}
+
+h1, h2, h3, h4, h5, h6,
+.h1, .h2, .h3, .h4, .h5, .h6 {
+  font-family: var(--pa-font-display);
+  font-weight: 700;
+  letter-spacing: -0.025em;
+  color: var(--pa-text);
+}
+
+:is(.bg-success, .bg-secondary, .bg-primary, .bg-danger, .bg-dark) :is(h1, h2, h3, h4, h5, h6) {
+  color: inherit;
+}
+
+a {
+  text-underline-offset: 3px;
+}
+
+hr {
+  border-color: var(--pa-border);
+  opacity: 1;
+}
+
+::selection {
+  background-color: var(--pa-primary);
+  color: #ffffff;
+}
+
+/* Klizač (Chrome, Edge, Safari) */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: rgba($sjena-boja, 0.22);
+  border-radius: var(--pa-radius-pill);
+  border: 2px solid transparent;
+  background-clip: padding-box;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background-color: rgba($sjena-boja, 0.38);
+}
+
+/* 3. Pozadina stranice
+   Mekane mrlje boje ispod svega – staklo ih zamuti i dobije dubinu.
+   ========================================================================== */
+body::before {
+  content: "";
+  position: fixed;
+  inset: -10vmax;
+  z-index: -1;
+  pointer-events: none;
+  background:
+    radial-gradient(38vmax 38vmax at 8% 6%, rgba(52, 160, 121, 0.22), transparent 70%),
+    radial-gradient(34vmax 34vmax at 96% 12%, rgba(224, 122, 47, 0.14), transparent 70%),
+    radial-gradient(42vmax 42vmax at 78% 92%, rgba($primarna, 0.16), transparent 70%),
+    radial-gradient(30vmax 30vmax at 12% 88%, rgba(248, 194, 126, 0.16), transparent 70%),
+    var(--pa-bg);
+}
+
+/* 4. Pomoćne klase i animacije
+   ========================================================================== */
+a,
+button,
+.btn,
+.card,
+.badge,
+.nav-link,
+.form-control,
+.form-select,
+.dropdown-item,
+.page-link {
+  transition:
+    background-color var(--pa-transition),
+    border-color var(--pa-transition),
+    box-shadow var(--pa-transition),
+    color var(--pa-transition),
+    transform var(--pa-transition);
+}
+
+@keyframes pa-fade-in {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.pa-fade-in,
+.pa-ulaz {
+  animation: pa-fade-in 0.55s var(--pa-ease) both;
+}
+
+/* Fokus tipkovnicom – vidljiv, ali nenametljiv */
+a:focus-visible,
+button:focus-visible,
+.btn:focus-visible,
+.page-link:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 4px rgba($primarna, 0.28);
+}

@@ -1,0 +1,50 @@
+@use 'varijable' as *;
+
+.card {
+  --bs-card-bg: transparent;
+  --bs-card-border-color: var(--pa-glass-border);
+  --bs-card-cap-bg: transparent;
+  background: linear-gradient(145deg, rgba($bijela, 0.72), rgba($bijela, 0.5)) !important;
+  -webkit-backdrop-filter: var(--pa-glass-blur);
+  backdrop-filter: var(--pa-glass-blur);
+  border: 1px solid var(--pa-glass-border) !important;
+  border-radius: var(--pa-radius-lg) !important;
+  box-shadow: var(--pa-shadow), var(--pa-glass-highlight);
+  overflow: hidden;
+}
+
+.card:hover {
+  box-shadow: var(--pa-shadow-elevated), var(--pa-glass-highlight);
+  transform: translateY(-3px);
+}
+
+/* kartice s formama i tablicama ne skaču pod mišem */
+.card:has(form),
+.card:has(table),
+.card:has(.leaflet-container),
+.card:has(.pa-timeline-wrapper) {
+  transform: none !important;
+}
+
+.card-header,
+.card-footer {
+  background: rgba($bijela, 0.35) !important;
+  border-color: rgba($sjena-boja, 0.08) !important;
+}
+
+/* bijele i svijetle podloge unutar stakla postaju prozirne, da staklo ostane staklo */
+.card .bg-white,
+.card .bg-light,
+.card.bg-white,
+.card.bg-light {
+  background-color: transparent !important;
+}
+
+.card-img-top {
+  border-top-left-radius: calc(var(--pa-radius-lg) - 1px);
+  border-top-right-radius: calc(var(--pa-radius-lg) - 1px);
+}
+
+.shadow-sm {
+  box-shadow: var(--pa-shadow-sm) !important;
+}

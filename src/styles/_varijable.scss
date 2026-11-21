@@ -1,0 +1,56 @@
+
+
+// ---------- boje ----------
+$primarna: #2d8a68;            // zelena (gumbi, linkovi, jastučić šape)
+$primarna-hover: #237556;
+$primarna-tamna: #16523c;      // tamnozelena ("Paw" u logotipu, naslovi)
+$primarna-svijetla: #34a079;
+$primarna-najtamnija: #0f3f2d;
+$primarna-pozadina: #e2f0e8;   // vrlo svijetla zelena
+
+$akcent: #e9733a;              // narančasta iz logotipa ("Alert", točka na pinu)
+$akcent-svijetli: #f6a046;
+$akcent-tamni: #e0702f;
+$akcent-dubok: #b95f1c;
+$akcent-pozadina: #fdeee2;
+
+$opasnost: #d6453d;
+$upozorenje: #e9a23b;
+
+$pozadina: #f3f1ea;            // krem pozadina stranice
+$tekst: #14221c;
+$tekst-prigusen: #56695f;
+$bijela: #ffffff;
+
+// boja za sjene i tanke rubove (tamnozelena, kao $primarna-tamna)
+$sjena-boja: rgba(22, 82, 60, 1);
+
+// ---------- gradijenti ----------
+$gradijent-primarni: linear-gradient(135deg, $primarna-svijetla 0%, $primarna 45%, #1f6e51 100%);
+$gradijent-akcent: linear-gradient(90deg, $akcent-svijetli 0%, $akcent-tamni 100%);
+
+// ---------- zaobljenja ----------
+$radius-sm: 12px;
+$radius: 18px;
+$radius-lg: 24px;
+$radius-xl: 30px;
+$radius-pill: 9999px;
+
+// ---------- pokret ----------
+$ease: cubic-bezier(0.22, 1, 0.36, 1);
+$prijelaz: 0.25s $ease;
+$prijelaz-odskok: 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+
+// ---------- fontovi ----------
+$font-tekst: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+$font-naslovi: "Plus Jakarta Sans", "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+
+// ---------- granica za mobitel (Bootstrap "lg") ----------
+$mobitel: 991.98px;
+
+// ---------- recepti ----------
+@mixin staklo($prozirnost: 0.55, $blur: 24px) {
+  background: rgba($bijela, $prozirnost);
+  -webkit-backdrop-filter: blur($blur) saturate(180%);
+  backdrop-filter: blur($blur) saturate(180%);
+}

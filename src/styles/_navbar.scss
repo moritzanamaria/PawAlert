@@ -1,0 +1,245 @@
+@use 'varijable' as *;
+
+.pa-navbar {
+  background: linear-gradient(
+    135deg,
+    rgba($bijela, 0.66) 0%,
+    rgba($bijela, 0.32) 55%,
+    rgba(226, 240, 232, 0.42) 100%
+  );
+  -webkit-backdrop-filter: blur(24px) saturate(185%);
+  backdrop-filter: blur(24px) saturate(185%);
+  border: 1px solid rgba($bijela, 0.7);
+  border-radius: $radius-pill;
+  box-shadow:
+    0 10px 30px rgba($sjena-boja, 0.12),
+    0 2px 6px rgba($sjena-boja, 0.06),
+    inset 0 1px 0 rgba($bijela, 0.95),
+    inset 0 -1px 0 rgba($bijela, 0.35);
+  margin: 0.85rem auto 1.5rem;
+  width: calc(100% - 1.5rem);
+  max-width: 1320px;
+  min-height: 64px;
+  padding-block: 0.4rem;
+  padding-inline: 0.9rem 0.55rem;
+  isolation: isolate;
+
+  &::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    background: radial-gradient(120% 140% at 15% -40%, rgba($bijela, 0.8), transparent 55%);
+    pointer-events: none;
+    z-index: -1;
+  }
+
+  .navbar-toggler {
+    border: none;
+    border-radius: $radius-pill;
+    padding: 0.45rem 0.6rem;
+
+    &:focus {
+      box-shadow: 0 0 0 4px rgba($primarna, 0.22);
+    }
+  }
+
+}
+
+.pa-navbar,
+.pa-offcanvas {
+  // ---------- logo ----------
+  .pa-brand {
+    display: flex;
+    align-items: center;
+    gap: 0.65rem;
+    font-family: var(--pa-font-display);
+    font-weight: 800;
+    font-size: 1.3rem;
+    letter-spacing: -0.035em;
+    color: $primarna-tamna;
+    text-decoration: none;
+
+    &:hover {
+      color: $primarna;
+
+      .pa-brand-mark {
+        transform: rotate(-8deg) scale(1.07);
+      }
+    }
+  }
+
+  .pa-brand-mark {
+    width: 42px;
+    height: 42px;
+    flex: 0 0 auto;
+    display: grid;
+    place-items: center;
+    background: linear-gradient(145deg, #fbf8f1 0%, #eef6f0 55%, #dcefe4 100%);
+    border-radius: 14px;
+    border: 1px solid rgba($primarna, 0.14);
+    box-shadow:
+      0 6px 14px -6px rgba($sjena-boja, 0.3),
+      inset 0 1px 0 rgba($bijela, 0.9);
+    transition: transform $prijelaz-odskok;
+  }
+
+  .pa-brand-alert {
+    background: $gradijent-akcent;
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+
+  .pa-brand-ind {
+    color: $tekst-prigusen;
+    opacity: 0.8;
+  }
+
+  .pa-naslov-stranice {
+    align-items: center;
+    gap: 0.4rem;
+    min-width: 0;
+    padding: 0.3rem 0.8rem;
+    border-radius: $radius-pill;
+    background: rgba($bijela, 0.6);
+    box-shadow: inset 0 0 0 1px rgba($primarna, 0.15);
+    color: $primarna-tamna;
+    font-weight: 600;
+    font-size: 0.85rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    flex: 0 0 auto;
+    margin-right: 1rem;
+
+    &::before {
+      content: "";
+      width: 6px;
+      height: 6px;
+      flex: 0 0 auto;
+      border-radius: 50%;
+      background: $primarna;
+    }
+  }
+
+  .pa-nav-link,
+  .pa-nav-dropdown > .nav-link {
+    display: inline-block;
+    padding: 0.48rem 0.95rem;
+    border-radius: $radius-pill;
+    font-weight: 500;
+    font-size: 0.95rem;
+    color: $tekst-prigusen;
+    text-decoration: none;
+    white-space: nowrap;
+    transition: background-color $prijelaz, color $prijelaz, box-shadow $prijelaz;
+
+    &:hover {
+      color: $primarna-tamna;
+      background: rgba($bijela, 0.55);
+    }
+  }
+
+  .pa-nav-dropdown > .nav-link.show {
+    color: $primarna-tamna;
+    background: rgba($bijela, 0.55);
+  }
+
+  .pa-nav-link.active,
+  .pa-nav-dropdown.active > .nav-link {
+    color: $primarna-tamna;
+    font-weight: 600;
+    background: rgba($bijela, 0.82);
+    box-shadow:
+      0 2px 8px rgba($sjena-boja, 0.1),
+      inset 0 1px 0 $bijela,
+      inset 0 0 0 1px rgba($primarna, 0.12);
+  }
+
+  .pa-sifrarnik-stavka {
+    color: $primarna;
+    font-weight: 600;
+  }
+
+  .pa-nav-dropdown .dropdown-item {
+    &.active,
+    &:active {
+      background-color: rgba($primarna, 0.16);
+      color: $primarna-tamna;
+      font-weight: 600;
+    }
+  }
+
+  .pa-nav-cta {
+    padding-inline: 1.3rem;
+  }
+}
+
+@media (max-width: $mobitel) {
+  // logo, naslov i hamburger u istom redu
+  .pa-navbar {
+    > .container {
+      flex-wrap: nowrap;
+      gap: 0.25rem;
+      padding-inline: 0.25rem;
+    }
+
+    .pa-brand {
+      gap: 0.5rem;
+      margin-right: 0.25rem;
+      font-size: 1.15rem;
+    }
+
+    .pa-brand-mark {
+      width: 36px;
+      height: 36px;
+      border-radius: 12px;
+    }
+
+    // naslov u sredini između logotipa i hamburgera
+    .pa-naslov-stranice {
+      flex: 0 1 auto;
+      margin-inline: auto;
+      padding: 0.35rem 0.85rem;
+      font-size: 0.95rem;
+    }
+  }
+
+  .offcanvas.pa-offcanvas {
+    @include staklo(0.74, 26px);
+    border-left: 1px solid rgba($bijela, 0.7) !important;
+    box-shadow: -12px 0 40px rgba($sjena-boja, 0.15);
+
+    .offcanvas-header {
+      border-bottom-color: rgba($primarna, 0.12) !important;
+    }
+
+    .pa-nav-link,
+    .pa-nav-dropdown > .nav-link {
+      display: block;
+      padding: 0.72rem 1rem;
+      font-size: 1.02rem;
+      color: $tekst-prigusen;
+
+      &.active {
+        color: $primarna-tamna;
+        font-weight: 600;
+        background: rgba($bijela, 0.82);
+      }
+    }
+
+    .dropdown-menu {
+      box-shadow: none;
+      background: rgba($bijela, 0.5);
+    }
+  }
+}
+
+.offcanvas-backdrop.show {
+  opacity: 0.18;
+}
+
+.modal-backdrop.show {
+  opacity: 0.28;
+}

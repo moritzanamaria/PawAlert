@@ -7,7 +7,6 @@ import { useEffect, useState } from "react";
 import VrsteService from "../services/vrste/VrsteService";
 import TipService from "../services/tip/TipService";
 import OznakeService from "../services/oznake/OznakeService";
-import "../App.css"
 import { Link } from "react-router-dom";
 
 function useLista(propLista, service) {

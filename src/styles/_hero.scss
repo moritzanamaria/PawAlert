@@ -1,0 +1,161 @@
+@use 'varijable' as *;
+
+.pa-hero {
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+  color: $bijela;
+  border-radius: $radius-xl;
+  background:
+    radial-gradient(60% 120% at 92% -20%, rgba($bijela, 0.22), transparent 58%),
+    radial-gradient(50% 110% at -5% 115%, rgba(240, 140, 60, 0.38), transparent 62%),
+    linear-gradient(135deg, $primarna-najtamnija 0%, #1b6449 50%, $primarna 100%);
+  border: 1px solid rgba($bijela, 0.18);
+  box-shadow:
+    0 12px 28px -8px rgba($sjena-boja, 0.16),
+    0 28px 60px -18px rgba($sjena-boja, 0.24),
+    inset 0 1px 0 rgba($bijela, 0.2);
+
+  // uzorak šapa koji blijedi prema lijevo
+  &::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='120' height='120' viewBox='0 0 32 32'><g fill='%23ffffff' fill-opacity='0.07'><ellipse cx='16' cy='21.5' rx='7.4' ry='5.8'/><ellipse cx='7.4' cy='14.6' rx='3.2' ry='4.2' transform='rotate(-20 7.4 14.6)'/><ellipse cx='13' cy='10.2' rx='3.2' ry='4.2' transform='rotate(-7 13 10.2)'/><ellipse cx='19' cy='10.2' rx='3.2' ry='4.2' transform='rotate(7 19 10.2)'/><ellipse cx='24.6' cy='14.6' rx='3.2' ry='4.2' transform='rotate(20 24.6 14.6)'/></g></svg>");
+    background-size: 130px 130px;
+    -webkit-mask-image: linear-gradient(105deg, transparent 40%, #000 100%);
+    mask-image: linear-gradient(105deg, transparent 40%, #000 100%);
+  }
+
+  // svjetlosna mrlja koja daje dubinu
+  &::after {
+    content: "";
+    position: absolute;
+    width: 420px;
+    height: 420px;
+    right: -120px;
+    top: -160px;
+    z-index: 0;
+    pointer-events: none;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(110, 231, 183, 0.35), transparent 65%);
+    filter: blur(10px);
+  }
+
+  > * {
+    position: relative;
+    z-index: 1;
+  }
+
+  h1 {
+    color: $bijela;
+    font-size: clamp(2.1rem, 4vw, 3.1rem);
+    font-weight: 800;
+    line-height: 1.05;
+    letter-spacing: -0.035em;
+  }
+}
+
+// ---------- natpis iznad naslova ----------
+.pa-hero-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #effaf4;
+  padding: 0.42rem 0.95rem;
+  border-radius: $radius-pill;
+  background: rgba($bijela, 0.14);
+  border: 1px solid rgba($bijela, 0.28);
+  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
+  box-shadow: inset 0 1px 0 rgba($bijela, 0.25);
+}
+
+// ---------- istaknuta riječ "šape" ----------
+.pa-hero-akcent,
+.pa-hero-accent {
+  font-style: normal;
+  background: linear-gradient(120deg, #ffd59e 0%, #f8a65a 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  position: relative;
+  white-space: nowrap;
+
+  // narančasti "osmijeh" ispod riječi, kao luk ispod logotipa
+  &::after {
+    content: "";
+    position: absolute;
+    left: 4%;
+    right: 4%;
+    bottom: -0.12em;
+    height: 0.22em;
+    background: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 12' preserveAspectRatio='none'><path d='M2 9 Q50 0 98 10' fill='none' stroke='%23f8a65a' stroke-width='3.2' stroke-linecap='round'/></svg>") no-repeat center / 100% 100%;
+  }
+}
+
+.pa-hero-lead {
+  font-size: 1.06rem;
+  line-height: 1.65;
+  color: rgba($bijela, 0.88);
+  max-width: 48ch;
+}
+
+// ---------- gumbi ----------
+%pa-hero-gumb {
+  border-radius: $radius-pill;
+  padding: 0.75rem 1.7rem;
+  transition: transform $prijelaz, box-shadow $prijelaz, background-color $prijelaz;
+
+  &:hover {
+    transform: translateY(-2px);
+  }
+
+  &:active {
+    transform: translateY(0) scale(0.98);
+  }
+}
+
+.pa-hero-btn-cta {
+  @extend %pa-hero-gumb;
+  background: $bijela;
+  color: $primarna-tamna;
+  font-weight: 700;
+  border: none;
+  box-shadow: 0 8px 22px -8px rgba(0, 0, 0, 0.35), inset 0 -2px 0 rgba($primarna-tamna, 0.12);
+
+  &:hover {
+    background: #f4fbf7;
+    color: $primarna-tamna;
+    box-shadow: 0 16px 32px -10px rgba(0, 0, 0, 0.4), inset 0 -2px 0 rgba($primarna-tamna, 0.12);
+  }
+}
+
+.pa-hero-btn-outline {
+  @extend %pa-hero-gumb;
+  border: 1px solid rgba($bijela, 0.45);
+  background: rgba($bijela, 0.1);
+  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
+  color: $bijela;
+  font-weight: 600;
+  box-shadow: inset 0 1px 0 rgba($bijela, 0.25);
+
+  &:hover {
+    background: rgba($bijela, 0.2);
+    border-color: rgba($bijela, 0.8);
+    color: $bijela;
+  }
+}
+
+// ---------- brojke na dnu ----------
+.pa-hero-stats {
+  border-top: 1px solid rgba($bijela, 0.18);
+  font-variant-numeric: tabular-nums;
+}

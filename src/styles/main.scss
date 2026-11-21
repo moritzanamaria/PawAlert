@@ -1,0 +1,16 @@
+
+@use 'osnova';         
+@use 'kartice';        
+@use 'gumbi';
+@use 'forme';
+@use 'tablice';
+@use 'komponente';     
+@use 'navbar';         
+@use 'hero';           
+@use 'biblioteke';     
+@use 'loader';         
+@use 'pristupacnost';  
+
+
+//   _varijable.scss  ne uključuje se ovdje – svaki partial ga sam uzme s
+//                    @use 'varijable' as *; (u njemu su samo $vrijednosti)

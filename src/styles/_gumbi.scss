@@ -1,0 +1,160 @@
+@use 'varijable' as *;
+
+.btn {
+  --bs-btn-font-weight: 600;
+  border-radius: var(--pa-radius-pill);
+  letter-spacing: -0.005em;
+  padding: 0.6rem 1.35rem;
+}
+
+.btn-sm,
+.btn-group-sm > .btn {
+  padding: 0.38rem 0.9rem;
+  font-size: 0.85rem;
+}
+
+.btn-group > .btn {
+  border-radius: var(--pa-radius-pill);
+}
+
+.btn-group > .btn:not(:last-child) {
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+}
+
+.btn-group > .btn:not(:first-child) {
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
+}
+
+/* Primarni – zeleni gradijent sa sjajem */
+.btn-success,
+.btn-primary {
+  --bs-btn-color: #ffffff;
+  --bs-btn-hover-color: #ffffff;
+  --bs-btn-active-color: #ffffff;
+  --bs-btn-disabled-color: #ffffff;
+  --bs-btn-bg: var(--pa-primary);
+  --bs-btn-border-color: transparent;
+  --bs-btn-hover-bg: var(--pa-primary-hover);
+  --bs-btn-hover-border-color: transparent;
+  --bs-btn-active-bg: var(--pa-primary-dark);
+  --bs-btn-active-border-color: transparent;
+  --bs-btn-disabled-bg: var(--pa-primary);
+  --bs-btn-disabled-border-color: transparent;
+  --bs-btn-focus-shadow-rgb: 45, 138, 104;
+  background-image: var(--pa-primary-grad);
+  box-shadow: 0 4px 12px -4px rgba($primarna, 0.5), inset 0 1px 0 rgba($bijela, 0.28);
+}
+
+.btn-success:hover,
+.btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--pa-shadow-primary), inset 0 1px 0 rgba($bijela, 0.32);
+  filter: brightness(1.04);
+}
+
+.btn-success:active,
+.btn-primary:active {
+  transform: translateY(0) scale(0.98);
+}
+
+.btn:disabled,
+.btn.disabled {
+  opacity: 0.55;
+  transform: none !important;
+  box-shadow: none;
+}
+
+.btn-danger {
+  --bs-btn-bg: var(--pa-danger);
+  --bs-btn-border-color: transparent;
+  --bs-btn-hover-bg: #bf3a33;
+  --bs-btn-hover-border-color: transparent;
+  box-shadow: 0 4px 12px -4px rgba($opasnost, 0.5), inset 0 1px 0 rgba($bijela, 0.25);
+}
+
+.btn-warning {
+  --bs-btn-bg: #f2b34f;
+  --bs-btn-border-color: transparent;
+  --bs-btn-hover-bg: #e9a23b;
+  --bs-btn-hover-border-color: transparent;
+  --bs-btn-color: #3a2604;
+  --bs-btn-hover-color: #3a2604;
+}
+
+/* Obrubljeni gumbi – staklene pilule */
+.btn-outline-success,
+.btn-outline-primary,
+.btn-outline-secondary,
+.btn-outline-danger,
+.btn-outline-warning,
+.btn-light {
+  background-color: rgba($bijela, 0.55);
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+  box-shadow: var(--pa-shadow-sm), var(--pa-glass-highlight);
+}
+
+.btn-outline-success,
+.btn-outline-primary {
+  --bs-btn-color: var(--pa-primary-dark);
+  --bs-btn-border-color: #{rgba($primarna, 0.35)};
+  --bs-btn-hover-color: #ffffff;
+  --bs-btn-hover-bg: var(--pa-primary);
+  --bs-btn-hover-border-color: var(--pa-primary);
+  --bs-btn-active-bg: var(--pa-primary-dark);
+  --bs-btn-active-border-color: var(--pa-primary-dark);
+  --bs-btn-focus-shadow-rgb: 45, 138, 104;
+}
+
+.btn-outline-secondary {
+  --bs-btn-color: var(--pa-text-muted);
+  --bs-btn-border-color: #{rgba($sjena-boja, 0.16)};
+  --bs-btn-hover-color: var(--pa-primary-dark);
+  --bs-btn-hover-bg: #{rgba($bijela, 0.9)};
+  --bs-btn-hover-border-color: #{rgba($primarna, 0.35)};
+  --bs-btn-active-color: var(--pa-primary-dark);
+  --bs-btn-active-bg: #ffffff;
+}
+
+.btn-outline-danger {
+  --bs-btn-color: var(--pa-danger);
+  --bs-btn-border-color: #{rgba($opasnost, 0.35)};
+  --bs-btn-hover-bg: var(--pa-danger);
+  --bs-btn-hover-border-color: var(--pa-danger);
+}
+
+.btn-outline-warning {
+  --bs-btn-color: #9a6200;
+  --bs-btn-border-color: #{rgba($upozorenje, 0.5)};
+  --bs-btn-hover-color: #3a2604;
+  --bs-btn-hover-bg: #f2b34f;
+  --bs-btn-hover-border-color: #f2b34f;
+}
+
+.btn-outline-success:hover,
+.btn-outline-primary:hover,
+.btn-outline-secondary:hover,
+.btn-outline-danger:hover,
+.btn-outline-warning:hover {
+  transform: translateY(-1px);
+}
+
+.btn-link {
+  font-weight: 600;
+  text-decoration: none;
+  box-shadow: none;
+}
+
+.btn-link:hover {
+  text-decoration: underline;
+}
+
+.leaflet-container a.btn {
+  color: var(--bs-btn-color);
+}
+
+.leaflet-container a.btn:hover {
+  color: var(--bs-btn-hover-color);
+}

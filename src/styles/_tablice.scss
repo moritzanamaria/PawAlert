@@ -1,0 +1,45 @@
+// tablice
+@use 'varijable' as *;
+
+
+.table {
+  --bs-table-bg: transparent;
+  --bs-table-color: var(--pa-text);
+  --bs-table-border-color: #{rgba($sjena-boja, 0.08)};
+  --bs-table-hover-bg: #{rgba($bijela, 0.55)};
+  --bs-table-hover-color: var(--pa-text);
+  --bs-table-striped-bg: #{rgba($bijela, 0.3)};
+  margin-bottom: 0;
+}
+
+.table thead th {
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--pa-text-muted);
+  background: rgba($bijela, 0.45);
+  border-bottom: 1px solid rgba($sjena-boja, 0.1);
+  padding-block: 0.9rem;
+  white-space: nowrap;
+}
+
+.table td,
+.table th {
+  vertical-align: middle;
+  padding-inline: 0.9rem;
+}
+
+.table tbody tr {
+  transition: background-color var(--pa-transition);
+}
+
+.table-responsive:not(.card .table-responsive) {
+  background: rgba($bijela, 0.55);
+  -webkit-backdrop-filter: var(--pa-glass-blur);
+  backdrop-filter: var(--pa-glass-blur);
+  border: 1px solid var(--pa-glass-border);
+  border-radius: var(--pa-radius);
+  box-shadow: var(--pa-shadow), var(--pa-glass-highlight);
+  overflow: hidden;
+}

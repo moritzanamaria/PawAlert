@@ -1,0 +1,64 @@
+// pristupačnost, ispis i preglednici bez blura 
+@use 'varijable' as *;
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+
+  .card:hover,
+  .btn:hover {
+    transform: none;
+  }
+}
+
+/* manje zamućenja na mobitelu – štedi bateriju i ubrzava skrolanje */
+@media (max-width: 767.98px) {
+  .card {
+    -webkit-backdrop-filter: blur(10px) saturate(150%);
+    backdrop-filter: blur(10px) saturate(150%);
+  }
+
+  .card:hover {
+    transform: none;
+  }
+}
+
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  .card,
+  .modal-content,
+  .dropdown-menu,
+  .pa-navbar {
+    background: rgba(250, 252, 250, 0.97) !important;
+  }
+
+  .offcanvas.pa-offcanvas {
+    background: #f5f9f6;
+  }
+}
+
+@media print {
+  body::before,
+  .pa-navbar,
+  .loading-spinner-overlay {
+    display: none !important;
+  }
+
+  .card {
+    background: #ffffff !important;
+    box-shadow: none;
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+  }
+
+  .pa-fade-in,
+  .pa-ulaz {
+    animation: none !important;
+  }
+}

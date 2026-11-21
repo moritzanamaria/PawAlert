@@ -666,7 +666,7 @@ export default function GeneriranjePodataka() {
             <Card className="shadow-sm border-0 rounded-3 mb-4">
                 <Card.Header className="bg-white p-4 border-0 d-flex justify-content-between align-items-center flex-wrap gap-3">
                     <div>
-                        <h3 className="fw-bold mb-1 text-dark">🎴 Generiranje podataka</h3>
+                        <h3 className="fw-bold mb-1 text-dark">Generiranje podataka</h3>
                         <p className="text-muted small mb-0">Koristite ovaj alat za generiranje testnih podataka s lažnim (fake) podacima na hrvatskom jeziku u Osijeku.</p>
                     </div>
                     <div className="d-flex gap-2">
@@ -850,10 +850,10 @@ export default function GeneriranjePodataka() {
                     </Alert>
 
                     <hr className="my-4" />
-
-                    <h3>Brisanje podataka</h3>
-                    <p className="text-muted">Koristite ove opcije za brisanje svih podataka iz baze.</p>
-
+                    <div className='mx-2'>
+                        <h3>Brisanje podataka</h3>
+                        <p className="text-muted">Koristite ove opcije za brisanje svih podataka iz baze.</p>
+                    </div>
                     <Row className="my-3">
                         <Col md={4}>
                             <Button variant="danger" onClick={handleObrisiVrste} disabled={loading} className="w-100 mb-2">
