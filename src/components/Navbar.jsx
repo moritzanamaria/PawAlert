@@ -49,12 +49,13 @@ function Navbar() {
 
         <BsNavbar.Offcanvas
           id="offcanvas-navbar"
+          className='pa-offcanvas'
           aria-labelledby="offcanvas-navbar-label"
           placement="end"
           show={show}
           onHide={handleClose}
         >
-          <Offcanvas.Header closeButton className="border-bottom">
+          <Offcanvas.Header closeButton className="pa-brand">
             <Offcanvas.Title id="offcanvas-navbar-label" className="fw-bold">
               <span className="pa-brand-mark"><BrandMark size={30} /></span>
               <span>Paw<span className="pa-brand-alert">Alert</span></span>            </Offcanvas.Title>

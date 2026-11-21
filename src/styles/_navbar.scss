@@ -1,14 +1,6 @@
 @use 'varijable' as *;
 
 .pa-navbar {
-  background: linear-gradient(
-    135deg,
-    rgba($bijela, 0.66) 0%,
-    rgba($bijela, 0.32) 55%,
-    rgba(226, 240, 232, 0.42) 100%
-  );
-  -webkit-backdrop-filter: blur(24px) saturate(185%);
-  backdrop-filter: blur(24px) saturate(185%);
   border: 1px solid rgba($bijela, 0.7);
   border-radius: $radius-pill;
   box-shadow:
@@ -24,6 +16,23 @@
   padding-inline: 0.9rem 0.55rem;
   isolation: isolate;
 
+  // staklo
+  &::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    background: linear-gradient(135deg,
+        rgba($bijela, 0.66) 0%,
+        rgba($bijela, 0.32) 55%,
+        rgba(226, 240, 232, 0.42) 100%);
+    -webkit-backdrop-filter: blur(24px) saturate(185%);
+    backdrop-filter: blur(24px) saturate(185%);
+    pointer-events: none;
+    z-index: -2;
+  }
+
+  // odsjaj na vrhu stakla
   &::before {
     content: "";
     position: absolute;
@@ -48,6 +57,7 @@
 
 .pa-navbar,
 .pa-offcanvas {
+
   // ---------- logo ----------
   .pa-brand {
     display: flex;
@@ -124,7 +134,7 @@
   }
 
   .pa-nav-link,
-  .pa-nav-dropdown > .nav-link {
+  .pa-nav-dropdown>.nav-link {
     display: inline-block;
     padding: 0.48rem 0.95rem;
     border-radius: $radius-pill;
@@ -141,13 +151,13 @@
     }
   }
 
-  .pa-nav-dropdown > .nav-link.show {
+  .pa-nav-dropdown>.nav-link.show {
     color: $primarna-tamna;
     background: rgba($bijela, 0.55);
   }
 
   .pa-nav-link.active,
-  .pa-nav-dropdown.active > .nav-link {
+  .pa-nav-dropdown.active>.nav-link {
     color: $primarna-tamna;
     font-weight: 600;
     background: rgba($bijela, 0.82);
@@ -163,6 +173,7 @@
   }
 
   .pa-nav-dropdown .dropdown-item {
+
     &.active,
     &:active {
       background-color: rgba($primarna, 0.16);
@@ -177,9 +188,10 @@
 }
 
 @media (max-width: $mobitel) {
+
   // logo, naslov i hamburger u istom redu
   .pa-navbar {
-    > .container {
+    >.container {
       flex-wrap: nowrap;
       gap: 0.25rem;
       padding-inline: 0.25rem;
@@ -207,6 +219,7 @@
   }
 
   .offcanvas.pa-offcanvas {
+    --bs-offcanvas-width: min(320px, 85vw);
     @include staklo(0.74, 26px);
     border-left: 1px solid rgba($bijela, 0.7) !important;
     box-shadow: -12px 0 40px rgba($sjena-boja, 0.15);
@@ -216,7 +229,7 @@
     }
 
     .pa-nav-link,
-    .pa-nav-dropdown > .nav-link {
+    .pa-nav-dropdown>.nav-link {
       display: block;
       padding: 0.72rem 1rem;
       font-size: 1.02rem;
