@@ -74,7 +74,7 @@ const { showLoading, hideLoading } = useLoading();
                   Prijavi životinju
                 </Link>
               ) : (
-                <Link to={RouteNames.LOGIN} className="btn pa-hero-btn-cta">
+                <Link to={RouteNames.LOGIN} state={{ povratak: RouteNames.PRIJAVA_NOVA }} className="btn pa-hero-btn-cta">
                   Prijavi se i pomozi
                 </Link>
               )}

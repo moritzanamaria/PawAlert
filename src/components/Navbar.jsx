@@ -2,16 +2,20 @@ import { useState } from "react"
 import { Container, Nav, Navbar as BsNavbar, Offcanvas, NavDropdown } from "react-bootstrap"
 import { FaMemory } from 'react-icons/fa';
 import { GrServer, GrStatusUnknown, GrVirtualStorage } from 'react-icons/gr';
-import { Link, NavLink } from "react-router-dom"
+import { Link, NavLink, useLocation } from "react-router-dom"
 import { DATA_SOURCE, IME_APLIKACIJE, RouteNames } from "../constants"
 import useAuth from "../hooks/useAuth";
 import BrandMark from "./BrandMark";
+import { pronadiStranicu } from "../utils/stranice";
+
 
 function Navbar() {
   const [show, setShow] = useState(false)
   const handleClose = () => setShow(false)
   const handleShow = () => setShow(true)
   const { isLoggedIn, logout, authUser } = useAuth()
+  const { pathname } = useLocation()
+  const stranica = pronadiStranicu(pathname)
 
   function izvor() {
     switch (DATA_SOURCE) {
@@ -22,7 +26,7 @@ function Navbar() {
       case 'firebase':
         return <GrServer title='Firebase' />
       default:
-        return <GrStatusUnknown  title='Nepoznato' />
+        return <GrStatusUnknown title='Nepoznato' />
     }
   }
 
@@ -34,6 +38,13 @@ function Navbar() {
           {IME_APLIKACIJE}
           <span className="pa-brand-ind d-none d-md-inline-flex align-items-center gap-1">{izvor()}</span>
         </BsNavbar.Brand>
+
+        {stranica && (
+          <span className={`pa-naslov-stranice ${stranica.uIzborniku || stranica.sifrarnik ? 'd-inline-flex d-lg-none' : 'd-inline-flex'}`}>
+            {stranica.naslov}
+          </span>
+        )}
+
         <BsNavbar.Toggle aria-controls="offcanvas-navbar" onClick={handleShow} className="border-0 shadow-none" />
 
         <BsNavbar.Offcanvas
@@ -68,11 +79,22 @@ function Navbar() {
                   {authUser?.uloga === 'admin' && (
                     <>
                       <Nav.Link as={NavLink} to={RouteNames.PRIJAVE_PREGLED} className="pa-nav-link" onClick={handleClose}>Pregled prijava</Nav.Link>
-                      <NavDropdown title="Šifrarnici" id="sifrarnici" className="pa-nav-dropdown">
+                      <NavDropdown
+                        id="sifrarnici"
+                        className={`pa-nav-dropdown ${stranica?.sifrarnik ? 'active' : ''}`}
+                        title={
+                          <>
+                            Šifrarnici
+                            {stranica?.sifrarnik && <span className="pa-sifrarnik-stavka"> · {stranica.sifrarnik}</span>}
+                          </>
+                        }
+                      >
                         <NavDropdown.Item as={Link} to={RouteNames.TIPOVI_I_VRSTE_PREGLED} onClick={handleClose}>Tipovi i vrste</NavDropdown.Item>
+                        <NavDropdown.Divider />
                         <NavDropdown.Item as={Link} to={RouteNames.OZNAKE_PREGLED} onClick={handleClose}>Oznake</NavDropdown.Item>
                         <NavDropdown.Divider />
                         <NavDropdown.Item as={Link} to={RouteNames.OPERATERI} onClick={handleClose}>Operateri</NavDropdown.Item>
+                        <NavDropdown.Divider />
                         <NavDropdown.Item as={Link} to={RouteNames.GENERIRANJE_PODATAKA} onClick={handleClose}>Generiraj podatke</NavDropdown.Item>
                       </NavDropdown>
                     </>

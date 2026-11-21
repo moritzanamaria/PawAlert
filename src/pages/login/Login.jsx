@@ -2,12 +2,21 @@ import { Form, Button, Row, Col, Container, Card } from "react-bootstrap"
 import { loginSchema } from "../../schemas/operaterSchema"
 import { useState, useRef } from "react"
 import useAuth from "../../hooks/useAuth"
+import { Navigate, useLocation } from "react-router-dom"
+import { RouteNames } from "../../constants"
 
 export default function Login() {
     const [errors, setErrors] = useState({})
-    const { login } = useAuth();
-    
+    const { login, isLoggedIn } = useAuth();
+    const location = useLocation();
+    const povratak = location.state?.povratak ?? RouteNames.HOME;
+
     const formaRef = useRef(null);
+
+     if (isLoggedIn) {
+        return <Navigate to={povratak} replace />
+    }
+
 
     function odradiSubmit(e) {
         e.preventDefault()
@@ -24,7 +33,7 @@ export default function Login() {
             return
         }
 
-        login(podaci.get('email'), podaci.get('lozinka'))
+        login(podaci.get('email'), podaci.get('lozinka'), povratak)
     }
 
     const popuniPodatke = (email, lozinka) => {
@@ -46,8 +55,8 @@ export default function Login() {
         <Container className="mt-4">
             <Row className="mb-3">
                 <Col md={6}>
-                    <Card 
-                        className="p-2 mb-2 bg-light border-dashed cursor-pointer text-center" 
+                    <Card
+                        className="p-2 mb-2 bg-light border-dashed cursor-pointer text-center"
                         style={{ cursor: 'pointer', borderStyle: 'dashed' }}
                         onClick={() => popuniPodatke('admin@pawalert.hr', 'Edunova123!')}
                     >
@@ -56,8 +65,8 @@ export default function Login() {
                     </Card>
                 </Col>
                 <Col md={6}>
-                    <Card 
-                        className="p-2 mb-2 bg-light border-dashed cursor-pointer text-center" 
+                    <Card
+                        className="p-2 mb-2 bg-light border-dashed cursor-pointer text-center"
                         style={{ cursor: 'pointer', borderStyle: 'dashed' }}
                         onClick={() => popuniPodatke('operater@pawalert.hr', 'Edunova123!')}
                     >
@@ -67,7 +76,7 @@ export default function Login() {
                 </Col>
             </Row>
 
-            <Form onSubmit={odradiSubmit} ref={formaRef}> 
+            <Form onSubmit={odradiSubmit} ref={formaRef}>
                 <Card className="shadow-sm">
                     <Card.Body>
                         <Card.Title className="mb-4">Podaci za prijavu</Card.Title>
@@ -119,8 +128,8 @@ export default function Login() {
                         <hr />
 
                         <div className="d-grid gap-2 d-md-flex justify-content-md-end mt-4">
-                            <Button 
-                                type="submit" 
+                            <Button
+                                type="submit"
                                 variant="success"
                                 className="px-4"
                             >

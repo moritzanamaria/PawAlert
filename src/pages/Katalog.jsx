@@ -152,7 +152,7 @@ export default function Katalog() {
               <BiPlus size={20} /> Nova prijava
             </Link>
           ) : (
-            <Link to={RouteNames.LOGIN} className="btn btn-outline-success fw-semibold">
+            <Link to={RouteNames.LOGIN} state={{ povratak: RouteNames.PRIJAVA_NOVA }} className="btn btn-outline-success fw-semibold">
               Prijavi se za prijavu životinje
             </Link>
           )}
