@@ -9,9 +9,11 @@ import TragoviService from "../services/tragovi/TragoviService";
 import VrsteService from "../services/vrste/VrsteService";
 import FormatDatuma from "../components/FormatDatuma";
 import useLoading from "../hooks/useLoading";
+import useModal from "../hooks/useModal";
 
 export default function MojProfil() {
   const { authUser } = useAuth();
+  const { showModal } = useModal();
   const { showLoading, hideLoading } = useLoading();
   const [searchParams, setSearchParams] = useSearchParams();
   const tab = searchParams.get("tab") || "prijave";
@@ -63,16 +65,17 @@ export default function MojProfil() {
       novi === "zatvorena"
         ? "Zatvoriti prijavu? Kasnije je možete ponovno otvoriti."
         : "Ponovno otvoriti prijavu?";
-    if (!confirm(poruka)) return;
-    showLoading();
-    try {
-      await prijaveService.promijeni(prijava.id, { ...prijava, status: novi });
-      setOsvjezi((n) => n + 1);
-    } catch (error) {
-      alert(error.message);
-    } finally {
-      hideLoading();
-    }
+    showModal(poruka, async () => {
+      showLoading();
+      try {
+        await prijaveService.promijeni(prijava.id, { ...prijava, status: novi });
+        setOsvjezi((n) => n + 1);
+      } catch (error) {
+        alert(error.message);
+      } finally {
+        hideLoading();
+      }
+    });
   }
 
   return (

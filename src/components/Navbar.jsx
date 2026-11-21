@@ -56,7 +56,7 @@ function Navbar() {
           onHide={handleClose}
         >
           <Offcanvas.Header closeButton className="pa-brand">
-            <Offcanvas.Title id="offcanvas-navbar-label" className="fw-bold">
+            <Offcanvas.Title id="offcanvas-navbar-label" className="pa-brand">
               <span className="pa-brand-mark"><BrandMark size={30} /></span>
               <span>Paw<span className="pa-brand-alert">Alert</span></span>            </Offcanvas.Title>
           </Offcanvas.Header>
@@ -90,13 +90,13 @@ function Navbar() {
                           </>
                         }
                       >
-                        <NavDropdown.Item as={Link} to={RouteNames.TIPOVI_I_VRSTE_PREGLED} onClick={handleClose}>Tipovi i vrste</NavDropdown.Item>
+                        <NavDropdown.Item as={Link} to={RouteNames.TIPOVI_I_VRSTE_PREGLED} active={stranica?.sifrarnik === 'Tipovi i vrste'} onClick={handleClose}>Tipovi i vrste</NavDropdown.Item>
                         <NavDropdown.Divider />
-                        <NavDropdown.Item as={Link} to={RouteNames.OZNAKE_PREGLED} onClick={handleClose}>Oznake</NavDropdown.Item>
+                        <NavDropdown.Item as={Link} to={RouteNames.OZNAKE_PREGLED} active={stranica?.sifrarnik === 'Oznake'} onClick={handleClose}>Oznake</NavDropdown.Item>
                         <NavDropdown.Divider />
-                        <NavDropdown.Item as={Link} to={RouteNames.OPERATERI} onClick={handleClose}>Operateri</NavDropdown.Item>
+                        <NavDropdown.Item as={Link} to={RouteNames.OPERATERI} active={stranica?.sifrarnik === 'Operateri'}  onClick={handleClose}>Operateri</NavDropdown.Item>
                         <NavDropdown.Divider />
-                        <NavDropdown.Item as={Link} to={RouteNames.GENERIRANJE_PODATAKA} onClick={handleClose}>Generiraj podatke</NavDropdown.Item>
+                        <NavDropdown.Item as={Link} to={RouteNames.GENERIRANJE_PODATAKA} active={stranica?.sifrarnik === 'Generiranje podataka'} onClick={handleClose}>Generiraj podatke</NavDropdown.Item>
                       </NavDropdown>
                     </>
                   )}
