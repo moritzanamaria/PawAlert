@@ -12,9 +12,11 @@ import { generirajPrijaveWord } from '../../utils/prijaveWordGenerator';
 import { BsFileEarmarkWord } from 'react-icons/bs';
 import OznakeService from "../../services/oznake/OznakeService";
 import useLoading from "../../hooks/useLoading";
+import useModal from "../../hooks/useModal";
 
 export default function PrijavePregled() {
   const { showLoading, hideLoading } = useLoading();
+  const { showModal } = useModal();
   const [prijave, setPrijave] = useState([])
   const [vrste, setVrste] = useState([]);
   const [tipovi, setTipovi] = useState([]);
@@ -69,27 +71,26 @@ export default function PrijavePregled() {
 
 
   async function obrisi(id) {
-    if (!confirm('Brisanjem prijave brišu se i svi njezini tragovi. Nastaviti?')) {
-      return
-    }
-    showLoading();
-    try {
-      const { data: tragovi } = await TragoviService.getByPrijava(id)
-      for (const trag of tragovi) {
-        await TragoviService.obrisi(trag.id)
-      }
-      await prijaveService.obrisi(id)
+    showModal('Brisanjem prijave brišu se i svi njezini tragovi. Nastaviti?', async () => {
+      showLoading();
+      try {
+        const { data: tragovi } = await TragoviService.getByPrijava(id)
+        for (const trag of tragovi) {
+          await TragoviService.obrisi(trag.id)
+        }
+        await prijaveService.obrisi(id)
 
-      if (prijave.length === 1 && trenutnaStranica > 1) {
-        postaviTrenutnuStranicu(trenutnaStranica - 1)
-      } else {
-        setOsvjezi((n) => n + 1)
+        if (prijave.length === 1 && trenutnaStranica > 1) {
+          postaviTrenutnuStranicu(trenutnaStranica - 1)
+        } else {
+          setOsvjezi((n) => n + 1)
+        }
+      } catch (error) {
+        console.error("Greška pri brisanju prijave:", error)
+      } finally {
+        hideLoading();
       }
-    } catch (error) {
-      console.error("Greška pri brisanju prijave:", error)
-    } finally {
-      hideLoading();
-    }
+    });
   }
 
   function promijeniStranicu(stranica) {

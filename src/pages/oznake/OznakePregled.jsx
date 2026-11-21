@@ -5,11 +5,13 @@ import { Badge, Button, Card, Container, Table, ButtonGroup } from "react-bootst
 import { Link, useNavigate } from "react-router-dom";
 import { BiPlus, BiPencil, BiTrash } from "react-icons/bi";
 import useLoading from "../../hooks/useLoading";
+import useModal from "../../hooks/useModal";
 
 export default function OznakePregled() {
   const navigate = useNavigate();
   const [oznake, setOznake] = useState([]);
   const { showLoading, hideLoading } = useLoading();
+  const { showModal } = useModal();
 
   useEffect(() => {
     async function ucitajOznake() {
@@ -27,18 +29,17 @@ export default function OznakePregled() {
   }, []);
 
   async function obrisi(id) {
-    if (!confirm("Sigurno obrisati ovu oznaku?")) {
-      return;
-    }
-    showLoading();
-    try {
-      await OznakeService.obrisi(id);
-      setOznake((prev) => prev.filter((o) => o.id !== id));
-    } catch (error) {
-      console.error("Greška pri brisanju:", error);
-    } finally {
-      hideLoading();
-    }
+    showModal("Sigurno obrisati ovu oznaku?", async () => {
+      showLoading();
+      try {
+        await OznakeService.obrisi(id);
+        setOznake((prev) => prev.filter((o) => o.id !== id));
+      } catch (error) {
+        console.error("Greška pri brisanju:", error);
+      } finally {
+        hideLoading();
+      }
+    });
   }
 
 

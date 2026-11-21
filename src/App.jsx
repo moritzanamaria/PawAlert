@@ -47,6 +47,7 @@ export default function App() {
           <Route path="*" element={<Navigate to={RouteNames.HOME} replace />} />
           <Route path={RouteNames.HOME} element={<Pocetna />} />
           <Route path={RouteNames.KATALOG} element={<Katalog />} />
+          <Route path={RouteNames.LOGIN} element={<Login />} />
           <Route path={RouteNames.DETALJI_SLUCAJA} element={<DetaljiSlucaja />} />
           {isLoggedIn ? (
             <>
@@ -80,7 +81,6 @@ export default function App() {
             </>
           ) : (
             <>
-              <Route path={RouteNames.LOGIN} element={<Login />} />
               <Route path={RouteNames.REGISTRACIJA} element={<Registracija />} />
             </>
           )}

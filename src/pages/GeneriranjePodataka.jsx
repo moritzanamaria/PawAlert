@@ -25,6 +25,7 @@ import prijaveServiceMemorija from '../services/prijave/prijaveServiceMemorija';
 import TragoviServiceMemorija from '../services/tragovi/TragoviServiceMemorija';
 import { operateri as operateriMemorija } from '../services/operateri/OperaterPodaci';
 import useLoading from "../hooks/useLoading";
+import useModal from "../hooks/useModal";
 
 export default function GeneriranjePodataka() {
     const [brojVrsta, setBrojVrsta] = useState(5);
@@ -34,7 +35,8 @@ export default function GeneriranjePodataka() {
     const [brojTragova, setBrojTragova] = useState(20);
     const [brojOperatera, setBrojOperatera] = useState(5);
     const [poruka, setPoruka] = useState(null);
-    const { loading, showLoading, hideLoading } = useLoading();    
+    const { loading, showLoading, hideLoading } = useLoading();
+    const { showModal } = useModal();
     const [errors, setErrors] = useState({});
     const { authUser } = useAuth();
     const ocistiGresku = (nazivPolja) => {
@@ -77,101 +79,97 @@ export default function GeneriranjePodataka() {
     };
 
     const handleMemorijaULocalStorage = async () => {
-        if (!window.confirm('Presipati podatke iz memorije u localStorage? Postojeći podaci u localStorageu bit će zamijenjeni.')) {
-            return;
-        }
+        showModal('Presipati podatke iz memorije u localStorage? Postojeći podaci u localStorageu bit će zamijenjeni.', async () => {
+            showLoading();
+            setPoruka(null);
+            try {
+                const podaci = await dohvatiIzMemorije();
 
-        showLoading();
-        setPoruka(null);
+                localStorage.setItem(PrefixStorage.VRSTE, JSON.stringify(podaci.vrste));
+                localStorage.setItem(PrefixStorage.TIPOVI, JSON.stringify(podaci.tipovi));
+                localStorage.setItem(PrefixStorage.OZNAKE, JSON.stringify(podaci.oznake));
+                localStorage.setItem(PrefixStorage.PRIJAVE, JSON.stringify(podaci.prijave));
+                localStorage.setItem(PrefixStorage.TRAGOVI, JSON.stringify(podaci.tragovi));
+                localStorage.setItem(PrefixStorage.OPERATERI, JSON.stringify(podaci.operateri));
 
-        try {
-            const podaci = await dohvatiIzMemorije();
-
-            localStorage.setItem(PrefixStorage.VRSTE, JSON.stringify(podaci.vrste));
-            localStorage.setItem(PrefixStorage.TIPOVI, JSON.stringify(podaci.tipovi));
-            localStorage.setItem(PrefixStorage.OZNAKE, JSON.stringify(podaci.oznake));
-            localStorage.setItem(PrefixStorage.PRIJAVE, JSON.stringify(podaci.prijave));
-            localStorage.setItem(PrefixStorage.TRAGOVI, JSON.stringify(podaci.tragovi));
-            localStorage.setItem(PrefixStorage.OPERATERI, JSON.stringify(podaci.operateri));
-
-            setPoruka({
-                tip: 'success',
-                tekst: `Uspješno presipano u localStorage!`
-            });
-        } catch (error) {
-            setPoruka({
-                tip: 'danger',
-                tekst: 'Greška pri presipavanju podataka: ' + error.message
-            });
-        } finally {
-            hideLoading();
-        }
+                setPoruka({
+                    tip: 'success',
+                    tekst: `Uspješno presipano u localStorage!`
+                });
+            } catch (error) {
+                setPoruka({
+                    tip: 'danger',
+                    tekst: 'Greška pri presipavanju podataka: ' + error.message
+                });
+            } finally {
+                hideLoading();
+            }
+        });
     };
 
     const handleMemorijaUFireBase = async () => {
-        if (!window.confirm('Jeste li sigurni da želite pretočiti iz memorije u firebase?')) {
-            return;
-        }
-        showLoading();
-        setPoruka(null);
-const ocistiUndefined = (obj) =>
-    Object.fromEntries(Object.entries(obj).filter(([, v]) => v !== undefined));
+        showModal('Jeste li sigurni da želite pretočiti iz memorije u firebase?', async () => {
+            showLoading();
+            setPoruka(null);
+            const ocistiUndefined = (obj) =>
+                Object.fromEntries(Object.entries(obj).filter(([, v]) => v !== undefined));
 
-const prebaci = async (servis, stavke, naziv = '') => {
-    const mapa = new Map();
-    for (const { id, ...ostatak } of stavke) {
-        try {
-            const noviId = await dodajIliBaci(servis, ocistiUndefined(ostatak));
-            mapa.set(String(id), noviId);
-        } catch (err) {
-            console.error(`Greška u [${naziv}] za id=${id}:`, err, ostatak);
-            throw err;
-        }
-    }
-    return mapa;
-};
-        try {
-            const { vrste, tipovi, oznake, prijave, tragovi, operateri } = await dohvatiIzMemorije();
+            const prebaci = async (servis, stavke, naziv = '') => {
+                const mapa = new Map();
+                for (const { id, ...ostatak } of stavke) {
+                    try {
+                        const noviId = await dodajIliBaci(servis, ocistiUndefined(ostatak));
+                        mapa.set(String(id), noviId);
+                    } catch (err) {
+                        console.error(`Greška u [${naziv}] za id=${id}:`, err, ostatak);
+                        throw err;
+                    }
+                }
+                return mapa;
+            };
+            try {
+                const { vrste, tipovi, oznake, prijave, tragovi, operateri } = await dohvatiIzMemorije();
 
-            // 1. Operateri (lozinke su već hashirane); one s istim emailom preskačemo
-            const postojeciEmailovi = (await OperaterServiceFireBase.get()).data.map((o) => o.email);
-            for (const { id: _id, ...ostatak } of operateri) {
-                if (postojeciEmailovi.includes(ostatak.email)) continue;
-                const rez = await OperaterServiceFireBase.dodaj(ostatak);
-                if (!rez?.success) throw new Error(rez?.message || 'Greška pri dodavanju operatera');
+                // 1. Operateri (lozinke su već hashirane); one s istim emailom preskačemo
+                const postojeciEmailovi = (await OperaterServiceFireBase.get()).data.map((o) => o.email);
+                for (const { id: _id, ...ostatak } of operateri) {
+                    if (postojeciEmailovi.includes(ostatak.email)) continue;
+                    const rez = await OperaterServiceFireBase.dodaj(ostatak);
+                    if (!rez?.success) throw new Error(rez?.message || 'Greška pri dodavanju operatera');
+                }
+
+                // 2. Vrste, tipovi i oznake (trebamo nove ID-ove za prijave)
+                const mapaVrsta = await prebaci(VrsteServiceFireBase, vrste, 'Vrste');
+                const mapaTipova = await prebaci(TipServiceFireBase, tipovi, 'Tipovi');
+                const mapaOznaka = await prebaci(OznakeServiceFireBase, oznake, 'Oznake');
+                // 3. Prijave (povezivanje starih ID-ova s novim FireBase ID-ovima)
+                const mapaPrijava = new Map();
+                for (const { id, ...ostatak } of prijave) {
+                    ostatak.zivotinja_vrsta = mapaVrsta.get(String(ostatak.zivotinja_vrsta)) ?? null;
+                    ostatak.tip_prijave = mapaTipova.get(String(ostatak.tip_prijave)) ?? null;
+                    ostatak.oznake = (ostatak.oznake ?? [])
+                        .map((o) => mapaOznaka.get(String(o)))
+                        .filter((o) => o != null); // makni one koje nije našao
+                    mapaPrijava.set(String(id), await dodajIliBaci(prijaveServiceFireBase, ostatak));
+                }
+
+                // 4. Tragovi
+                for (const { id: _id, ...ostatak } of tragovi) {
+                    ostatak.prijava = mapaPrijava.get(String(ostatak.prijava)) ?? null;
+                    await dodajIliBaci(TragoviServiceFireBase, ostatak);
+                }
+
+                setPoruka({ tip: 'success', tekst: 'Uspješno presipano u FireBase!' });
+            } catch (error) {
+                console.error('Greška pri presipanju:', error);
+                setPoruka({
+                    tip: 'danger',
+                    tekst: 'Došlo je do greške prilikom sinkronizacije: ' + error.message
+                });
+            } finally {
+                hideLoading();
             }
-
-            // 2. Vrste, tipovi i oznake (trebamo nove ID-ove za prijave)
-         const mapaVrsta = await prebaci(VrsteServiceFireBase, vrste, 'Vrste');
-const mapaTipova = await prebaci(TipServiceFireBase, tipovi, 'Tipovi');
-const mapaOznaka = await prebaci(OznakeServiceFireBase, oznake, 'Oznake');
-            // 3. Prijave (povezivanje starih ID-ova s novim FireBase ID-ovima)
-            const mapaPrijava = new Map();
-            for (const { id, ...ostatak } of prijave) {
-                ostatak.zivotinja_vrsta = mapaVrsta.get(String(ostatak.zivotinja_vrsta)) ?? null;
-                ostatak.tip_prijave = mapaTipova.get(String(ostatak.tip_prijave)) ?? null;
-                ostatak.oznake = (ostatak.oznake ?? [])
-                    .map((o) => mapaOznaka.get(String(o)))
-                    .filter((o) => o != null); // makni one koje nije našao
-                mapaPrijava.set(String(id), await dodajIliBaci(prijaveServiceFireBase, ostatak));
-            }
-
-            // 4. Tragovi
-            for (const { id: _id, ...ostatak } of tragovi) {
-                ostatak.prijava = mapaPrijava.get(String(ostatak.prijava)) ?? null;
-                await dodajIliBaci(TragoviServiceFireBase, ostatak);
-            }
-
-            setPoruka({ tip: 'success', tekst: 'Uspješno presipano u FireBase!' });
-        } catch (error) {
-            console.error('Greška pri presipanju:', error);
-            setPoruka({
-                tip: 'danger',
-                tekst: 'Došlo je do greške prilikom sinkronizacije: ' + error.message
-            });
-        } finally {
-            hideLoading();
-        }
+        });
     };
     const generirajVrste = async (broj) => {
         const naziviVrsta = ['Pas', 'Mačka', 'Ptica', 'Kunić', 'Hrčak', 'Kornjača', 'Tvor', 'Papiga'];
@@ -390,116 +388,116 @@ const mapaOznaka = await prebaci(OznakeServiceFireBase, oznake, 'Oznake');
     };
 
     const handleObrisiVrste = async () => {
-        if (!window.confirm('Jeste li sigurni da želite obrisati sve vrste?')) return;
-        showLoading();
-        setPoruka(null);
+        showModal('Jeste li sigurni da želite obrisati sve vrste?', async () => {
+            showLoading();
+            setPoruka(null);
+            try {
+                const prijaveOdgovor = await prijaveService.get();
+                const prijave = prijaveOdgovor.data || prijaveOdgovor;
 
-        try {
-            const prijaveOdgovor = await prijaveService.get();
-            const prijave = prijaveOdgovor.data || prijaveOdgovor;
-
-            if (prijave && prijave.length > 0) {
-                throw new Error('Vrste se koriste u prijavama, prvo obrišite prijave!');
+                if (prijave && prijave.length > 0) {
+                    throw new Error('Vrste se koriste u prijavama, prvo obrišite prijave!');
+                }
+                const rezultat = await VrsteService.get();
+                const vrste = rezultat.data || rezultat;
+                for (const vrsta of vrste) {
+                    await VrsteService.obrisi(vrsta.id);
+                }
+                setPoruka({ tip: 'success', tekst: `Uspješno obrisano ${vrste.length} vrsta!` });
+            } catch (error) {
+                setPoruka({ tip: 'danger', tekst: 'Greška pri brisanju vrsta: ' + error.message });
+            } finally {
+                hideLoading();
             }
-            const rezultat = await VrsteService.get();
-            const vrste = rezultat.data || rezultat;
-            for (const vrsta of vrste) {
-                await VrsteService.obrisi(vrsta.id);
-            }
-            setPoruka({ tip: 'success', tekst: `Uspješno obrisano ${vrste.length} vrsta!` });
-        } catch (error) {
-            setPoruka({ tip: 'danger', tekst: 'Greška pri brisanju vrsta: ' + error.message });
-        } finally {
-            hideLoading();
-        }
+        });
     };
 
     const handleObrisiTipove = async () => {
-        if (!window.confirm('Jeste li sigurni da želite obrisati sve tipove?')) return;
-        showLoading();
-        setPoruka(null);
+        showModal('Jeste li sigurni da želite obrisati sve tipove?', async () => {
+            showLoading();
+            setPoruka(null);
+            try {
+                const prijaveOdgovor = await prijaveService.get();
+                const prijave = prijaveOdgovor.data || prijaveOdgovor;
 
-        try {
-            const prijaveOdgovor = await prijaveService.get();
-            const prijave = prijaveOdgovor.data || prijaveOdgovor;
-
-            if (prijave && prijave.length > 0) {
-                throw new Error('Tipovi se koriste u prijavama, prvo obrišite prijave!');
+                if (prijave && prijave.length > 0) {
+                    throw new Error('Tipovi se koriste u prijavama, prvo obrišite prijave!');
+                }
+                const rezultat = await TipService.get();
+                const tipovi = rezultat.data || rezultat;
+                for (const tip of tipovi) {
+                    await TipService.obrisi(tip.id);
+                }
+                setPoruka({ tip: 'success', tekst: `Uspješno obrisano ${tipovi.length} tipova!` });
+            } catch (error) {
+                setPoruka({ tip: 'danger', tekst: 'Greška pri brisanju tipova: ' + error.message });
+            } finally {
+                hideLoading();
             }
-            const rezultat = await TipService.get();
-            const tipovi = rezultat.data || rezultat;
-            for (const tip of tipovi) {
-                await TipService.obrisi(tip.id);
-            }
-            setPoruka({ tip: 'success', tekst: `Uspješno obrisano ${tipovi.length} tipova!` });
-        } catch (error) {
-            setPoruka({ tip: 'danger', tekst: 'Greška pri brisanju tipova: ' + error.message });
-        } finally {
-            hideLoading();
-        }
+        });
     };
 
     const handleObrisiOznake = async () => {
-        if (!window.confirm('Jeste li sigurni da želite obrisati sve oznake?')) return;
-        showLoading();
-        setPoruka(null);
+        showModal('Jeste li sigurni da želite obrisati sve oznake?', async () => {
+            showLoading();
+            setPoruka(null);
+            try {
+                const prijaveOdgovor = await prijaveService.get();
+                const prijave = prijaveOdgovor.data || prijaveOdgovor;
 
-        try {
-            const prijaveOdgovor = await prijaveService.get();
-            const prijave = prijaveOdgovor.data || prijaveOdgovor;
-
-            if (prijave && prijave.length > 0) {
-                throw new Error('Oznake se koriste u prijavama, prvo obrišite prijave!');
+                if (prijave && prijave.length > 0) {
+                    throw new Error('Oznake se koriste u prijavama, prvo obrišite prijave!');
+                }
+                const rezultat = await OznakeService.get();
+                const oznake = rezultat.data || rezultat;
+                for (const oznaka of oznake) {
+                    await OznakeService.obrisi(oznaka.id);
+                }
+                setPoruka({ tip: 'success', tekst: `Uspješno obrisano ${oznake.length} oznaka!` });
+            } catch (error) {
+                setPoruka({ tip: 'danger', tekst: 'Greška pri brisanju oznaka: ' + error.message });
+            } finally {
+                hideLoading();
             }
-            const rezultat = await OznakeService.get();
-            const oznake = rezultat.data || rezultat;
-            for (const oznaka of oznake) {
-                await OznakeService.obrisi(oznaka.id);
-            }
-            setPoruka({ tip: 'success', tekst: `Uspješno obrisano ${oznake.length} oznaka!` });
-        } catch (error) {
-            setPoruka({ tip: 'danger', tekst: 'Greška pri brisanju oznaka: ' + error.message });
-        } finally {
-            hideLoading();
-        }
+        });
     };
 
     const handleObrisiPrijave = async () => {
-        if (!window.confirm('Jeste li sigurni da želite obrisati sve prijave?')) return;
-        showLoading();
-        setPoruka(null);
-
-        try {
-            const rezultat = await prijaveService.get();
-            const prijave = rezultat.data || rezultat;
-            for (const prijava of prijave) {
-                await prijaveService.obrisi(prijava.id);
+        showModal('Jeste li sigurni da želite obrisati sve prijave?', async () => {
+            showLoading();
+            setPoruka(null);
+            try {
+                const rezultat = await prijaveService.get();
+                const prijave = rezultat.data || rezultat;
+                for (const prijava of prijave) {
+                    await prijaveService.obrisi(prijava.id);
+                }
+                setPoruka({ tip: 'success', tekst: `Uspješno obrisano ${prijave.length} prijava!` });
+            } catch (error) {
+                setPoruka({ tip: 'danger', tekst: 'Greška pri brisanju prijava: ' + error.message });
+            } finally {
+                hideLoading();
             }
-            setPoruka({ tip: 'success', tekst: `Uspješno obrisano ${prijave.length} prijava!` });
-        } catch (error) {
-            setPoruka({ tip: 'danger', tekst: 'Greška pri brisanju prijava: ' + error.message });
-        } finally {
-            hideLoading();
-        }
+        });
     };
 
     const handleObrisiTragove = async () => {
-        if (!window.confirm('Jeste li sigurni da želite obrisati sve tragove?')) return;
-        showLoading();
-        setPoruka(null);
-
-        try {
-            const rezultat = await TragoviService.get();
-            const tragovi = rezultat.data || rezultat;
-            for (const trag of tragovi) {
-                await TragoviService.obrisi(trag.id);
+        showModal('Jeste li sigurni da želite obrisati sve tragove?', async () => {
+            showLoading();
+            setPoruka(null);
+            try {
+                const rezultat = await TragoviService.get();
+                const tragovi = rezultat.data || rezultat;
+                for (const trag of tragovi) {
+                    await TragoviService.obrisi(trag.id);
+                }
+                setPoruka({ tip: 'success', tekst: `Uspješno obrisano ${tragovi.length} tragova!` });
+            } catch (error) {
+                setPoruka({ tip: 'danger', tekst: 'Greška pri brisanju tragova: ' + error.message });
+            } finally {
+                hideLoading();
             }
-            setPoruka({ tip: 'success', tekst: `Uspješno obrisano ${tragovi.length} tragova!` });
-        } catch (error) {
-            setPoruka({ tip: 'danger', tekst: 'Greška pri brisanju tragova: ' + error.message });
-        } finally {
-            hideLoading();
-        }
+        });
     };
 
 
@@ -526,59 +524,58 @@ const mapaOznaka = await prebaci(OznakeServiceFireBase, oznake, 'Oznake');
     };
 
     const handleObrisiSve = async () => {
-        if (!window.confirm('Jeste li sigurni da želite obrisati SVE podatke (tragove, prijave, tipove, vrste, oznake i operatere)?')) return;
-        showLoading();
-        setPoruka(null);
+        showModal('Jeste li sigurni da želite obrisati SVE podatke (tragove, prijave, tipove, vrste, oznake i operatere)?', async () => {
+            showLoading();
+            setPoruka(null);
+            try {
+                const tragoviOdgovor = await TragoviService.get();
+                const tragovi = tragoviOdgovor.data || tragoviOdgovor;
+                for (const trag of tragovi) {
+                    await TragoviService.obrisi(trag.id);
+                }
 
-        try {
-            const tragoviOdgovor = await TragoviService.get();
-            const tragovi = tragoviOdgovor.data || tragoviOdgovor;
-            for (const trag of tragovi) {
-                await TragoviService.obrisi(trag.id);
+                const prijaveOdgovor = await prijaveService.get();
+                const prijave = prijaveOdgovor.data || prijaveOdgovor;
+                for (const prijava of prijave) {
+                    await prijaveService.obrisi(prijava.id);
+                }
+
+                const tipoviOdgovor = await TipService.get();
+                const tipovi = tipoviOdgovor.data || tipoviOdgovor;
+                for (const tip of tipovi) {
+                    await TipService.obrisi(tip.id);
+                }
+
+                const vrsteOdgovor = await VrsteService.get();
+                const vrste = vrsteOdgovor.data || vrsteOdgovor;
+                for (const vrsta of vrste) {
+                    await VrsteService.obrisi(vrsta.id);
+                }
+
+                const oznakeOdgovor = await OznakeService.get();
+                const oznake = oznakeOdgovor.data || oznakeOdgovor;
+                for (const oznaka of oznake) {
+                    await OznakeService.obrisi(oznaka.id)
+                }
+
+                const operateriOdgovor = await OperaterService.get();
+                const operateri = operateriOdgovor.data || operateriOdgovor;
+                for (const operater of operateri) {
+                    if (operater.email === authUser.email) continue;
+                    await OperaterService.obrisi(operater.id)
+                }
+                setPoruka({
+                    tip: 'success',
+                    tekst: `Uspješno obrisano: ${tragovi.length} tragova, ${prijave.length} prijava, ${tipovi.length} tipova, ${vrste.length} vrsta i ${oznake.length} oznaka!`
+                });
+            } catch (error) {
+                setPoruka({ tip: 'danger', tekst: 'Greška pri brisanju svih podataka: ' + error.message });
+            } finally {
+                hideLoading();
             }
-
-            const prijaveOdgovor = await prijaveService.get();
-            const prijave = prijaveOdgovor.data || prijaveOdgovor;
-            for (const prijava of prijave) {
-                await prijaveService.obrisi(prijava.id);
-            }
-
-            const tipoviOdgovor = await TipService.get();
-            const tipovi = tipoviOdgovor.data || tipoviOdgovor;
-            for (const tip of tipovi) {
-                await TipService.obrisi(tip.id);
-            }
-
-            const vrsteOdgovor = await VrsteService.get();
-            const vrste = vrsteOdgovor.data || vrsteOdgovor;
-            for (const vrsta of vrste) {
-                await VrsteService.obrisi(vrsta.id);
-            }
-
-            const oznakeOdgovor = await OznakeService.get();
-            const oznake = oznakeOdgovor.data || oznakeOdgovor;
-            for (const oznaka of oznake) {
-                await OznakeService.obrisi(oznaka.id)
-            }
-
-            const operateriOdgovor = await OperaterService.get();
-            const operateri = operateriOdgovor.data || operateriOdgovor;
-            for (const operater of operateri) {
-                if (operater.email === authUser.email) continue;
-                await OperaterService.obrisi(operater.id)
-            }
-
-
-            setPoruka({
-                tip: 'success',
-                tekst: `Uspješno obrisano: ${tragovi.length} tragova, ${prijave.length} prijava, ${tipovi.length} tipova, ${vrste.length} vrsta i ${oznake.length} oznaka!`
-            });
-        } catch (error) {
-            setPoruka({ tip: 'danger', tekst: 'Greška pri brisanju svih podataka: ' + error.message });
-        } finally {
-            hideLoading();
-        }
+        });
     };
+
     if (DATA_SOURCE === 'memorija') {
         return (
             <Container className="mt-4">
@@ -634,34 +631,31 @@ const mapaOznaka = await prebaci(OznakeServiceFireBase, oznake, 'Oznake');
     };
 
     const handleObrisiOperatere = async () => {
-        if (!window.confirm('Jeste li sigurni da želite obrisati sve operatere?')) {
-            return;
-        }
+        showModal('Jeste li sigurni da želite obrisati sve operatere?', async () => {
+            showLoading();
+            setPoruka(null);
+            try {
+                const rezultat = await OperaterService.get();
+                const operateri = rezultat.data;
 
-        showLoading();
-        setPoruka(null);
+                for (const operater of operateri) {
+                    if (operater.email === authUser.email) continue;
+                    await OperaterService.obrisi(operater.id);
+                }
 
-        try {
-            const rezultat = await OperaterService.get();
-            const operateri = rezultat.data;
-
-            for (const operater of operateri) {
-                if (operater.email === authUser.email) continue;
-                await OperaterService.obrisi(operater.id);
+                setPoruka({
+                    tip: 'success',
+                    tekst: `Uspješno obrisano ${operateri.length} operatera!`
+                });
+            } catch (error) {
+                setPoruka({
+                    tip: 'danger',
+                    tekst: 'Greška pri brisanju operatera: ' + error.message
+                });
+            } finally {
+                hideLoading();
             }
-
-            setPoruka({
-                tip: 'success',
-                tekst: `Uspješno obrisano ${operateri.length} operatera!`
-            });
-        } catch (error) {
-            setPoruka({
-                tip: 'danger',
-                tekst: 'Greška pri brisanju operatera: ' + error.message
-            });
-        } finally {
-            hideLoading();
-        }
+        });
     };
 
 

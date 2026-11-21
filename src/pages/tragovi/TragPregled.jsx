@@ -5,9 +5,11 @@ import { Badge, Button, Card, Container, Table, ButtonGroup } from "react-bootst
 import { Link, useNavigate, useParams } from "react-router-dom";
 import FormatDatuma from "../../components/FormatDatuma";
 import { BiPlus, BiPencil, BiTrash, BiArrowBack } from "react-icons/bi";
+import useModal from "../../hooks/useModal";
 
 export default function TragPregled() {
   const navigate = useNavigate();
+  const { showModal } = useModal();
   const { id } = useParams();
   const [tragovi, setTragovi] = useState([])
 
@@ -29,12 +31,10 @@ export default function TragPregled() {
   }, [id]);
 
   async function obrisi(id) {
-    if (!confirm('Sigurno obrisati?')) {
-      return
-    }
-
+    showModal('Sigurno obrisati ovaj trag?', async () => {
     await TragoviService.obrisi(id)
     setTragovi(prev => prev.filter(t => t.id !== id));
+     });
   }
 
   return (
@@ -78,7 +78,7 @@ export default function TragPregled() {
                   </td>
                   <td className="text-center pe-4">
                     <ButtonGroup size="sm">
-                      <Button variant="outline-warning" onClick={() =>navigate(putanja(RouteNames.TRAG_PROMJENA, trag.id))} title="Uredi">
+                      <Button variant="outline-warning" onClick={() => navigate(putanja(RouteNames.TRAG_PROMJENA, trag.id))} title="Uredi">
                         <BiPencil size={16} />
                       </Button>
                       <Button variant="outline-danger" onClick={() => obrisi(trag.id)} title="Obriši">

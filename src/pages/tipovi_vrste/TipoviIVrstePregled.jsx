@@ -9,11 +9,13 @@ import { BiPlus, BiTrash } from "react-icons/bi";
 import { EditText } from "react-edit-text";
 import "react-edit-text/dist/index.css";
 import useLoading from "../../hooks/useLoading";
+import useModal from "../../hooks/useModal";
 
 export default function TipoviPregled() {
   const [vrste, setVrste] = useState([]);
   const [tipovi, setTipovi] = useState([])
-    const { loading, showLoading, hideLoading } = useLoading();
+  const { loading, showLoading, hideLoading } = useLoading();
+  const { showModal } = useModal();
 
   useEffect(() => {
     async function dohvatiPodatke() {
@@ -38,44 +40,40 @@ export default function TipoviPregled() {
     const res = await prijaveService.get()
     const koristi = (res?.data ?? res).filter(p => String(p.zivotinja_vrsta) === String(id)).length
     if (koristi > 0) {
-      alert(`Vrsta se koristi u ${koristi} prijava i ne može se obrisati.`)
+      showModal(`Vrsta se koristi u ${koristi} prijava i ne može se obrisati.`)
       return
     }
-    if (!confirm('Sigurno obrisati?')) {
-      return
-    }
-
-    showLoading()
-    try {
-      await VrsteService.obrisi(id)
-      setVrste(prev => prev.filter(v => v.id !== id));
-    } catch (error) {
-      alert(error.message)
-    } finally {
-      hideLoading()
-    }
+    showModal('Sigurno obrisati ovu vrstu?', async () => {
+      showLoading()
+      try {
+        await VrsteService.obrisi(id)
+        setVrste(prev => prev.filter(v => v.id !== id));
+      } catch (error) {
+        alert(error.message)
+      } finally {
+        hideLoading()
+      }
+    })
   }
 
   async function obrisiTip(id) {
     const res = await prijaveService.get()
     const koristi = (res?.data ?? res).filter(p => String(p.tip_prijave) === String(id)).length
     if (koristi > 0) {
-      alert(`Tip se koristi u ${koristi} prijava i ne može se obrisati.`)
+      showModal(`Tip se koristi u ${koristi} prijava i ne može se obrisati.`)
       return
     }
-    if (!confirm("Sigurno obrisati ovaj tip?")) {
-      return;
-    }
-
-   showLoading()
-    try {
-      await TipService.obrisi(id);
-      setTipovi(prev => prev.filter(t => t.id !== id));
-    } catch (error) {
-      alert(error.message)
-    } finally {
-      hideLoading()
-    }
+    showModal("Sigurno obrisati ovaj tip?", async () => {
+      showLoading()
+      try {
+        await TipService.obrisi(id);
+        setTipovi(prev => prev.filter(t => t.id !== id));
+      } catch (error) {
+        alert(error.message)
+      } finally {
+        hideLoading()
+      }
+    })
   }
 
   return (
@@ -116,9 +114,9 @@ export default function TipoviPregled() {
                         />
                       </td>
                       <td className="text-center pe-4">
-                          <Button variant="outline-danger" onClick={() => obrisiTip(tip.id)} title="Obrisi" disabled={loading}>
-                            <BiTrash size={16} />
-                          </Button>
+                        <Button variant="outline-danger" onClick={() => obrisiTip(tip.id)} title="Obrisi" disabled={loading}>
+                          <BiTrash size={16} />
+                        </Button>
                       </td>
                     </tr>
                   ))}
@@ -149,7 +147,7 @@ export default function TipoviPregled() {
             </Card.Header>
 
             <Card.Body className="p-0">
-         <Table hover bordered responsive className="align-middle mb-0 border-top">
+              <Table hover bordered responsive className="align-middle mb-0 border-top">
                 <thead className="table-light">
                   <tr>
                     <th className="ps-4">Naziv</th>
@@ -170,9 +168,9 @@ export default function TipoviPregled() {
                         />
                       </td>
                       <td className="text-center pe-4">
-                          <Button variant="outline-danger" onClick={() => obrisiVrstu(vrsta.id)} title="Obriši" disabled={loading}>
-                            <BiTrash size={16} />
-                          </Button>
+                        <Button variant="outline-danger" onClick={() => obrisiVrstu(vrsta.id)} title="Obriši" disabled={loading}>
+                          <BiTrash size={16} />
+                        </Button>
                       </td>
                     </tr>
                   ))}

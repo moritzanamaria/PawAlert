@@ -5,18 +5,20 @@ import { Link, useNavigate } from "react-router-dom"
 import { RouteNames } from "../../constants"
 import { FaEdit, FaTrash, FaKey } from "react-icons/fa"
 import useLoading from "../../hooks/useLoading";
+import useModal from "../../hooks/useModal";
 
 export default function OperaterPregled() {
 
     const navigate = useNavigate();
     const [operateri, setOperateri] = useState([]);
-        const { showLoading, hideLoading } = useLoading();
+    const { showLoading, hideLoading } = useLoading();
+    const { showModal } = useModal();
 
     useEffect(() => {
         ucitajOperatere()
     }, [])
 
-      async function ucitajOperatere() {
+    async function ucitajOperatere() {
         showLoading()
         try {
             const odgovor = await OperaterService.get()
@@ -30,22 +32,22 @@ export default function OperaterPregled() {
         }
     }
 
-    
+
     async function brisanje(id) {
-        if (!confirm('Sigurno obrisati operatera?')) return
-        
+       showModal('Sigurno obrisati operatera?', async () => {
         showLoading()
         try {
-        const rezultat = await OperaterService.obrisi(id)
-        if (rezultat.success) {
-            ucitajOperatere()
-        } else {
-            alert(rezultat.message || 'Greška pri brisanju')
+            const rezultat = await OperaterService.obrisi(id)
+            if (rezultat.success) {
+                ucitajOperatere()
+            } else {
+                showModal(rezultat.message || 'Greška pri brisanju')
+            }
+        } finally {
+            hideLoading();
         }
-    } finally {
-        hideLoading();
+    })
     }
-}
 
     return (
         <>
@@ -59,7 +61,7 @@ export default function OperaterPregled() {
                     <tr>
                         <th>Email</th>
                         <th>Uloga</th>
-                        <th className="text-center" style={{width: '200px'}}>Akcije</th>
+                        <th className="text-center" style={{ width: '200px' }}>Akcije</th>
                     </tr>
                 </thead>
                 <tbody>

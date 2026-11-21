@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { RouteNames } from '../constants';
 import OperaterService from '../services/operateri/OperaterService';
 import useLoading from '../hooks/useLoading';
+import useModal from '../hooks/useModal';
 
 export const AuthContext = createContext();
 
@@ -18,26 +19,26 @@ export function AuthProvider({ children }) {
   const [authUser, setAuthUser] = useState(() => procitajOperatera() ?? {});
   const [isLoggedIn, setIsLoggedIn] = useState(() => !!procitajOperatera());
   const navigate = useNavigate();
-    const { showLoading, hideLoading } = useLoading();
+  const { showLoading, hideLoading } = useLoading();
+  const { showModal } = useModal();
 
-  async function login(email, lozinka) {
-      showLoading();
+  async function login(email, lozinka, povratak = RouteNames.HOME) {
+    showLoading();
     try {
-    const odgovor = await OperaterService.prijava(email, lozinka);
-    if (odgovor.success) {
-      localStorage.setItem('operater', JSON.stringify(odgovor.data));
-      setAuthUser(odgovor.data);
-      setIsLoggedIn(true);
-      navigate(RouteNames.HOME);
-    } else {
-      alert(odgovor.message);localStorage.removeItem('operater');
-setAuthUser({});
-      localStorage.setItem('operater', '');
-      setAuthUser('');
-      setIsLoggedIn(false);
-    }
-     } catch (e) {
-      alert(e.message);
+      const odgovor = await OperaterService.prijava(email, lozinka);
+      if (odgovor.success) {
+        localStorage.setItem('operater', JSON.stringify(odgovor.data));
+        setAuthUser(odgovor.data);
+        setIsLoggedIn(true);
+        navigate(povratak, { replace: true });
+      } else {
+        localStorage.removeItem('operater');
+        setAuthUser({});
+        setIsLoggedIn(false);
+        showModal(odgovor.message);
+      }
+    } catch (e) {
+      showModal(e.message);
     } finally {
       hideLoading();
     }
