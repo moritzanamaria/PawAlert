@@ -71,7 +71,7 @@ export default function MojProfil() {
         await prijaveService.promijeni(prijava.id, { ...prijava, status: novi });
         setOsvjezi((n) => n + 1);
       } catch (error) {
-        alert(error.message);
+        showModal(error.message);
       } finally {
         hideLoading();
       }

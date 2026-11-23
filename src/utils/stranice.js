@@ -32,7 +32,7 @@ const STRANICE = [
   { ruta: RouteNames.OPERATERI_PROMJENA_LOZINKE, naslov: "Promjena lozinke", sifrarnik: "Operateri" },
   { ruta: RouteNames.OPERATERI_PROMJENA, naslov: "Promjena operatera", sifrarnik: "Operateri" },
 
-  { ruta: RouteNames.GENERIRANJE_PODATAKA, naslov: "Generiranje podataka", sifrarnik: "Generiraj podatke" },
+  { ruta: RouteNames.GENERIRANJE_PODATAKA, naslov: "Generiranje podataka", sifrarnik: "Generiranje podataka" },
 ];
 
 export function pronadiStranicu(pathname) {

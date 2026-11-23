@@ -23,7 +23,7 @@ export default function OperaterPregled() {
         try {
             const odgovor = await OperaterService.get()
             if (!odgovor.success) {
-                alert('Nije implementiran servis')
+                showModal('Nije implementiran servis')
                 return
             }
             setOperateri(odgovor.data)

@@ -12,12 +12,13 @@ import { tragSchema } from "../../schemas/tragSchema";
 import { slikaFileSchema } from "../../schemas/slikaSchema";
 import useAuth from "../../hooks/useAuth";
 import useLoading from "../../hooks/useLoading";
+import useModal from "../../hooks/useModal";
 
 registerLocale("hr", hr);
 
 export default function TragNovi() {
     const navigate = useNavigate()
-
+    const { showModal } = useModal();
     const [errors, setErrors] = useState({});
 
     const ocistiGresku = (nazivPolja) => {
@@ -68,12 +69,12 @@ export default function TragNovi() {
                 if (rez.success) {
                     await TragoviService.promijeni(noviId, { ...trag, slika: rez.path })
                 } else {
-                    alert("Trag je spremljen, ali slika nije: " + rez.message)
+                    showModal("Trag je spremljen, ali slika nije: " + rez.message)
                 }
             }
             navigate(povratak)
         } catch (error) {
-            alert(error.message)
+            showModal(error.message)
         } finally {
             hideLoading();
         }
@@ -162,24 +163,24 @@ export default function TragNovi() {
                                 </Form.Control.Feedback>
                             </Form.Group>
 
-                          <Form.Group as={Col} md={6} controlId="datum">
-                                                         <Form.Label className="fw-medium p-4">Datum i vrijeme</Form.Label>
-                                                         <DatePicker
-                                                             selected={datum}
-                                                             onChange={(date) => { setDatum(date); ocistiGresku("datum") }}
-                                                             showTimeSelect
-                                                             timeFormat="HH:mm"
-                                                             timeIntervals={15}
-                                                             dateFormat="dd.MM.yyyy. HH:mm"
-                                                             locale="hr"
-                                                             customInput={
-                                                                 <Form.Control isInvalid={!!errors.datum} />
-                                                             }
-                                                         />
-                                                         <Form.Control.Feedback type="invalid">
-                                                             {errors.datum}
-                                                         </Form.Control.Feedback>
-                                                     </Form.Group>
+                            <Form.Group as={Col} md={6} controlId="datum">
+                                <Form.Label className="fw-medium p-4">Datum i vrijeme</Form.Label>
+                                <DatePicker
+                                    selected={datum}
+                                    onChange={(date) => { setDatum(date); ocistiGresku("datum") }}
+                                    showTimeSelect
+                                    timeFormat="HH:mm"
+                                    timeIntervals={15}
+                                    dateFormat="dd.MM.yyyy. HH:mm"
+                                    locale="hr"
+                                    customInput={
+                                        <Form.Control isInvalid={!!errors.datum} />
+                                    }
+                                />
+                                <Form.Control.Feedback type="invalid">
+                                    {errors.datum}
+                                </Form.Control.Feedback>
+                            </Form.Group>
                         </Row>
                         <div className="d-flex justify-content-between align-items-center pt-2">
 

@@ -15,10 +15,12 @@ import SlikaUploader from "../../components/SlikaUploader";
 import { prijavaSchema } from "../../schemas/prijavaSchema";
 import useAuth from "../../hooks/useAuth";
 import useLoading from "../../hooks/useLoading";
+import useModal from "../../hooks/useModal";
 
 registerLocale("hr", hr);
 
 export default function PrijavaNova() {
+    const { showModal } = useModal();
     const navigate = useNavigate();
     const [errors, setErrors] = useState({});
     const ocistiGresku = (nazivPolja) => {
@@ -71,16 +73,15 @@ export default function PrijavaNova() {
 
     async function dodaj(prijava) {
         showLoading();
-        try {
+          try {
             const res = await prijaveService.dodaj(prijava);
             const nova = res?.data ?? res;
             const noviId = nova?.id ?? prijava.id;
 
-
             if (novaSlika) {
                 if (!noviId) {
                     console.error("Odgovor API-ja nema id:", res);
-                    alert("Prijava je spremljena, ali slika nije jer API nije vratio id.");
+                    showModal("Prijava je spremljena, ali slika nije jer API nije vratio id.");
                     navigate(povratak);
                     return;
                 }
@@ -89,13 +90,13 @@ export default function PrijavaNova() {
                 if (rez.success) {
                     await prijaveService.promijeni(noviId, { ...prijava, slika: rez.path });
                 } else {
-                    alert("Prijava je spremljena, ali slika nije: " + rez.message);
-                } 
+                    showModal("Prijava je spremljena, ali slika nije: " + rez.message);
+                }
             }
 
             navigate(povratak);
         } catch (error) {
-            alert(error.message);
+            showModal(error.message);
         } finally {
             hideLoading();
         }

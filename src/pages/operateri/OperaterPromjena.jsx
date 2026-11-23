@@ -6,21 +6,22 @@ import { Form, Button, Row, Col, Container, Card } from "react-bootstrap"
 import { RouteNames } from "../../constants"
 import { z } from 'zod';
 import useLoading from "../../hooks/useLoading";
+import useModal from "../../hooks/useModal"
 
 export default function OperaterPromjena() {
     const navigate = useNavigate()
     const params = useParams()
     const [operater, setOperater] = useState({})
     const [errors, setErrors] = useState({})
-        const { loading, showLoading, hideLoading } = useLoading();
-
+    const { loading, showLoading, hideLoading } = useLoading();
+    const { showModal } = useModal();
     const emailUlogaSchema = z.object({
         email: z.string()
             .trim()
             .min(1, "Email je obavezan!")
             .email("Unesite ispravan email format!"),
         uloga: z.enum(['admin', 'korisnik'], {
-            error:  "Uloga mora biti 'admin' ili 'korisnik'!" 
+            error: "Uloga mora biti 'admin' ili 'korisnik'!"
         })
     })
 
@@ -29,30 +30,30 @@ export default function OperaterPromjena() {
     }, [])
 
     async function ucitajOperatera() {
-         showLoading()
+        showLoading()
         try {
-        const odgovor = await OperaterService.getById(params.id)
-        if (!odgovor.success) {
-            alert('Operater nije pronađen')
-            navigate(RouteNames.OPERATERI)
-            return
-        }
-        setOperater(odgovor.data)
-         } finally {
+            const odgovor = await OperaterService.getById(params.id)
+            if (!odgovor.success) {
+                showModal('Operater nije pronađen')
+                navigate(RouteNames.OPERATERI)
+                return
+            }
+            setOperater(odgovor.data)
+        } finally {
             hideLoading()
         }
     }
 
     async function promijeni(operater) {
-         showLoading()
+        showLoading()
         try {
-        const rezultat = await OperaterService.promijeni(params.id, operater)
-        if (rezultat.success) {
-            navigate(RouteNames.OPERATERI)
-        } else {
-            alert(rezultat.message || 'Greška pri promijeni operatera')
-        }
-         } finally {
+            const rezultat = await OperaterService.promijeni(params.id, operater)
+            if (rezultat.success) {
+                navigate(RouteNames.OPERATERI)
+            } else {
+                showModal(rezultat.message || 'Greška pri promijeni operatera')
+            }
+        } finally {
             hideLoading()
         }
     }
@@ -126,7 +127,7 @@ export default function OperaterPromjena() {
                                     <Form.Group controlId="uloga" className="mb-3">
                                         <Form.Label className="fw-bold">Uloga</Form.Label>
                                         <Form.Select
-                                            onChange={(e) => setOperater({ ...operater, uloga: e.target.value})}
+                                            onChange={(e) => setOperater({ ...operater, uloga: e.target.value })}
                                             name="uloga"
                                             value={operater.uloga || ''}
                                             isInvalid={!!errors.uloga}

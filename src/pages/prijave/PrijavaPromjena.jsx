@@ -15,6 +15,7 @@ import SlikaUploader from "../../components/SlikaUploader";
 import { prijavaSchema } from "../../schemas/prijavaSchema";
 import useAuth from "../../hooks/useAuth";
 import useLoading from "../../hooks/useLoading";
+import useModal from "../../hooks/useModal";
 
 registerLocale("hr", hr);
 
@@ -31,6 +32,7 @@ export default function PrijavaPromjena() {
     };
     const { authUser } = useAuth();
     const { loading, showLoading, hideLoading } = useLoading();
+    const {showModal} = useModal();
     const location = useLocation();
     const povratak = location.state?.povratak ?? RouteNames.PRIJAVE_PREGLED;
     const params = useParams()
@@ -129,7 +131,7 @@ export default function PrijavaPromjena() {
             } else if (novaSlika) {
                 const rez = await spremiSliku(params.id, novaSlika);
                 if (!rez.success) {
-                    alert(rez.message);
+                    showModal(rez.message);
                     return;
                 }
                 slikaPath = rez.path;
@@ -154,7 +156,7 @@ export default function PrijavaPromjena() {
             navigate(povratak);
         } catch (err) {
             console.error(err);
-            alert("Greška pri spremanju: " + err.message);
+            showModal("Greška pri spremanju: " + err.message);
         } finally {
             hideLoading();
         }

@@ -49,7 +49,7 @@ export default function TipoviPregled() {
         await VrsteService.obrisi(id)
         setVrste(prev => prev.filter(v => v.id !== id));
       } catch (error) {
-        alert(error.message)
+        showModal(error.message)
       } finally {
         hideLoading()
       }

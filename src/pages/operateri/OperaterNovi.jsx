@@ -5,22 +5,23 @@ import OperaterService from "../../services/operateri/OperaterService"
 import { operaterSchema } from "../../schemas/operaterSchema"
 import { useState } from "react";
 import useLoading from "../../hooks/useLoading";
+import useModal from "../../hooks/useModal"
 
 export default function OperaterNovi() {
     const navigate = useNavigate();
     const [errors, setErrors] = useState({});
-        const { loading, showLoading, hideLoading } = useLoading();
-
+    const { loading, showLoading, hideLoading } = useLoading();
+    const { showModal } = useModal();
     async function dodaj(operater) {
-         showLoading()
+        showLoading()
         try {
-        const rezultat = await OperaterService.dodaj(operater)
-        if (rezultat.success) {
-            navigate(RouteNames.OPERATERI)
-        } else {
-            alert(rezultat.message || 'Greška pri dodavanju operatera')
-        } 
-    } finally {
+            const rezultat = await OperaterService.dodaj(operater)
+            if (rezultat.success) {
+                navigate(RouteNames.OPERATERI)
+            } else {
+                showModal(rezultat.message || 'Greška pri dodavanju operatera')
+            }
+        } finally {
             hideLoading()
         }
     }

@@ -13,6 +13,7 @@ import { tragSchema } from "../../schemas/tragSchema";
 import { slikaFileSchema } from "../../schemas/slikaSchema";
 import useAuth from "../../hooks/useAuth";
 import useLoading from "../../hooks/useLoading";
+import useModal from "../../hooks/useModal";
 
 registerLocale("hr", hr);
 
@@ -20,6 +21,7 @@ export default function TragPromjena() {
     const navigate = useNavigate();
     const { authUser } = useAuth();
     const { loading, showLoading, hideLoading } = useLoading()
+    const { showModal } = useModal();
     const location = useLocation();
     const params = useParams();
 
@@ -132,7 +134,7 @@ export default function TragPromjena() {
             if (slikaFile) {
                 const rez = await spremiSlikuFile(params.id, slikaFile)
                 if (!rez.success) {
-                    alert(rez.message)
+                    showModal(rez.message)
                     return
                 }
                 slikaPath = rez.path
@@ -147,7 +149,7 @@ export default function TragPromjena() {
             navigate(povratak)
         } catch (err) {
             console.error(err)
-            alert("Greška pri spremanju: " + err.message)
+            showModal("Greška pri spremanju: " + err.message)
         } finally {
             hideLoading()
         }

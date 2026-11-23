@@ -5,11 +5,12 @@ import TipService from "../../services/tip/TipService";
 import { tipSchema } from "../../schemas/nazivSchema";
 import { useState } from "react";
 import useLoading from "../../hooks/useLoading";
+import useModal from "../../hooks/useModal"
 
 export default function TipNovi() {
     const navigate = useNavigate();
-        const { loading, showLoading, hideLoading } = useLoading();
-
+    const { loading, showLoading, hideLoading } = useLoading();
+    const { showModal } = useModal();
     const [errors, setErrors] = useState({});
 
     const ocistiGresku = (nazivPolja) => {
@@ -27,7 +28,7 @@ export default function TipNovi() {
             await TipService.dodaj(tip);
             navigate(RouteNames.TIPOVI_I_VRSTE_PREGLED);
         } catch (error) {
-            alert(error.message);
+            showModal(error.message);
         } finally {
             hideLoading();
         }
