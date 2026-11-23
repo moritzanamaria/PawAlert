@@ -36,7 +36,7 @@ export default function TragoviMapa({ prijava, tragovi }) {
       <PrilagodiPogled tocke={tocke} />
 
 
-        <Marker position={poz(prijava)} icon={dohvatiIkonu(prijava.tip_prijave)}>
+        <Marker position={poz(prijava)} icon={dohvatiIkonu(prijava.tip_prijave)} title={`Prijavljeno ovdje: ${prijava.zivotinja_ime}`}>
           <Popup>
             Prijavljeno ovdje: <strong>{prijava.zivotinja_ime}</strong>
           </Popup>

@@ -36,13 +36,14 @@ function MapView({ prijave = [], vrste: propVrste = [], tipovi: propTipovi = [],
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright" target="_blank">OpenStreetMap</a> contributors'
         />
         {prijave.filter((p) => p.lokacija?.lat != null).map((p) => (
-          <Marker key={p.id} position={[p.lokacija.lat, p.lokacija.lng]} icon={dohvatiIkonu(p.tip_prijave)}>
+          <Marker key={p.id} position={[p.lokacija.lat, p.lokacija.lng]} icon={dohvatiIkonu(p.tip_prijave)} title={`${p.zivotinja_ime || "Prijava"} - ${naziv(tipovi, p.tip_prijave) ?? ""}`}>
             <Popup maxWidth={240}>
               <div>
                 <strong>{p.zivotinja_ime}</strong>{" "}
                 <Link
                   to={putanja(RouteNames.DETALJI_SLUCAJA, p.id)}
                   title="Pogledaj tragove"
+                  aria-label={`Detalji: ${p.zivotinja_ime || "prijava"}`}
                   className="text-decoration-none fs-4 lh-1"
                 >
                   🐾
