@@ -7,6 +7,7 @@ import Wheel from "@uiw/react-color-wheel";
 import { ShadeSlider, hsvaToHex, hexToHsva } from "@uiw/react-color";
 import { oznakaSchema } from "../../schemas/oznakaSchema";
 import useLoading from "../../hooks/useLoading";
+import { omjerKontrasta, MIN_KONTRAST } from "../../utils/kontrast";
 
 export default function OznakaPromjena() {
     const navigate = useNavigate();
@@ -36,6 +37,8 @@ export default function OznakaPromjena() {
 
     const bojaHex = hsvaToHex(bojaHsva);
     const bojaTekstaHex = hsvaToHex(bojaTekstaHsva);
+    const kontrast = omjerKontrasta(bojaHex || "#6c757d", bojaTekstaHex || "#ffffff");
+    const dovoljanKontrast = kontrast >= MIN_KONTRAST;
 
 
     useEffect(() => {
@@ -95,6 +98,10 @@ export default function OznakaPromjena() {
             return;
         }
 
+        if (!dovoljanKontrast) {
+            setErrors({ boje: "Boja teksta i boja oznake nemaju dovoljan kontrast." });
+            return;
+        }
         promijeni({
             ...oznaka,
             naziv: rezultat.data.naziv,
@@ -182,6 +189,13 @@ export default function OznakaPromjena() {
                                 {oznaka.naziv.trim() || "Naziv oznake"}
                             </span>
                         </div>
+                        <p className={`small mb-3 ${dovoljanKontrast ? "text-success" : "text-danger fw-semibold"}`} aria-live="polite">
+                            Kontrast teksta i pozadine: {kontrast.toFixed(1)}:1
+                            {dovoljanKontrast ? " – dobro čitljivo" : ` – premalo, treba barem ${MIN_KONTRAST}:1`}
+                        </p>
+                        {errors.boje && !dovoljanKontrast && (
+                            <p className="text-danger small fw-semibold" role="alert">{errors.boje}</p>
+                        )}
 
                         <div className="d-flex justify-content-between align-items-center pt-2">
                             <Link to={povratak} className="btn btn-outline-secondary px-4 fw-medium">

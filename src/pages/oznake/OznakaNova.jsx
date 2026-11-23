@@ -7,6 +7,7 @@ import Wheel from "@uiw/react-color-wheel";
 import { ShadeSlider, hsvaToHex, hexToHsva } from "@uiw/react-color";
 import { oznakaSchema } from "../../schemas/oznakaSchema";
 import useLoading from "../../hooks/useLoading";
+import { omjerKontrasta, MIN_KONTRAST } from "../../utils/kontrast";
 
 export default function OznakaNova() {
     const navigate = useNavigate();
@@ -31,6 +32,8 @@ export default function OznakaNova() {
 
     const bojaHex = hsvaToHex(bojaHsva);
     const bojaTekstaHex = hsvaToHex(bojaTekstaHsva);
+    const kontrast = omjerKontrasta(bojaHex, bojaTekstaHex);
+    const dovoljanKontrast = kontrast >= MIN_KONTRAST;
 
     async function dodaj(oznaka) {
         showLoading();
@@ -67,8 +70,11 @@ export default function OznakaNova() {
                 </div>
             </Form.Group>
         );
-    } function obradiSubmit(e) {
+    }
+
+    function obradiSubmit(e) {
         e.preventDefault();
+        const podaci = new FormData(e.target);
 
         const rezultat = oznakaSchema.safeParse({ ...Object.fromEntries(podaci), boja: bojaHex, boja_teksta: bojaTekstaHex });
         if (!rezultat.success) {
@@ -77,6 +83,10 @@ export default function OznakaNova() {
                 noveGreske[issue.path[0]] ??= issue.message;
             });
             setErrors(noveGreske);
+            return;
+        }
+        if (!dovoljanKontrast) {
+            setErrors({ boje: "Boja teksta i boja oznake nemaju dovoljan kontrast." });
             return;
         }
         setErrors({})
@@ -123,6 +133,13 @@ export default function OznakaNova() {
                                 {naziv.trim() || "Naziv oznake"}
                             </span>
                         </div>
+                        <p className={`small mb-3 ${dovoljanKontrast ? "text-success" : "text-danger fw-semibold"}`} aria-live="polite">
+                            Kontrast teksta i pozadine: {kontrast.toFixed(1)}:1
+                            {dovoljanKontrast ? " – dobro čitljivo" : ` – premalo, treba barem ${MIN_KONTRAST}:1`}
+                        </p>
+                        {errors.boje && !dovoljanKontrast && (
+                            <p className="text-danger small fw-semibold" role="alert">{errors.boje}</p>
+                        )}
                         <div className="d-flex justify-content-between align-items-center pt-2">
                             <Link to={povratak} className="btn btn-outline-secondary px-4 fw-medium">
                                 Odustani
