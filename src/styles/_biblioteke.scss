@@ -61,6 +61,11 @@
   backdrop-filter: blur(8px);
   border-top-left-radius: 10px;
   font-size: 0.68rem;
+
+  a {
+    color: $primarna-tamna;
+    text-decoration: underline;
+  }
 }
 
 /* react-chrono i react-datepicker

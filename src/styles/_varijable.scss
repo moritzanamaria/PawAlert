@@ -1,8 +1,8 @@
 
 
 // ---------- boje ----------
-$primarna: #2d8a68;            // zelena (gumbi, linkovi, jastučić šape)
-$primarna-hover: #237556;
+$primarna: #237556;            // zelena (gumbi, linkovi, jastučić šape)
+$primarna-hover: #1c6449;
 $primarna-tamna: #16523c;      // tamnozelena ("Paw" u logotipu, naslovi)
 $primarna-svijetla: #34a079;
 $primarna-najtamnija: #0f3f2d;
@@ -14,19 +14,21 @@ $akcent-tamni: #e0702f;
 $akcent-dubok: #b95f1c;
 $akcent-pozadina: #fdeee2;
 
-$opasnost: #d6453d;
+$opasnost: #c43c35;
 $upozorenje: #e9a23b;
 
 $pozadina: #f3f1ea;            // krem pozadina stranice
 $tekst: #14221c;
 $tekst-prigusen: #56695f;
+$rub-polja: #748a80;
+$placeholder: #66776e;
 $bijela: #ffffff;
 
 // boja za sjene i tanke rubove (tamnozelena, kao $primarna-tamna)
 $sjena-boja: rgba(22, 82, 60, 1);
 
 // ---------- gradijenti ----------
-$gradijent-primarni: linear-gradient(135deg, $primarna-svijetla 0%, $primarna 45%, #1f6e51 100%);
+$gradijent-primarni: linear-gradient(135deg, $primarna 0%, #1f6e51 100%);
 $gradijent-akcent: linear-gradient(90deg, $akcent-svijetli 0%, $akcent-tamni 100%);
 
 // ---------- zaobljenja ----------

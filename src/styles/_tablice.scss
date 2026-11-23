@@ -34,6 +34,15 @@
   transition: background-color var(--pa-transition);
 }
 
+.table-danger {
+  --bs-table-bg: #fdf1f0;
+  --bs-table-color: var(--pa-text);
+}
+
+.table-danger > :first-child {
+  box-shadow: inset 4px 0 0 $opasnost;
+}
+
 .table-responsive:not(.card .table-responsive) {
   background: rgba($bijela, 0.55);
   -webkit-backdrop-filter: var(--pa-glass-blur);

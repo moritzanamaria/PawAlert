@@ -48,8 +48,10 @@
     border-radius: $radius-pill;
     padding: 0.45rem 0.6rem;
 
-    &:focus {
-      box-shadow: 0 0 0 4px rgba($primarna, 0.22);
+    &:focus-visible {
+      outline: 3px solid $primarna-tamna;
+      outline-offset: 2px;
+      box-shadow: none;
     }
   }
 

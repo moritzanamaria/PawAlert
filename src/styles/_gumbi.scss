@@ -42,7 +42,7 @@
   --bs-btn-active-border-color: transparent;
   --bs-btn-disabled-bg: var(--pa-primary);
   --bs-btn-disabled-border-color: transparent;
-  --bs-btn-focus-shadow-rgb: 45, 138, 104;
+  --bs-btn-focus-shadow-rgb: 35, 117, 86;
   background-image: var(--pa-primary-grad);
   box-shadow: 0 4px 12px -4px rgba($primarna, 0.5), inset 0 1px 0 rgba($bijela, 0.28);
 }
@@ -69,7 +69,7 @@
 .btn-danger {
   --bs-btn-bg: var(--pa-danger);
   --bs-btn-border-color: transparent;
-  --bs-btn-hover-bg: #bf3a33;
+  --bs-btn-hover-bg: #a8322c;
   --bs-btn-hover-border-color: transparent;
   box-shadow: 0 4px 12px -4px rgba($opasnost, 0.5), inset 0 1px 0 rgba($bijela, 0.25);
 }
@@ -105,7 +105,7 @@
   --bs-btn-hover-border-color: var(--pa-primary);
   --bs-btn-active-bg: var(--pa-primary-dark);
   --bs-btn-active-border-color: var(--pa-primary-dark);
-  --bs-btn-focus-shadow-rgb: 45, 138, 104;
+  --bs-btn-focus-shadow-rgb: 35, 117, 86;
 }
 
 .btn-outline-secondary {
@@ -126,7 +126,7 @@
 }
 
 .btn-outline-warning {
-  --bs-btn-color: #9a6200;
+  --bs-btn-color: #8a5a00;
   --bs-btn-border-color: #{rgba($upozorenje, 0.5)};
   --bs-btn-hover-color: #3a2604;
   --bs-btn-hover-bg: #f2b34f;

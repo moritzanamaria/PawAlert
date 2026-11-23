@@ -68,15 +68,15 @@
 
   // Bootstrap za ove traži tri broja (R, G, B) – isti su kao $primarna, $opasnost...
   --bs-primary: var(--pa-primary);
-  --bs-primary-rgb: 45, 138, 104;
+  --bs-primary-rgb: 35, 117, 86;
   --bs-success: var(--pa-primary);
-  --bs-success-rgb: 45, 138, 104;
+  --bs-success-rgb: 35, 117, 86;
   --bs-secondary-rgb: 86, 105, 95;
-  --bs-danger-rgb: 214, 69, 61;
+  --bs-danger-rgb: 196, 60, 53;
   --bs-warning-rgb: 233, 162, 59;
 
   --bs-link-color: var(--pa-primary);
-  --bs-link-color-rgb: 45, 138, 104;
+  --bs-link-color-rgb: 35, 117, 86;
   --bs-link-hover-color: var(--pa-primary-dark);
   --bs-link-hover-color-rgb: 22, 82, 60;
 
@@ -205,7 +205,35 @@ button,
 a:focus-visible,
 button:focus-visible,
 .btn:focus-visible,
-.page-link:focus-visible {
+.page-link:focus-visible,
+.nav-link:focus-visible,
+.dropdown-item:focus-visible,
+.leaflet-marker-icon:focus-visible,
+[tabindex]:focus-visible {
+  outline: 3px solid $primarna-tamna;
+  outline-offset: 2px;
+  box-shadow: none;
+}
+
+.pa-preskoci {
+  position: absolute;
+  top: 0.5rem;
+  left: 0.5rem;
+  z-index: 2000;
+  padding: 0.6rem 1.1rem;
+  border-radius: $radius-pill;
+  background: $primarna-tamna;
+  color: $bijela;
+  font-weight: 600;
+  text-decoration: none;
+  transform: translateY(-200%);
+
+  &:focus {
+    transform: none;
+    color: $bijela;
+  }
+}
+
+#sadrzaj:focus {
   outline: none;
-  box-shadow: 0 0 0 4px rgba($primarna, 0.28);
 }
