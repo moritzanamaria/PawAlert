@@ -32,17 +32,21 @@ import NadzornaPloca from './pages/NadzornaPloca'
 import MojProfil from './pages/MojProfil'
 import LoadingSpinner from "./components/LoadingSpinner"
 import PotvrdaModal from './components/PotvrdaModal'
+import NaslovStranice from './components/NaslovStranice'
 
 export default function App() {
   const { isLoggedIn, authUser } = useAuth()
 
   return (
     <>
+      <a href="#sadrzaj" className="pa-preskoci">Preskoči na sadržaj</a>
       <LoadingSpinner />
       <PotvrdaModal />
       <Container>
         <ScrollToTop />
         <Navbar />
+        <main id="sadrzaj" tabIndex={-1}>
+        <NaslovStranice />
         <Routes>
           <Route path="*" element={<Navigate to={RouteNames.HOME} replace />} />
           <Route path={RouteNames.HOME} element={<Pocetna />} />
@@ -85,10 +89,11 @@ export default function App() {
             </>
           )}
         </Routes>
+        </main>
 
         <hr />
-        <div> &copy; {IME_APLIKACIJE}
-        </div>
+        <footer> &copy; {IME_APLIKACIJE}
+        </footer>
       </Container>
     </>
   )
