@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import { Button, Card, Col, Container, Row, Table } from "react-bootstrap";
 import Highcharts from "highcharts";
+import "highcharts/modules/accessibility";
 import {
   BiCategory,
   BiData,
@@ -60,6 +61,10 @@ function PregledPrijavaChart({ podaci }) {
       },
       credits: {
         enabled: false,
+      },
+      accessibility: {
+        description: "Kružni grafikon s brojem hitnih, otvorenih i zatvorenih prijava.",
+        point: { valueSuffix: " prijava" },
       },
       tooltip: {
         pointFormat: "<b>{point.y}</b> prijava ({point.percentage:.1f}%)",
@@ -214,6 +219,7 @@ export default function NadzornaPloca() {
           className="btn-icon p-2 rounded-circle shadow-sm border d-flex align-items-center justify-content-center"
           style={{ width: "38px", height: "38px" }}
           title="Izvezi cijelu bazu u XML"
+          aria-label="Izvezi cijelu bazu u XML"
         >
           <BsFileEarmarkCode size={20} />
         </Button>

@@ -137,7 +137,7 @@ export default function TragNovi() {
                             </Form.Control.Feedback>
                         </Form.Group>
 
-                        <Form.Group className="mb-3">
+                        <Form.Group className="mb-3" controlId="slika">
                             <Form.Label className="fw-medium">Slika (nije obavezno)</Form.Label>
                             <Form.Control
                                 type="file"

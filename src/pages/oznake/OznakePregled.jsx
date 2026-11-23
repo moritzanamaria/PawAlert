@@ -99,10 +99,11 @@ export default function OznakePregled() {
                           variant="outline-warning"
                           onClick={() => navigate(putanja(RouteNames.OZNAKA_PROMJENA, oznaka.id))}
                           title="Uredi"
+                          aria-label={`Uredi oznaku: ${oznaka.naziv}`}
                         >
                           <BiPencil size={16} />
                         </Button>
-                        <Button variant="outline-danger" onClick={() => obrisi(oznaka.id)} title="Obriši">
+                        <Button variant="outline-danger" onClick={() => obrisi(oznaka.id)} title="Obriši" aria-label={`Obriši oznaku: ${oznaka.naziv}`}>
                           <BiTrash size={16} />
                         </Button>
                       </ButtonGroup>

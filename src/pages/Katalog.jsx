@@ -184,13 +184,15 @@ export default function Katalog() {
 
               <Card.Body className="d-flex flex-column">
                 <div className="d-flex justify-content-between align-items-start mb-2 justify-content-center col-12 col-md-auto">
-                  <Card.Title className="mb-0 fw-bold fs-4">
+                  <Card.Title as="h2" className="mb-0 fw-bold fs-4">
                     <Link
                       to={RouteNames.DETALJI_SLUCAJA.replace(':id', prijava.id)}
                       className="stretched-link text-dark text-decoration-none"
                     >
                       {prijava.zivotinja_ime}
-                    </Link>                  </Card.Title>
+                    </Link>
+                  </Card.Title>
+                  {prijava.hitno && <span className="badge bg-danger">Hitno</span>}
                 </div>
 
                 <Card.Subtitle className="mb-3 text-muted">
@@ -201,9 +203,9 @@ export default function Katalog() {
                   <strong className="text-success">                    {getNazivVrste(prijava.zivotinja_vrsta)}
                   </strong>
                   <br />
-                  📍 <strong>Lokacija:</strong> {prijava.lokacija?.opis || prijava.lokacija_opis || "Nepoznata lokacija"}
+                  <span aria-hidden="true">📍</span> <strong>Lokacija:</strong> {prijava.lokacija?.opis || prijava.lokacija_opis || "Nepoznata lokacija"}
                   <br />
-                  🕒 <strong>Vrijeme:</strong> {" "} <FormatDatuma datum={prijava.datum} prikazDatuma="Nepoznato" relativno />
+                  <span aria-hidden="true">🕒</span> <strong>Vrijeme:</strong> {" "} <FormatDatuma datum={prijava.datum} prikazDatuma="Nepoznato" relativno />
                   {jeZastarjela(prijava) && (
                     <span className="text-warning-emphasis fw-medium"> zastarjelo </span>
                   )}

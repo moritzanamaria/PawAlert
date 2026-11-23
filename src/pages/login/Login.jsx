@@ -55,24 +55,26 @@ export default function Login() {
         <Container className="mt-4">
             <Row className="mb-3">
                 <Col md={6}>
-                    <Card
-                        className="p-2 mb-2 bg-light border-dashed cursor-pointer text-center"
-                        style={{ cursor: 'pointer', borderStyle: 'dashed' }}
+                    <button
+                        type="button"
+                        className="card p-2 mb-2 bg-light text-center w-100"
+                        style={{ borderStyle: 'dashed' }}
                         onClick={() => popuniPodatke('admin@pawalert.hr', 'Edunova123!')}
                     >
                         <small className="text-muted">Klikni za Admina</small>
-                        <div className="fw-bold">admin@pawalert.hr</div>
-                    </Card>
+                        <span className="fw-bold">admin@pawalert.hr</span>
+                    </button>
                 </Col>
                 <Col md={6}>
-                    <Card
-                        className="p-2 mb-2 bg-light border-dashed cursor-pointer text-center"
-                        style={{ cursor: 'pointer', borderStyle: 'dashed' }}
+                    <button
+                        type="button"
+                        className="card p-2 mb-2 bg-light text-center w-100"
+                        style={{ borderStyle: 'dashed' }}
                         onClick={() => popuniPodatke('operater@pawalert.hr', 'Edunova123!')}
                     >
                         <small className="text-muted">Klikni za Operatera</small>
-                        <div className="fw-bold">operater@pawalert.hr</div>
-                    </Card>
+                        <span className="fw-bold">operater@pawalert.hr</span>
+                    </button>
                 </Col>
             </Row>
 

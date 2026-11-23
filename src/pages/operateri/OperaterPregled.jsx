@@ -80,6 +80,7 @@ export default function OperaterPregled() {
                                         size="sm"
                                         onClick={() => navigate(`/operateri/${operater.id}`)}
                                         title="Promijeni email"
+                                        aria-label={`Promijeni email: ${operater.email}`}
                                     >
                                         <FaEdit />
                                     </Button>
@@ -88,6 +89,7 @@ export default function OperaterPregled() {
                                         size="sm"
                                         onClick={() => navigate(`/operateri/${operater.id}/lozinka`)}
                                         title="Promijeni lozinku"
+                                        aria-label={`Promijeni lozinku: ${operater.email}`}
                                     >
                                         <FaKey />
                                     </Button>
@@ -96,6 +98,7 @@ export default function OperaterPregled() {
                                         size="sm"
                                         onClick={() => brisanje(operater.id)}
                                         title="Obriši"
+                                        aria-label={`Obriši operatera: ${operater.email}`}
                                     >
                                         <FaTrash />
                                     </Button>

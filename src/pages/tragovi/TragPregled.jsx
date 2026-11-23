@@ -78,10 +78,10 @@ export default function TragPregled() {
                   </td>
                   <td className="text-center pe-4">
                     <ButtonGroup size="sm">
-                      <Button variant="outline-warning" onClick={() => navigate(putanja(RouteNames.TRAG_PROMJENA, trag.id))} title="Uredi">
+                      <Button variant="outline-warning" onClick={() => navigate(putanja(RouteNames.TRAG_PROMJENA, trag.id))} title="Uredi" aria-label={`Uredi trag: ${trag.opis}`}>
                         <BiPencil size={16} />
                       </Button>
-                      <Button variant="outline-danger" onClick={() => obrisi(trag.id)} title="Obriši">
+                      <Button variant="outline-danger" onClick={() => obrisi(trag.id)} title="Obriši" aria-label={`Obriši trag: ${trag.opis}`}>
                         <BiTrash size={16} />
                       </Button>
                     </ButtonGroup>

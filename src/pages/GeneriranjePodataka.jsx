@@ -25,6 +25,7 @@ import prijaveServiceMemorija from '../services/prijave/prijaveServiceMemorija';
 import TragoviServiceMemorija from '../services/tragovi/TragoviServiceMemorija';
 import { operateri as operateriMemorija } from '../services/operateri/OperaterPodaci';
 import useLoading from "../hooks/useLoading";
+import { omjerKontrasta, MIN_KONTRAST } from "../utils/kontrast";
 import useModal from "../hooks/useModal";
 
 export default function GeneriranjePodataka() {
@@ -214,13 +215,15 @@ export default function GeneriranjePodataka() {
 
     const generirajOznake = async (broj) => {
         const naziviOznaka = ['Ima ogrlicu', 'Ozlijeđen', 'Star', 'Mladunče', 'Preplašen', 'Traži se vlasnik', 'Agresivan', 'Miran'];
-        const bojeOznaka = ['#fd7e14', '#dc3545', '#198754', '#0d6efd', '#6c757d', '#ffc107', '#6610f2', '#d63384'];
+        const bojeOznaka = ['#b35900', '#dc3545', '#198754', '#0d6efd', '#6c757d', '#ffc107', '#6610f2', '#d63384'];
         const bojeTekstaOznaka = ['#0F52BA', '#FFD1DC', '#36454F', '#ffffff', '#cccccc', '#000000'];
         for (let i = 0; i < broj; i++) {
+            const boja = bojeOznaka[i % bojeOznaka.length];
+            const citljive = bojeTekstaOznaka.filter((t) => omjerKontrasta(boja, t) >= MIN_KONTRAST);
             await OznakeService.dodaj({
                 naziv: naziviOznaka[i % naziviOznaka.length] + (i >= naziviOznaka.length ? ` ${Math.floor(i / naziviOznaka.length) + 1}` : ''),
-                boja: bojeOznaka[i % bojeOznaka.length],
-                boja_teksta: faker.helpers.arrayElement(bojeTekstaOznaka)
+                boja,
+                boja_teksta: faker.helpers.arrayElement(citljive)
             });
         }
     };
@@ -682,6 +685,7 @@ export default function GeneriranjePodataka() {
                             className="btn-icon p-2 rounded-circle shadow-sm border d-flex align-items-center justify-content-center"
                             style={{ width: "38px", height: "38px" }}
                             title="Izvezi cijelu bazu u XML"
+                            aria-label="Izvezi cijelu bazu u XML"
                         >
                             <BsFileEarmarkCode size={20} />
                         </Button>
@@ -696,7 +700,7 @@ export default function GeneriranjePodataka() {
                     <Row>
                         <Col md={4}>
                             <Form onSubmit={handleGenerirajVrste}>
-                                <Form.Group className="mb-3">
+                                <Form.Group className="mb-3" controlId="brojVrsta">
                                     <Form.Label>Broj vrsta</Form.Label>
                                     <Form.Control
                                         type="number"
@@ -720,7 +724,7 @@ export default function GeneriranjePodataka() {
                         </Col>
                         <Col md={4}>
                             <Form onSubmit={handleGenerirajTipove}>
-                                <Form.Group className="mb-3">
+                                <Form.Group className="mb-3" controlId="brojTipova">
                                     <Form.Label>Broj tipova</Form.Label>
                                     <Form.Control
                                         type="number"
@@ -744,7 +748,7 @@ export default function GeneriranjePodataka() {
                         </Col>
                         <Col md={4}>
                             <Form onSubmit={handleGenerirajOznake}>
-                                <Form.Group className="mb-3">
+                                <Form.Group className="mb-3" controlId="brojOznaka">
                                     <Form.Label>Broj oznaka</Form.Label>
                                     <Form.Control
                                         type="number"
@@ -768,7 +772,7 @@ export default function GeneriranjePodataka() {
                         </Col>
                         <Col md={4}>
                             <Form onSubmit={handleGenerirajPrijave}>
-                                <Form.Group className="mb-3">
+                                <Form.Group className="mb-3" controlId="brojPrijava">
                                     <Form.Label>Broj prijava</Form.Label>
                                     <Form.Control
                                         type="number"
@@ -792,7 +796,7 @@ export default function GeneriranjePodataka() {
                         </Col>
                         <Col md={4}>
                             <Form onSubmit={handleGenerirajTragove}>
-                                <Form.Group className="mb-3">
+                                <Form.Group className="mb-3" controlId="brojTragova">
                                     <Form.Label>Broj tragova</Form.Label>
                                     <Form.Control
                                         type="number"
@@ -816,7 +820,7 @@ export default function GeneriranjePodataka() {
                         </Col>
                         <Col md={4}>
                             <Form onSubmit={handleGenerirajOperatere}>
-                                <Form.Group className="mb-3">
+                                <Form.Group className="mb-3" controlId="brojOperatera">
                                     <Form.Label>Broj operatera</Form.Label>
                                     <Form.Control
                                         type="number"

@@ -236,7 +236,7 @@ export default function PrijavaPromjena() {
                                 </Form.Control.Feedback>
                             </Form.Group>
 
-                            <Form.Group as={Col} md={6}>
+                            <Form.Group as={Col} md={6} controlId="slika">
                                 <Form.Label className="fw-medium">Slika</Form.Label>
                                 <SlikaUploader value={slikaSrc()} onChange={setNovaSlika} />
                             </Form.Group>

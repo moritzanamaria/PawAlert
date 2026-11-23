@@ -114,7 +114,7 @@ export default function TipoviPregled() {
                         />
                       </td>
                       <td className="text-center pe-4">
-                        <Button variant="outline-danger" onClick={() => obrisiTip(tip.id)} title="Obrisi" disabled={loading}>
+                        <Button variant="outline-danger" onClick={() => obrisiTip(tip.id)} title="Obriši" aria-label={`Obriši tip: ${tip.naziv}`} disabled={loading}>
                           <BiTrash size={16} />
                         </Button>
                       </td>
@@ -168,7 +168,7 @@ export default function TipoviPregled() {
                         />
                       </td>
                       <td className="text-center pe-4">
-                        <Button variant="outline-danger" onClick={() => obrisiVrstu(vrsta.id)} title="Obriši" disabled={loading}>
+                        <Button variant="outline-danger" onClick={() => obrisiVrstu(vrsta.id)} title="Obriši" aria-label={`Obriši vrstu: ${vrsta.naziv}`} disabled={loading}>
                           <BiTrash size={16} />
                         </Button>
                       </td>

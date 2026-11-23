@@ -22,7 +22,7 @@ export default function PotvrdaModal() {
       backdrop='static'
       contentClassName='border-0 shadow-lg rounded-4'
     >
-      <Modal.Header closeButton className='border-0 pb-0 pt-4 px-4'>
+      <Modal.Header closeButton closeLabel='Zatvori' className='border-0 pb-0 pt-4 px-4'>
         <div className='d-flex align-items-center gap-3'>
           <div
             className='d-flex align-items-center justify-content-center rounded-circle bg-warning bg-opacity-25 text-warning'

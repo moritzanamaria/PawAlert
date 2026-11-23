@@ -45,7 +45,7 @@ function Navbar() {
           </span>
         )}
 
-        <BsNavbar.Toggle aria-controls="offcanvas-navbar" onClick={handleShow} className="border-0 shadow-none" />
+        <BsNavbar.Toggle aria-controls="offcanvas-navbar" aria-label="Otvori izbornik" onClick={handleShow} className="border-0 shadow-none" />
 
         <BsNavbar.Offcanvas
           id="offcanvas-navbar"
@@ -55,7 +55,7 @@ function Navbar() {
           show={show}
           onHide={handleClose}
         >
-          <Offcanvas.Header closeButton className="pa-brand">
+          <Offcanvas.Header closeButton closeLabel="Zatvori izbornik" className="pa-brand">
             <Offcanvas.Title id="offcanvas-navbar-label" className="pa-brand">
               <span className="pa-brand-mark"><BrandMark size={30} /></span>
               <span>Paw<span className="pa-brand-alert">Alert</span></span>            </Offcanvas.Title>

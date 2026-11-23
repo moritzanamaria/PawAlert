@@ -183,7 +183,7 @@ export default function TragPromjena() {
                             </Form.Control.Feedback>
                         </Form.Group>
 
-                        <Form.Group className="mb-3">
+                        <Form.Group className="mb-3" controlId="slika">
                             <Form.Label className="fw-medium">Slika</Form.Label>
                             <Form.Control type="file" accept="image/png,image/jpeg,image/webp" onChange={odaberiSliku} isInvalid={!!errors.slika} />
                             <Form.Control.Feedback type="invalid">

@@ -51,7 +51,7 @@ export default function LetakModal({ show, onHide, prijava, nazivTipa, nazivVrst
     <Modal show={show} onHide={radi ? () => { } : onHide}
       onShow={() => setGreska("")} backdrop={radi ? "static" : true}
       keyboard={!radi} centered>
-      <Modal.Header closeButton>
+      <Modal.Header closeButton closeLabel="Zatvori">
         <Modal.Title className="fs-5 d-flex align-items-center gap-2">
           <BiPrinter /> Letak za ispis
         </Modal.Title>
@@ -83,7 +83,7 @@ export default function LetakModal({ show, onHide, prijava, nazivTipa, nazivVrst
           />
         </div>
 
-        <Form.Group className="mb-3">
+        <Form.Group className="mb-3" controlId="letakTelefon">
           <Form.Label className="fw-semibold">Telefon za kontakt</Form.Label>
           <Form.Control
             type="tel"
@@ -97,7 +97,7 @@ export default function LetakModal({ show, onHide, prijava, nazivTipa, nazivVrst
           </Form.Control.Feedback>
         </Form.Group>
 
-        <Form.Group className="mb-3">
+        <Form.Group className="mb-3" controlId="letakIme">
           <Form.Label className="fw-semibold">Ime kontakt osobe (nije obavezno)</Form.Label>
           <Form.Control
             type="text"

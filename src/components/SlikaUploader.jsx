@@ -100,7 +100,7 @@ export default function SlikaUploader({ value, onChange }) {
             )}
 
             <Modal show={!!izvor} onHide={() => setIzvor(null)} size="lg" centered backdrop="static">
-                <Modal.Header closeButton>
+                <Modal.Header closeButton closeLabel="Zatvori">
                     <Modal.Title className="fs-5">Uredi sliku</Modal.Title>
                 </Modal.Header>
 

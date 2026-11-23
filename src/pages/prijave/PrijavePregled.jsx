@@ -134,6 +134,7 @@ export default function PrijavePregled() {
               >
                 <Button
                   onClick={handleExportWord}
+                  aria-label="Preuzmi Word katalog (.docx)"
                   variant="light"
                   className="btn-icon p-2 rounded-circle shadow-sm border d-flex align-items-center justify-content-center text-primary"
                   style={{ width: "42px", height: "42px", transition: "all 0.2s" }}
@@ -166,6 +167,7 @@ export default function PrijavePregled() {
                 <tr key={prijava.id} className={prijava.hitno ? "table-danger" : ""}>
                   <td className="ps-4 fw-semibold text-dark">
                     {prijava.zivotinja_ime || <span className="text-muted fst-italic">Nepoznato</span>}
+                    {prijava.hitno && <Badge bg="danger" className="ms-2">Hitno</Badge>}
                   </td>
                   <td className="d-none d-md-table-cell">
                     <Badge bg="info" className="text-dark bg-opacity-10 border border-info px-2 py-1">
@@ -184,13 +186,13 @@ export default function PrijavePregled() {
                   </td>
                   <td className="text-center pe-4">
                     <ButtonGroup size="sm">
-                      <Link to={putanja(RouteNames.TRAG_PREGLED, prijava.id)} className="btn btn-outline-primary" title="Tragovi">
+                      <Link to={putanja(RouteNames.TRAG_PREGLED, prijava.id)} className="btn btn-outline-primary" title="Tragovi" aria-label={`Tragovi: ${prijava.zivotinja_ime || "prijava"}`}>
                         <BiSearch size={16} />
                       </Link>
-                      <Button variant="outline-warning" onClick={() => navigate(putanja(RouteNames.PRIJAVA_PROMJENA, prijava.id))} title="Uredi">
+                      <Button variant="outline-warning" onClick={() => navigate(putanja(RouteNames.PRIJAVA_PROMJENA, prijava.id))} title="Uredi" aria-label={`Uredi: ${prijava.zivotinja_ime || "prijava"}`}>
                         <BiPencil size={16} />
                       </Button>
-                      <Button variant="outline-danger" onClick={() => obrisi(prijava.id)} title="Obriši">
+                      <Button variant="outline-danger" onClick={() => obrisi(prijava.id)} title="Obriši" aria-label={`Obriši: ${prijava.zivotinja_ime || "prijava"}`}>
                         <BiTrash size={16} />
                       </Button>
                     </ButtonGroup>

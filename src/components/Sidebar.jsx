@@ -69,13 +69,14 @@ function Sidebar({ prijave = [], oznake = [] }) {
                       <Link
                         to={putanja(RouteNames.DETALJI_SLUCAJA, prijava.id)}
                         title="Pogledaj tragove"
+                        aria-label={`Pogledaj tragove: ${prijava.zivotinja_ime || "prijava"}`}
                         className="text-decoration-none fs-3 lh-1 px-1"
                       >
                        <BrandMark size={30} valovi={false} />
                       </Link>
                     </div>
                     <div className="text-muted small mt-1">
-                      📍 {prijava.lokacija?.opis || prijava.lokacija_opis || "Nepoznata lokacija"}
+                      <span aria-hidden="true">📍</span> {prijava.lokacija?.opis || prijava.lokacija_opis || "Nepoznata lokacija"}
                     </div>
                   </div>
                   {prijava.oznake && prijava.oznake.length > 0 && (
