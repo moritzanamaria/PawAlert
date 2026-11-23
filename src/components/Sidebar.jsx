@@ -42,7 +42,7 @@ function Sidebar({ prijave = [], oznake = [] }) {
     <div className="d-flex flex-column gap-3 h-100">
       <div className="card shadow-sm border-0 p-4 text-center animirani-sidebar">
         <div><BrandMark size={64} /></div>
-        <h3 className="fw-bold mt-2 mb-1">Aktivni sustav prijava</h3>
+        <h4 className="fw-bold mt-2 mb-1">Aktivni sustav prijava</h4>
         <p className="text-muted small mb-3">
           Pratite lokacije prijavljenih životinja u stvarnom vremenu na području Osijeka.
         </p>

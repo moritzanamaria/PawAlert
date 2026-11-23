@@ -8,6 +8,7 @@ import VrsteService from "../services/vrste/VrsteService";
 import TipService from "../services/tip/TipService";
 import OznakeService from "../services/oznake/OznakeService";
 import { Link } from "react-router-dom";
+import BrandMark from "./BrandMark"
 
 function useLista(propLista, service) {
   const [dohvaceno, setDohvaceno] = useState([]);
@@ -46,7 +47,7 @@ function MapView({ prijave = [], vrste: propVrste = [], tipovi: propTipovi = [],
                   aria-label={`Detalji: ${p.zivotinja_ime || "prijava"}`}
                   className="text-decoration-none fs-4 lh-1"
                 >
-                  🐾
+                  <BrandMark size={28} valovi={false} />
                 </Link>
                 <br />
                 <span>Vrsta: {naziv(vrste, p.zivotinja_vrsta)}</span>
