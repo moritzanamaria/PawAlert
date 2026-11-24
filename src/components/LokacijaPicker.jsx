@@ -59,7 +59,7 @@ export default function LokacijaPicker({ value, onChange }) {
         setPoruka("")
         const k = await koordinateIzAdrese(`${tekst}, Osijek`)
         setUcitava(false)
-        if (k) postavi({ lat: k.lat, lng: k.lng, opis: tekst })
+        if (k) onChange({ lat: k.lat, lng: k.lng, opis: tekst })
         else setPoruka("Adresa nije pronađena. Pokušajte drugačije ili kliknite na kartu.")
     }
 
