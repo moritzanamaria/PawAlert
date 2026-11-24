@@ -100,9 +100,12 @@ export default function OperaterPromjena() {
             <Form onSubmit={odradiSubmit}>
                 <Container className="mt-4">
                     <Card className="shadow-sm">
+                          <Card.Header className="bg-warning text-dark rounded-top-3 d-flex align-items-center gap-3">
+                    <div>
+                        <h2 className="p-2 mb-0 fw-bold fs-4">Promjena operatera</h2>
+                    </div>
+                </Card.Header>
                         <Card.Body>
-                            <Card.Title className="mb-4">Podaci o operateru</Card.Title>
-
                             <Row>
                                 <Col xs={12}>
                                     <Form.Group controlId="email" className="mb-3">

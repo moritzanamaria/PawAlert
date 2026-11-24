@@ -5,7 +5,7 @@ import "leaflet/dist/leaflet.css";
 import { CENTAR_OSIJEK } from "../constants";
 import { dohvatiIkonu } from "../utils/mapHelpers";
 
- const IKONA = dohvatiIkonu();   
+const IKONA = dohvatiIkonu();
 
 async function opisIzKoordinata(lat, lng) {
     try {
@@ -49,60 +49,46 @@ function Prati({ lat, lng }) {
 
 export default function LokacijaPicker({ value, onChange }) {
     const [ucitava, setUcitava] = useState(false)
-    const [adresa, setAdresa] = useState("")
     const [poruka, setPoruka] = useState("")
     const imaTocku = value?.lat != null;
+    const tekst = value?.opis ?? "";
 
     async function trazi() {
-        if (!adresa.trim()) return
+        if (!tekst.trim()) return
         setUcitava(true)
         setPoruka("")
-        const k = await koordinateIzAdrese(`${adresa}, Osijek`)
+        const k = await koordinateIzAdrese(`${tekst}, Osijek`)
         setUcitava(false)
-        if (k) postavi(k.lat, k.lng)
+        if (k) postavi({ lat: k.lat, lng: k.lng, opis: tekst })
         else setPoruka("Adresa nije pronađena. Pokušajte drugačije ili kliknite na kartu.")
     }
 
-    function mojaLokacija() {
-        if (!navigator.geolocation) {
-            setPoruka("Preglednik ne podržava određivanje lokacije.")
-            return
-        }
-        setPoruka("")
-        navigator.geolocation.getCurrentPosition(
-            (pos) => postavi(pos.coords.latitude, pos.coords.longitude),
-            () => setPoruka("Lokaciju nije moguće dohvatiti. Upišite adresu ili kliknite na kartu.")
-        )
-    }
     async function postavi(lat, lng) {
         onChange({ ...value, lat, lng })
         setUcitava(true)
         const opis = await opisIzKoordinata(lat, lng)
-        onChange({ lat, lng, opis: opis || value?.opis || "" })
+        onChange({ lat, lng, opis: opis || tekst })
         setUcitava(false)
     }
 
     return (
         <div className="d-flex flex-column gap-2">
-            <div className="d-flex flex-wrap gap-2">
-            <InputGroup className="flex-grow-1" style={{ minWidth: "15rem", width: "auto" }}>
-                <Form.Control
-                    type="search"
-                    aria-label="Adresa za pretragu"
-                    placeholder="Upišite adresu, npr. Trg Ante Starčevića 1"
-                    value={adresa}
-                    onChange={(e) => setAdresa(e.target.value)}
-                    onKeyDown={(e) => {
-                        if (e.key === "Enter") {
-                            e.preventDefault()
-                            trazi()
-                        }
-                    }}
-                />
-                <Button variant="outline-primary" onClick={trazi}>Traži</Button>
-            </InputGroup>
-            <Button variant="outline-secondary" onClick={mojaLokacija}>Moja lokacija</Button>
-            </div>
+                <InputGroup>
+                    <Form.Control
+                        type="text"
+                        aria-label="Lokacija"
+                        placeholder="Upišite adresu, npr. Trg Ante Starčevića 1"
+                        value={tekst}
+                        onChange={(e) => onChange({ ...value, opis: e.target.value })}
+                        onKeyDown={(e) => {
+                            if (e.key === "Enter") {
+                                e.preventDefault()
+                                trazi()
+                            }
+                        }}
+                    />
+                    <Button variant="outline-primary" onClick={trazi}>Traži</Button>
+                </InputGroup>
 
             <MapContainer
                 center={imaTocku ? [value.lat, value.lng] : CENTAR_OSIJEK}
@@ -132,22 +118,14 @@ export default function LokacijaPicker({ value, onChange }) {
                 )}
             </MapContainer>
 
-            <Form.Control
-                type="text"
-                aria-label="Opis lokacije"
-                placeholder="Opis lokacije (automatski se upisuje klikom na kartu, možete ga urediti)"
-                value={value?.opis ?? ""}
-                disabled={!imaTocku}
-                onChange={(e) => onChange({ ...value, opis: e.target.value })}
-            />
-
+        
             <small className="text-muted" aria-live="polite">
                 {ucitava ? (
-                     <>
-                     <Spinner size="sm" animation="border" className="me-1" /> Učitavam adresu...</>
-                     ) : (
-                         poruka || "Upišite adresu, kliknite bilo gdje na kartu ili povucite marker."
-                        )}
+                    <>
+                        <Spinner size="sm" animation="border" className="me-1" /> Učitavam adresu...</>
+                ) : (
+                    poruka || "Upišite adresu, kliknite bilo gdje na kartu ili povucite marker."
+                )}
             </small>
         </div>
     )
