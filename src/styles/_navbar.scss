@@ -194,9 +194,17 @@
   // logo, naslov i hamburger u istom redu
   .pa-navbar {
     >.container {
-      flex-wrap: nowrap;
+      flex-wrap: wrap;
       gap: 0.25rem;
       padding-inline: 0.25rem;
+
+      // prijelom reda: naslov stranice ide u drugi red
+      &::after {
+        content: "";
+        order: 2;
+        flex-basis: 100%;
+        height: 0;
+      }
     }
 
     .pa-brand {
@@ -211,11 +219,13 @@
       border-radius: 12px;
     }
 
-    // naslov u sredini između logotipa i hamburgera
+    // naslov u svom redu, ispod logotipa i hamburgera
     .pa-naslov-stranice {
+      order: 3;
       flex: 0 1 auto;
-      margin-inline: auto;
-      padding: 0.35rem 0.85rem;
+      max-width: 100%;
+      margin: 0 auto 0.4rem;
+      padding: 0.3rem 0.85rem;
       font-size: 0.95rem;
     }
   }

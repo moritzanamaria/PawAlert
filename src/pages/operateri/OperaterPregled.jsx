@@ -58,7 +58,7 @@ export default function OperaterPregled() {
                         <p className="text-muted small mb-0">Popis svih registriranih operatera</p>
                     </div>
                     <Link to={RouteNames.OPERATERI_NOVI}
-                       className="btn btn-success fw-medium d-flex align-items-center gap-1 shadow-sm px-3 py-2">
+                       className="btn btn-success fw-medium d-flex align-items-center gap-1 shadow-sm px-3 py-2 justify-content-center col-12 col-md-auto">
                         + Novi operater
                     </Link>
                 </Card.Header>
@@ -68,20 +68,27 @@ export default function OperaterPregled() {
                         <thead>
                             <tr>
                                 <th>Email</th>
-                                <th>Uloga</th>
-                                <th className="text-center" style={{ width: '200px' }}>Akcije</th>
+                                <th className="d-none d-sm-table-cell">Uloga</th>
+                                <th className="text-center text-nowrap">Akcije</th>
                             </tr>
                         </thead>
                         <tbody>
                             {operateri && operateri.map((operater) => (
                                 <tr key={operater.id}>
-                                    <td>{operater.email}</td>
-                                    <td>
+                                    <td className="text-break">
+                                        {operater.email}
+                                        <div className="d-sm-none mt-1">
+                                            <span className={`badge ${operater.uloga === 'admin' ? 'bg-danger' : 'bg-primary'}`}>
+                                                {operater.uloga}
+                                            </span>
+                                        </div>
+                                    </td>
+                                    <td className="d-none d-sm-table-cell">
                                         <span className={`badge ${operater.uloga === 'admin' ? 'bg-danger' : 'bg-primary'}`}>
                                             {operater.uloga}
                                         </span>
                                     </td>
-                                    <td className="text-center">
+                                    <td className="text-center text-nowrap">
                                         <div className="d-flex gap-2 justify-content-center">
                                             <Button
                                                 variant="outline-primary"

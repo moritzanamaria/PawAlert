@@ -145,7 +145,7 @@ function TablicaPrijava({ naslov, prijave, prazno }) {
         {prijave.length === 0 ? (
           <p className="text-muted text-center py-4 mb-0">{prazno}</p>
         ) : (
-          <Table responsive hover className="align-middle mb-0">
+          <Table responsive bordered hover className="align-middle mb-0">
             <thead className="visually-hidden">
               <tr>
                 <th scope="col">Životinja i lokacija</th>

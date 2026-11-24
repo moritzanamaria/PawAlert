@@ -39,6 +39,9 @@ export default function TragPregled() {
 
   return (
     <Container className="my-5">
+       <Link to={RouteNames.PRIJAVE_PREGLED} className="mb-2 btn btn-outline-secondary d-flex align-items-center gap-1 shadow-sm">
+              <BiArrowBack size={18} /> Natrag na prijave
+            </Link>
       <Card className="shadow-sm border-0 rounded-3">
         <Card.Header className="bg-white p-4 border-0 d-flex justify-content-between align-items-center flex-wrap gap-2">
           <div>
@@ -46,11 +49,9 @@ export default function TragPregled() {
             <p className="text-muted small mb-0">Popis zabilježenih tragova i lokacija</p>
           </div>
           <div className="d-flex gap-2 flex-wrap">
-            <Link to={RouteNames.PRIJAVE_PREGLED} className="btn btn-outline-secondary d-flex align-items-center gap-1 shadow-sm px-3 py-2">
-              <BiArrowBack size={18} /> Natrag na prijave
-            </Link>
+           
             <Link to={putanja(RouteNames.TRAG_NOVI, id)}
-              className="btn btn-success d-flex align-items-center gap-1 shadow-sm px-3 py-2">
+              className="btn btn-success fw-medium d-flex align-items-center gap-1 shadow-sm px-3 py-2 justify-content-center col-12 col-md-auto">
               <BiPlus size={20} /> Novi trag
             </Link>
           </div>
@@ -61,20 +62,25 @@ export default function TragPregled() {
             <thead className="table-light">
               <tr>      
                 <th>Opis</th>
-                <th>Lokacija</th>
-                <th className="text-center">Datum</th>
-                <th className="text-center pe-4" style={{ minWidth: "180px" }}>Akcija</th>
+                <th className="d-none d-md-table-cell">Lokacija</th>
+                <th className="text-center d-none d-md-table-cell">Datum</th>
+                <th className="text-center pe-3 pe-sm-4 text-nowrap">Akcija</th>
               </tr>
             </thead>
             <tbody>
               {tragovi && tragovi.map((trag) => (
                 <tr key={trag.id}>
-                  <td>{trag.opis}</td>
-                  <td className="text-muted">{trag.lokacija?.opis || trag.lokacija_opis || "Nepoznata lokacija"}</td>
-                  <td className="text-center text-secondary small">
+                  <td>
+                    {trag.opis}
+                    <div className="d-md-none small text-secondary mt-1">
+                      {trag.lokacija?.opis || trag.lokacija_opis || "Nepoznata lokacija"} · <FormatDatuma datum={trag.datum} />
+                    </div>
+                  </td>
+                  <td className="text-muted d-none d-md-table-cell">{trag.lokacija?.opis || trag.lokacija_opis || "Nepoznata lokacija"}</td>
+                  <td className="text-center text-secondary small d-none d-md-table-cell">
                     <FormatDatuma datum={trag.datum} />
                   </td>
-                  <td className="text-center pe-4">
+                  <td className="text-center pe-3 pe-sm-4 text-nowrap">
                     <ButtonGroup size="sm">
                       <Button variant="outline-warning" onClick={() => navigate(putanja(RouteNames.TRAG_PROMJENA, trag.id))} title="Uredi" aria-label={`Uredi trag: ${trag.opis}`}>
                         <BiPencil size={16} />

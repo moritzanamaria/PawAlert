@@ -105,14 +105,14 @@ export default function MojProfil() {
               {mojePrijave.length === 0 ? (
                 <p className="text-center text-muted py-5 mb-0">Još niste poslali nijednu prijavu.</p>
               ) : (
-                <Table responsive hover className="align-middle mb-0">
+                <Table responsive bordered hover className="align-middle mb-0">
                   <thead className="table-light">
                     <tr>
                       <th>Ime životinje</th>
                       <th className="d-none d-md-table-cell">Vrsta</th>
                       <th className="d-none d-md-table-cell text-center">Datum</th>
-                      <th className="text-center">Status</th>
-                      <th className="text-center" style={{ minWidth: "160px" }}>Akcije</th>
+                      <th className="text-center d-none d-sm-table-cell">Status</th>
+                      <th className="text-center text-nowrap">Akcije</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -120,17 +120,22 @@ export default function MojProfil() {
                       <tr key={p.id}>
                         <td className="fw-semibold">
                           {p.zivotinja_ime || <span className="text-muted fst-italic">Nepoznato</span>}
+                          <div className="d-sm-none mt-1">
+                            <Badge bg={p.status === "otvorena" ? "success" : "secondary"} className="text-capitalize">
+                              {p.status}
+                            </Badge>
+                          </div>
                         </td>
                         <td className="d-none d-md-table-cell">{nazivVrste(p.zivotinja_vrsta)}</td>
                         <td className="d-none d-md-table-cell text-center text-secondary small">
                           <FormatDatuma datum={p.datum} />
                         </td>
-                        <td className="text-center">
+                        <td className="text-center d-none d-sm-table-cell">
                           <Badge bg={p.status === "otvorena" ? "success" : "secondary"} className="text-capitalize">
                             {p.status}
                           </Badge>
                         </td>
-                        <td className="text-center">
+                        <td className="text-center text-nowrap">
                           <ButtonGroup size="sm">
                             <Link
                               to={putanja(RouteNames.DETALJI_SLUCAJA, p.id)}
@@ -172,7 +177,7 @@ export default function MojProfil() {
                 <Table responsive hover className="align-middle mb-0">
                   <thead className="table-light">
                     <tr>
-                      <th>Prijava</th>
+                      <th className="d-none d-sm-table-cell">Prijava</th>
                       <th>Opis</th>
                       <th className="d-none d-md-table-cell text-center">Datum</th>
                       <th className="text-center">Akcije</th>
@@ -181,14 +186,19 @@ export default function MojProfil() {
                   <tbody>
                     {mojiTragovi.map((t) => (
                       <tr key={t.id}>
-                        <td className="fw-semibold">
+                        <td className="fw-semibold d-none d-sm-table-cell">
                           <Link to={putanja(RouteNames.DETALJI_SLUCAJA, t.prijava)}>{imePrijave(t.prijava)}</Link>
                         </td>
-                        <td>{t.opis}</td>
+                        <td>
+                          <Link to={putanja(RouteNames.DETALJI_SLUCAJA, t.prijava)} className="d-sm-none fw-semibold d-block mb-1">
+                            {imePrijave(t.prijava)}
+                          </Link>
+                          {t.opis}
+                        </td>
                         <td className="d-none d-md-table-cell text-center text-secondary small">
                           <FormatDatuma datum={t.datum} />
                         </td>
-                        <td className="text-center">
+                        <td className="text-center text-nowrap">
                           <Link
                             to={putanja(RouteNames.TRAG_PROMJENA, t.id)}
                             state={{ povratak: RouteNames.MOJ_PROFIL }}

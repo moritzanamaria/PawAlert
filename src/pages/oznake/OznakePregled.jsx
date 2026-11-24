@@ -54,14 +54,12 @@ export default function OznakePregled() {
               <p className="text-muted small mb-0">Popis svih oznaka</p>
             </div>
           </div>
-          <div className="d-flex gap-2 flex-wrap">
             <Link
               to={RouteNames.OZNAKA_NOVA || "/oznake/nova"}
-              className="btn btn-success d-flex align-items-center gap-1 shadow-sm px-3 py-2"
+              className="btn btn-success fw-medium d-flex align-items-center gap-1 shadow-sm px-3 py-2 justify-content-center col-12 col-md-auto"
             >
               <BiPlus size={20} /> Nova oznaka
             </Link>
-          </div>
         </Card.Header>
 
         <Card.Body className="p-0">

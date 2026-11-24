@@ -150,24 +150,30 @@ export default function PrijavePregled() {
           </Link>
         </Card.Header>
         <Card.Body className="p-0">
-          <Table responsive hover className="align-middle mb-0 border-top">
+          <Table responsive bordered hover className="align-middle mb-0 border-top">
             <thead className="table-light">
               <tr>
-                <th className="ps-4">Ime životinje</th>
+                <th className="ps-3 ps-sm-4">Ime životinje</th>
                 <th className="d-none d-md-table-cell">Vrsta</th>
                 <th className="d-none d-lg-table-cell">Lokacija</th>
                 <th className="d-none d-lg-table-cell">Tip prijave</th>
                 <th className="text-center d-none d-md-table-cell">Vrijeme prijave</th>
-                <th className="text-center">Status</th>
-                <th className="text-center pe-4" style={{ minWidth: "220px" }}>Akcije</th>
+                <th className="text-center d-none d-sm-table-cell">Status</th>
+                <th className="text-center pe-3 pe-sm-4 text-nowrap">Akcije</th>
               </tr>
             </thead>
             <tbody>
               {prijave.map((prijava) => (
                 <tr key={prijava.id} className={prijava.hitno ? "table-danger" : ""}>
-                  <td className="ps-4 fw-semibold text-dark">
+                  <td className="ps-3 ps-sm-4 fw-semibold text-dark">
                     {prijava.zivotinja_ime || <span className="text-muted fst-italic">Nepoznato</span>}
-                    {prijava.hitno && <Badge bg="danger" className="ms-2">Hitno</Badge>}
+                    {prijava.hitno && <Badge bg="danger" className="ms-2 d-none d-sm-inline-block">Hitno</Badge>}
+                    <div className="d-sm-none mt-1 d-flex gap-1">
+                      {prijava.hitno && <Badge bg="danger">Hitno</Badge>}
+                      <Badge bg={prijava.status === "otvorena" ? "success" : "secondary"} className="text-capitalize">
+                        {prijava.status}
+                      </Badge>
+                    </div>
                   </td>
                   <td className="d-none d-md-table-cell">
                     <Badge bg="info" className="text-dark bg-opacity-10 border border-info px-2 py-1">
@@ -179,12 +185,12 @@ export default function PrijavePregled() {
                   <td className="text-center text-secondary small d-none d-md-table-cell">
                     <FormatDatuma datum={prijava.datum} prikazDatuma="Nepoznato" />
                   </td>
-                  <td className="text-center">
+                  <td className="text-center d-none d-sm-table-cell">
                     <Badge bg={prijava.status === "otvorena" ? "success" : "secondary"} className="text-capitalize px-2 py-1">
                       {prijava.status}
                     </Badge>
                   </td>
-                  <td className="text-center pe-4">
+                  <td className="text-center pe-3 pe-sm-4 text-nowrap">
                     <ButtonGroup size="sm">
                       <Link to={putanja(RouteNames.TRAG_PREGLED, prijava.id)} className="btn btn-outline-primary" title="Tragovi" aria-label={`Tragovi: ${prijava.zivotinja_ime || "prijava"}`}>
                         <BiSearch size={16} />

@@ -87,7 +87,7 @@ export default function TipoviPregled() {
                 <p className="text-muted small mb-0">Popis svih definiranih tipova prijava</p>
               </div>
               <Link to={RouteNames.TIP_NOVI}
-                className="btn btn-success fw-medium d-flex align-items-center gap-1 shadow-sm px-3 py-2">
+                className="btn btn-success fw-medium d-flex align-items-center gap-1 shadow-sm px-3 py-2 justify-content-center col-12 col-md-auto">
                 <BiPlus size={20} /> Novi tip
               </Link>
             </Card.Header>
@@ -140,7 +140,7 @@ export default function TipoviPregled() {
               </div>
               <Link
                 to={RouteNames.VRSTA_NOVA}
-                className="btn btn-success fw-medium d-flex align-items-center gap-1 shadow-sm px-3 py-2"
+                className="btn btn-success fw-medium d-flex align-items-center gap-1 shadow-sm px-3 py-2 justify-content-center col-12 col-md-auto"
               >
                 <BiPlus size={20} /> Nova vrsta
               </Link>
