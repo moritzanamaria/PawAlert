@@ -19,7 +19,7 @@ function PrilagodiPogled({ tocke }) {
   return null;
 }
 
-export default function TragoviMapa({ prijava, tragovi }) {
+export default function TragoviMapa({ prijava, tragovi, tipovi=[] }) {
  const poredani = useMemo(() => [...tragovi].sort((a, b) => a.datum.localeCompare(b.datum)), [tragovi]);
   const tocke = useMemo(() => [poz(prijava), ...poredani.map(poz)], [prijava, poredani]);
 
@@ -36,7 +36,7 @@ export default function TragoviMapa({ prijava, tragovi }) {
       <PrilagodiPogled tocke={tocke} />
 
 
-        <Marker position={poz(prijava)} icon={dohvatiIkonu(prijava.tip_prijave)} title={`Prijavljeno ovdje: ${prijava.zivotinja_ime}`}>
+        <Marker position={poz(prijava)} icon={dohvatiIkonu(prijava.tip_prijave, tipovi)} title={`Prijavljeno ovdje: ${prijava.zivotinja_ime}`}>
           <Popup>
             Prijavljeno ovdje: <strong>{prijava.zivotinja_ime}</strong>
           </Popup>

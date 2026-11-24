@@ -243,7 +243,7 @@ export default function DetaljiSlucaja() {
                         </Card.Header>
                         <Card.Body className="p-0 pt-3">
                             <div style={{ height: "320px", width: "100%" }}>
-                                <TragoviMapa prijava={prijava} tragovi={tragovi} />
+                                <TragoviMapa prijava={prijava} tragovi={tragovi} tipovi={tipovi}/>
                             </div>
                         </Card.Body>
                     </Card>

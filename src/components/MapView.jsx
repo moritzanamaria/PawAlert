@@ -37,7 +37,7 @@ function MapView({ prijave = [], vrste: propVrste = [], tipovi: propTipovi = [],
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright" target="_blank">OpenStreetMap</a> contributors'
         />
         {prijave.filter((p) => p.lokacija?.lat != null).map((p) => (
-          <Marker key={p.id} position={[p.lokacija.lat, p.lokacija.lng]} icon={dohvatiIkonu(p.tip_prijave)} title={`${p.zivotinja_ime || "Prijava"} - ${naziv(tipovi, p.tip_prijave) ?? ""}`}>
+          <Marker key={p.id} position={[p.lokacija.lat, p.lokacija.lng]} icon={dohvatiIkonu(p.tip_prijave, tipovi)} title={`${p.zivotinja_ime || "Prijava"} - ${naziv(tipovi, p.tip_prijave) ?? ""}`}>
             <Popup maxWidth={240}>
               <div>
                 <strong>{p.zivotinja_ime}</strong>{" "}
@@ -86,7 +86,7 @@ function MapView({ prijave = [], vrste: propVrste = [], tipovi: propTipovi = [],
       <div className="d-flex flex-wrap gap-1 py-2 small">
         {tipovi.map((t) => (
           <div key={t.id} className="d-flex align-items-center m-1">
-            <span className="legenda-tocka" style={{ backgroundColor: bojaTipa(t.id) }} />
+            <span className="legenda-tocka" style={{ backgroundColor: bojaTipa(t.id, tipovi) }} />
             {t.naziv}
           </div>
         ))}
