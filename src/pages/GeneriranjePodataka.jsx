@@ -583,8 +583,8 @@ export default function GeneriranjePodataka() {
         return (
             <Container className="mt-4">
                 <Card className="shadow-sm border-0 rounded-3 p-4 text-center">
-                    <h3 className='shadow-sm p-4' style={{ color: 'olive', background: 'antiquewhite' }}>Trenutno ste na memoriji te ne možete generirati podatke</h3>
-                    <h5 className='text-muted p-5' style={{ fontStyle: "italic" }}>Pogledaj pregled prijava da vidiš podatke koji su na memoriji te ih tamo po potrebi ažuriraj </h5>
+                    <h2 className='h3 shadow-sm p-4' style={{ color: 'olive', background: 'antiquewhite' }}>Trenutno ste na memoriji te ne možete generirati podatke</h2>
+                    <p className='h5 text-muted p-5' style={{ fontStyle: "italic" }}>Pogledaj pregled prijava da vidiš podatke koji su na memoriji te ih tamo po potrebi ažuriraj </p>
 
                 </Card>
             </Container>
@@ -669,7 +669,7 @@ export default function GeneriranjePodataka() {
             <Card className="shadow-sm border-0 rounded-3 mb-4">
                 <Card.Header className="bg-white p-4 border-0 d-flex justify-content-between align-items-center flex-wrap gap-3">
                     <div>
-                        <h3 className="fw-bold mb-1 text-dark">Generiranje podataka</h3>
+                        <h2 className="h3 fw-bold mb-1 text-dark">Generiranje podataka</h2>
                         <p className="text-muted small mb-0">Koristite ovaj alat za generiranje testnih podataka s lažnim (fake) podacima na hrvatskom jeziku u Osijeku.</p>
                     </div>
                     <div className="d-flex gap-2">

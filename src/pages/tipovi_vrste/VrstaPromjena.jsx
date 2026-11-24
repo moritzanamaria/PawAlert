@@ -67,7 +67,7 @@ export default function VrstaPromjena() {
         <Container className="my-5" style={{ maxWidth: "600px" }}>
             <Card className="shadow-sm border-0 rounded-3">
                 <Card.Header className="bg-warning text-dark p-4 rounded-top-3">
-                    <h3 className="mb-0 fw-bold fs-4">✏️ Izmjena vrste</h3>
+                    <h2 className="mb-0 fw-bold fs-4">✏️ Izmjena vrste</h2>
                     <p className="mb-0 text-dark-50 small">
                         Uredite naziv za odabranu vrstu životinje.
                     </p>

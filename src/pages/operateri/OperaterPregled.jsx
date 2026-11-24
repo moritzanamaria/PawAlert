@@ -54,7 +54,7 @@ export default function OperaterPregled() {
             <Card className="shadow-sm border-0 rounded-3">
                 <Card.Header className="bg-white p-4 border-0 d-flex justify-content-between align-items-center flex-wrap gap-2">
                     <div>
-                        <h3 className="fw-bold mb-1 text-dark">📋 Pregled operatera</h3>
+                        <h2 className="h3 fw-bold mb-1 text-dark">📋 Pregled operatera</h2>
                         <p className="text-muted small mb-0">Popis svih registriranih operatera</p>
                     </div>
                     <Link to={RouteNames.OPERATERI_NOVI}

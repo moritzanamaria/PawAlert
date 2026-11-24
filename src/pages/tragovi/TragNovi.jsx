@@ -111,8 +111,8 @@ export default function TragNovi() {
         <Container className="my-5">
             <Card className="shadow-sm border-0 rounded-3">
                 <Card.Header className="bg-success p-4 rounded-top-3">
-                    <h3 className="mb-0 fw-bold fs-4">🐾Dodaj novi trag za prijavu
-                    </h3>
+                    <h2 className="mb-0 fw-bold fs-4">🐾Dodaj novi trag za prijavu
+                    </h2>
                     <p className="mb-0 small">
                         Unesite podatke o novom tragu
                     </p>

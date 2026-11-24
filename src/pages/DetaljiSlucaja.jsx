@@ -196,7 +196,7 @@ export default function DetaljiSlucaja() {
                     <Card className="border-0 shadow-sm p-4 h-100">
                         <div className="d-flex justify-content-between align-items-center mb-4 pb-2 border-bottom">
 
-                            <h4 className="fw-bold mb-0">🐾 Tragovi i viđenja</h4>
+                            <h3 className="h4 fw-bold mb-0">🐾 Tragovi i viđenja</h3>
                             <p className="text-muted small mb-0">Kronološki pregled prikupljenih tragova i zapažanja</p>
 
                         </div>
@@ -238,7 +238,7 @@ export default function DetaljiSlucaja() {
                 <Col xs={12}>
                     <Card className="shadow-sm border-0 overflow-hidden h-">
                         <Card.Header className="bg-white border-0 pt-4 px-4 pb-0">
-                            <h4 className="fw-bold mb-1">🗺️ Karta kretanja i tragova</h4>
+                            <h3 className="h4 fw-bold mb-1">🗺️ Karta kretanja i tragova</h3>
                             <p className="text-muted small">Prikaz svih lokacija vezanih uz ovaj slučaj</p>
                         </Card.Header>
                         <Card.Body className="p-0 pt-3">

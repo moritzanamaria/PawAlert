@@ -66,7 +66,7 @@ export default function TipPromjena() {
         <Container className="my-5" style={{ maxWidth: "850px" }}>
             <Card className="shadow-sm border-0 rounded-3">
                 <Card.Header className="bg-warning text-dark p-4 rounded-top-3">
-                    <h3 className="mb-0 fw-bold fs-4">✏️ Promjena tipa #{params.id}</h3>
+                    <h2 className="mb-0 fw-bold fs-4">✏️ Promjena tipa #{params.id}</h2>
                     <p className="mb-0 text-dark-50 small">
                         Ažurirajte naziv tipa prijave.
                     </p>

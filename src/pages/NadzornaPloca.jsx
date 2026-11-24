@@ -55,7 +55,7 @@ function PregledPrijavaChart({ podaci }) {
         align: "left",
         style: {
           color: "#212529",
-          fontWeight: "900",
+          fontWeight: "700",
           fontSize: "16px",
         },
       },
@@ -146,6 +146,13 @@ function TablicaPrijava({ naslov, prijave, prazno }) {
           <p className="text-muted text-center py-4 mb-0">{prazno}</p>
         ) : (
           <Table responsive hover className="align-middle mb-0">
+            <thead className="visually-hidden">
+              <tr>
+                <th scope="col">Životinja i lokacija</th>
+                <th scope="col">Datum</th>
+                <th scope="col">Akcija</th>
+              </tr>
+            </thead>
             <tbody>
               {prijave.map((p) => (
                 <tr key={p.id} className={p.hitno && p.status === "otvorena" ? "table-danger" : ""}>
@@ -212,7 +219,7 @@ export default function NadzornaPloca() {
   return (
     <Container className="my-4">
       <div className="d-flex gap-2">
-        <h3 className="fw-bold mb-4">📊 Nadzorna ploča</h3>
+        <h2 className="h3 fw-bold mb-4">📊 Nadzorna ploča</h2>
         <Button
           onClick={izveziSveUXml}
           variant="outline-secondary"
@@ -235,7 +242,7 @@ export default function NadzornaPloca() {
         </Col>
       </Row>
 
-      <h5 className="fw-bold mb-3">Brze poveznice</h5>
+      <h3 className="h5 fw-bold mb-3">Brze poveznice</h3>
       <Row className="g-3">
         {PRECACI.map((p) => (
           <Col key={p.to} xs={12} sm={6} lg={4}>

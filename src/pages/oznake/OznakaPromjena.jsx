@@ -115,7 +115,7 @@ export default function OznakaPromjena() {
             <Card className="shadow-sm border-0 rounded-3">
                 <Card.Header className="bg-warning text-dark p-4 rounded-top-3 d-flex align-items-center gap-3">
                     <div>
-                        <h3 className="p-3 mb-0 fw-bold fs-4">Promjena oznake</h3>
+                        <h2 className="p-3 mb-0 fw-bold fs-4">Promjena oznake</h2>
                     </div>
                 </Card.Header>
 

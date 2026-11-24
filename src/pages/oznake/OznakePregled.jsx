@@ -50,7 +50,7 @@ export default function OznakePregled() {
         <Card.Header className="bg-white p-4 border-0 d-flex justify-content-between align-items-center flex-wrap gap-2">
           <div className="d-flex align-items-center gap-3">
             <div>
-              <h3 className="fw-bold mb-1 text-dark">📋 Pregled oznaka</h3>
+              <h2 className="h3 fw-bold mb-1 text-dark">📋 Pregled oznaka</h2>
               <p className="text-muted small mb-0">Popis svih oznaka</p>
             </div>
           </div>

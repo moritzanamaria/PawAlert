@@ -166,7 +166,7 @@ export default function PrijavaPromjena() {
         <Container className="my-5">
             <Card className="shadow-sm border-0 rounded-3">
                 <Card.Header className="bg-warning text-dark p-4 rounded-top-3">
-                    <h3 className="mb-0 fw-bold fs-4">✏️ Promjena slučaja</h3>
+                    <h2 className="mb-0 fw-bold fs-4">✏️ Promjena slučaja</h2>
                     <p className="mb-0 text-dark-50 small">
                         Uredite podatke za odabranu prijavu.
                     </p>
@@ -174,9 +174,9 @@ export default function PrijavaPromjena() {
 
                 <Card.Body className="p-4">
                     <Form onSubmit={obradiSubmit}>
-                        <h5 className="text-secondary fw-bold mb-3 border-bottom pb-2">
+                        <h3 className="h5 text-secondary fw-bold mb-3 border-bottom pb-2">
                             1. Podaci o životinji
-                        </h5>
+                        </h3>
 
                         <Row className="mb-3">
                             <Form.Group as={Col} md={6} controlId="zivotinja_ime">
@@ -257,9 +257,9 @@ export default function PrijavaPromjena() {
                                 {errors.zivotinja_opis}
                             </Form.Control.Feedback>
                         </Form.Group>
-                        <h5 className="text-secondary fw-bold mb-3 border-bottom pb-2 pt-2">
+                        <h3 className="h5 text-secondary fw-bold mb-3 border-bottom pb-2 pt-2">
                             Oznake (Tagovi)
-                        </h5>
+                        </h3>
                         <div className="mb-4 p-3 bg-light rounded-3 border">
                             <div className="d-flex flex-wrap gap-3">
                                 {oznake && oznake.length > 0 ? (
@@ -282,9 +282,9 @@ export default function PrijavaPromjena() {
                                 )}
                             </div>
                         </div>
-                        <h5 className="text-secondary fw-bold mb-3 border-bottom pb-2 pt-2">
+                        <h3 className="h5 text-secondary fw-bold mb-3 border-bottom pb-2 pt-2">
                             2. Detalji prijave i lokacija
-                        </h5>
+                        </h3>
 
                         <Row className="mb-3">
                             <Form.Group as={Col} md={6} controlId="tip_prijave">

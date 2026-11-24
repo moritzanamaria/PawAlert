@@ -143,7 +143,7 @@ export default function Katalog() {
           <div>
 
             <div className="d-flex align-items-center gap-3 mb-1">
-              <h3 className="fw-bold mb-1 text-dark">🎴 Katalog</h3>
+              <h2 className="h3 fw-bold mb-1 text-dark">🎴 Katalog</h2>
             </div>
             <p className="text-muted small mb-0">Popis svih prijavljenih slučajeva</p>
           </div>
@@ -184,7 +184,7 @@ export default function Katalog() {
 
               <Card.Body className="d-flex flex-column">
                 <div className="d-flex justify-content-between align-items-start mb-2 justify-content-center col-12 col-md-auto">
-                  <Card.Title as="h2" className="mb-0 fw-bold fs-4">
+                  <Card.Title as="h3" className="mb-0 fw-bold fs-4">
                     <Link
                       to={RouteNames.DETALJI_SLUCAJA.replace(':id', prijava.id)}
                       className="stretched-link text-dark text-decoration-none"
@@ -303,7 +303,7 @@ export default function Katalog() {
 
       {prikazanePrijave.length === 0 && (
         <div className="text-center py-5 text-muted">
-          <h5>Nema prijava koje odgovaraju zadanim kriterijima.</h5>
+          <p className="h5">Nema prijava koje odgovaraju zadanim kriterijima.</p>
         </div>
       )}
     </Container>

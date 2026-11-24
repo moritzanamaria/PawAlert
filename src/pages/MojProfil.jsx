@@ -83,7 +83,7 @@ export default function MojProfil() {
       <Card className="shadow-sm border-0 rounded-3">
         <Card.Header className="bg-white p-4 border-0 d-flex justify-content-between align-items-center flex-wrap gap-3">
           <div>
-            <h3 className="fw-bold mb-1 text-dark">👤 Moj profil</h3>
+            <h2 className="h3 fw-bold mb-1 text-dark">👤 Moj profil</h2>
             <p className="text-muted small mb-0">{authUser.email}</p>
           </div>
           <Link

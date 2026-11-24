@@ -61,7 +61,7 @@ export default function TipNovi() {
         <Container className="my-5" style={{ maxWidth: "850px" }}>
             <Card className="shadow-sm border-0 rounded-3">
                 <Card.Header className="bg-success p-4 rounded-top-3">
-                    <h3 className="mb-0 fw-bold fs-4">🏷️Dodaj novi tip</h3>
+                    <h2 className="mb-0 fw-bold fs-4">🏷️Dodaj novi tip</h2>
                     <p className="mb-0 small">
                         Unesite naziv za novi tip prijave.
                     </p>

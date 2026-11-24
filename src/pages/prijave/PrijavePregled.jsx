@@ -126,7 +126,7 @@ export default function PrijavePregled() {
         <Card.Header className="bg-white p-4 border-0 d-flex justify-content-between align-items-center flex-wrap gap-3">
           <div>
             <div className="d-flex align-items-center gap-3 mb-1">
-              <h3 className="fw-bold mb-1 text-dark">📋 Pregled prijava</h3>
+              <h2 className="h3 fw-bold mb-1 text-dark">📋 Pregled prijava</h2>
               <OverlayTrigger
                 placement="top"
                 trigger={["hover", "focus"]}
@@ -263,7 +263,7 @@ export default function PrijavePregled() {
 
         {ukupnoStavki === 0 && (
           <div className="text-center py-5 text-muted">
-            <h5>Trenutno nema prijava.</h5>
+            <p className="h5">Trenutno nema prijava.</p>
           </div>
         )}
       </Card>
