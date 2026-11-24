@@ -135,8 +135,8 @@ export default function TipoviPregled() {
           <Card className="shadow-sm border-0 rounded-3">
             <Card.Header className="bg-white p-4 border-0 d-flex justify-content-between align-items-center flex-wrap gap-2">
               <div>
-                <h3 className="fw-bold mb-1 text-dark">🐾 Vrste životinja</h3>
-                <p className="text-muted small mb-0">Upravljanje kategorijama životinja</p>
+                <h3 className="fw-bold mb-1 text-dark">📋 Pregled vrsta</h3>
+                <p className="text-muted small mb-0">Popis kategorija životinja</p>
               </div>
               <Link
                 to={RouteNames.VRSTA_NOVA}

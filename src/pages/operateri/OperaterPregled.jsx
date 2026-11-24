@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react"
 import OperaterService from "../../services/operateri/OperaterService"
-import { Table, Button } from "react-bootstrap"
+import { Table, Button, Container, Card, Badge } from "react-bootstrap"
 import { Link, useNavigate } from "react-router-dom"
 import { RouteNames } from "../../constants"
 import { FaEdit, FaTrash, FaKey } from "react-icons/fa"
@@ -34,80 +34,96 @@ export default function OperaterPregled() {
 
 
     async function brisanje(id) {
-       showModal('Sigurno obrisati operatera?', async () => {
-        showLoading()
-        try {
-            const rezultat = await OperaterService.obrisi(id)
-            if (rezultat.success) {
-                ucitajOperatere()
-            } else {
-                showModal(rezultat.message || 'Greška pri brisanju')
+        showModal('Sigurno obrisati operatera?', async () => {
+            showLoading()
+            try {
+                const rezultat = await OperaterService.obrisi(id)
+                if (rezultat.success) {
+                    ucitajOperatere()
+                } else {
+                    showModal(rezultat.message || 'Greška pri brisanju')
+                }
+            } finally {
+                hideLoading();
             }
-        } finally {
-            hideLoading();
-        }
-    })
+        })
     }
 
     return (
-        <>
-            <Link to={RouteNames.OPERATERI_NOVI}
-                className="btn btn-success w-100 my-3">
-                Dodavanje novog operatera
-            </Link>
+        <Container>
+            <Card className="shadow-sm border-0 rounded-3">
+                <Card.Header className="bg-white p-4 border-0 d-flex justify-content-between align-items-center flex-wrap gap-2">
+                    <div>
+                        <h3 className="fw-bold mb-1 text-dark">📋 Pregled operatera</h3>
+                        <p className="text-muted small mb-0">Popis svih registriranih operatera</p>
+                    </div>
+                    <Link to={RouteNames.OPERATERI_NOVI}
+                       className="btn btn-success fw-medium d-flex align-items-center gap-1 shadow-sm px-3 py-2">
+                        + Novi operater
+                    </Link>
+                </Card.Header>
 
-            <Table striped bordered hover responsive>
-                <thead>
-                    <tr>
-                        <th>Email</th>
-                        <th>Uloga</th>
-                        <th className="text-center" style={{ width: '200px' }}>Akcije</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {operateri && operateri.map((operater) => (
-                        <tr key={operater.id}>
-                            <td>{operater.email}</td>
-                            <td>
-                                <span className={`badge ${operater.uloga === 'admin' ? 'bg-danger' : 'bg-primary'}`}>
-                                    {operater.uloga}
-                                </span>
-                            </td>
-                            <td className="text-center">
-                                <div className="d-flex gap-2 justify-content-center">
-                                    <Button
-                                        variant="outline-primary"
-                                        size="sm"
-                                        onClick={() => navigate(`/operateri/${operater.id}`)}
-                                        title="Promijeni email"
-                                        aria-label={`Promijeni email: ${operater.email}`}
-                                    >
-                                        <FaEdit />
-                                    </Button>
-                                    <Button
-                                        variant="outline-warning"
-                                        size="sm"
-                                        onClick={() => navigate(`/operateri/${operater.id}/lozinka`)}
-                                        title="Promijeni lozinku"
-                                        aria-label={`Promijeni lozinku: ${operater.email}`}
-                                    >
-                                        <FaKey />
-                                    </Button>
-                                    <Button
-                                        variant="outline-danger"
-                                        size="sm"
-                                        onClick={() => brisanje(operater.id)}
-                                        title="Obriši"
-                                        aria-label={`Obriši operatera: ${operater.email}`}
-                                    >
-                                        <FaTrash />
-                                    </Button>
-                                </div>
-                            </td>
-                        </tr>
-                    ))}
-                </tbody>
-            </Table>
-        </>
+                <Card.Body className="p-0">
+                    <Table striped bordered hover responsive>
+                        <thead>
+                            <tr>
+                                <th>Email</th>
+                                <th>Uloga</th>
+                                <th className="text-center" style={{ width: '200px' }}>Akcije</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {operateri && operateri.map((operater) => (
+                                <tr key={operater.id}>
+                                    <td>{operater.email}</td>
+                                    <td>
+                                        <span className={`badge ${operater.uloga === 'admin' ? 'bg-danger' : 'bg-primary'}`}>
+                                            {operater.uloga}
+                                        </span>
+                                    </td>
+                                    <td className="text-center">
+                                        <div className="d-flex gap-2 justify-content-center">
+                                            <Button
+                                                variant="outline-primary"
+                                                size="sm"
+                                                onClick={() => navigate(`/operateri/${operater.id}`)}
+                                                title="Promijeni email"
+                                                aria-label={`Promijeni email: ${operater.email}`}
+                                            >
+                                                <FaEdit />
+                                            </Button>
+                                            <Button
+                                                variant="outline-warning"
+                                                size="sm"
+                                                onClick={() => navigate(`/operateri/${operater.id}/lozinka`)}
+                                                title="Promijeni lozinku"
+                                                aria-label={`Promijeni lozinku: ${operater.email}`}
+                                            >
+                                                <FaKey />
+                                            </Button>
+                                            <Button
+                                                variant="outline-danger"
+                                                size="sm"
+                                                onClick={() => brisanje(operater.id)}
+                                                title="Obriši"
+                                                aria-label={`Obriši operatera: ${operater.email}`}
+                                            >
+                                                <FaTrash />
+                                            </Button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </Table>
+                </Card.Body>
+                <Card.Footer className="bg-light border-0 p-3 px-4 d-flex align-items-center justify-content-between">
+                    <span className="text-muted small">
+                        Ukupno operatera: <Badge pill bg="primary" className="ms-1">{operateri ? operateri.length : 0}</Badge>
+                    </span>
+                </Card.Footer>
+            </Card>
+        </Container>
     )
+
 }

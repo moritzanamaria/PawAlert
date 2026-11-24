@@ -49,15 +49,9 @@ export default function OznakePregled() {
       <Card className="shadow-sm border-0 rounded-3">
         <Card.Header className="bg-white p-4 border-0 d-flex justify-content-between align-items-center flex-wrap gap-2">
           <div className="d-flex align-items-center gap-3">
-            <lord-icon
-              src="https://cdn.lordicon.com/puzgkqsp.json"
-              trigger="loop"
-              colors="primary:#0d6efd,secondary:#08a88a"
-              style={{ width: "45px", height: "45px" }}
-            ></lord-icon>
             <div>
-              <h3 className="fw-bold mb-1 text-dark">Oznake</h3>
-              <p className="text-muted small mb-0">Upravljanje oznakama (tagovima) prijava</p>
+              <h3 className="fw-bold mb-1 text-dark">📋 Pregled oznaka</h3>
+              <p className="text-muted small mb-0">Popis svih oznaka</p>
             </div>
           </div>
           <div className="d-flex gap-2 flex-wrap">

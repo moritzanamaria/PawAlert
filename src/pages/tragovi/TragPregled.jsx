@@ -59,8 +59,7 @@ export default function TragPregled() {
         <Card.Body className="p-0">
           <Table bordered responsive hover className="align-middle mb-0 border-top">
             <thead className="table-light">
-              <tr>
-                <th className="ps-4">Prijava</th>
+              <tr>      
                 <th>Opis</th>
                 <th>Lokacija</th>
                 <th className="text-center">Datum</th>
@@ -70,7 +69,6 @@ export default function TragPregled() {
             <tbody>
               {tragovi && tragovi.map((trag) => (
                 <tr key={trag.id}>
-                  <td className="ps-4 fw-semibold text-dark">{trag.prijava}</td>
                   <td>{trag.opis}</td>
                   <td className="text-muted">{trag.lokacija?.opis || trag.lokacija_opis || "Nepoznata lokacija"}</td>
                   <td className="text-center text-secondary small">
